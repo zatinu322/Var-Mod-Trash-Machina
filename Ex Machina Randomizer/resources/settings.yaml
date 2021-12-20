@@ -1,0 +1,63 @@
+Settings:
+  Checkboxes:
+    Exe:
+      ArmorColor: false
+      FOV: false
+      Gravity: false
+      ModelsRender: false
+    Icons:
+      CabinsAndBaskets: true
+      Clans: true
+      DialogsBackground: true
+      Digits: true
+      GunsAndWares: true
+      Interface: false
+      Maps: true
+      Radar: false
+      Smartcursor: false
+      Splashes: true
+    Models:
+      BarNpc: true
+      Dwellers: true
+      Guns: false
+      Humans: true
+      Static: false
+      Towns: false
+      Trees: true
+      Wheels: false
+    Other:
+      Landscape: false
+      Prototypes: false
+      VehicleGuns: false
+      Weather: true
+    Sounds:
+      Crash: true
+      Engine: true
+      Explosion: true
+      Hit: true
+      Horn: true
+      Music: true
+      Other: true
+      RadioSounds: true
+      Shooting: true
+      Speech: true
+    Text:
+      BindNames: false
+      BooksAndHistory: true
+      Descriptions: true
+      Dialogs: true
+      FadingMsgs: true
+      Interface: true
+      Names: true
+      QuestInfoGlobal: true
+    Textures:
+      Lightmaps: false
+      Masks: true
+      Surround: false
+      Tiles: true
+      VehicleSkins: true
+      WeatherTex: true
+  DebugMode: false
+  LastPath: ''
+  LastVersion: Steam
+  RestoreLua: false
