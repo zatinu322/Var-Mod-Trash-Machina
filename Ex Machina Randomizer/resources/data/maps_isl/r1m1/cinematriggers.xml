@@ -157,7 +157,7 @@
 				vehLisa6:Remove()
 			end
 						
-			if rand_vehex == 1 then
+			if rand_vehPlayer == 1 then
 				AddPlayerVehicle(prot_random())
 			else
 				AddPlayerNewVehicle("Bug01")

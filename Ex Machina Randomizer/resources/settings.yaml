@@ -58,6 +58,7 @@ Settings:
       VehicleSkins: true
       WeatherTex: true
   DebugMode: false
+  LastLanguage: English
   LastPath: ''
   LastVersion: Steam
   RestoreLua: false

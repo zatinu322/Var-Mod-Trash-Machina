@@ -4,6 +4,10 @@
 		<Item
 			id="cargo"
 			file="data\models\AnimModels.xml" />
+		
+		<Item
+			id="boss04dronegun"
+			file="data\models\AnimModels.xml"/>
 
 		<Item
 			id="exit"
@@ -21,7 +25,7 @@
 
 		<!-- masks -->
 		<Item
-			id="mask_lisa"
+			id="mask_father"
 			file="data\models\AnimModels.xml" />
 
 		<Item
@@ -29,7 +33,43 @@
 			file="data\models\AnimModels.xml" />
 
 		<Item
+			id="r1_man"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="r1_woman"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="r2_man"
+			file="data\models\AnimModels.xml" />
+		
+		<Item
+			id="r2_woman"
+			file="data\models\AnimModels.xml" />
+		
+		<Item
+			id="r3_man"
+			file="data\models\AnimModels.xml" />
+
+		<Item
 			id="r4_man"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="mask_lisa"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="mask_ben"
+			file="data\models\AnimModels.xml" />
+		
+		<Item
+			id="mask_axel"
+			file="data\models\AnimModels.xml" />
+		
+		<Item
+			id="mask_oracul"
 			file="data\models\AnimModels.xml" />
 
 		<!-- dweller ragdoll -->

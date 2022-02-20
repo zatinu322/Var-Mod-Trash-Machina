@@ -8,7 +8,7 @@
 		    SetVar("FelixChoise",0)
 
 			rand_guns = 0
-			rand_vehex = 0
+			rand_vehPlayer = 0
 
 		    trigger:Deactivate()
 		</script>

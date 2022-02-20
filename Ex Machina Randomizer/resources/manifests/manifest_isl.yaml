@@ -3991,7 +3991,7 @@ Other:
       - data/maps/r4m2/
     BackupPath: data/maps/
     File: displace.bin
-    PreventMultiple: True
+    PreventMultiple: False
 # Динамический рандом
 # (синий цвет в окне опций)
 LuaRandom:
