@@ -56,6 +56,7 @@
 				local rand_vehPlayer = 0
 				if rand_vehPlayer == 1 then
 					AddPlayerVehicle(prot_random())
+					GetPlayerVehicle():setGodMode(1)
 				end
 				if rand_guns == 1 then
 					giveguns()

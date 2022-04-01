@@ -82,9 +82,12 @@ Randomizer:
   Path:
     rus: "Путь:"
     eng: "Path:"
-  Version:
+  GameVersion:
     rus: "Версия игры:"
     eng: "Game version:"
+  ExeVersion:
+    rus: "Версия exe:"
+    eng: "Exe version:"
   UnableToCreateFiles:
     rus: "Невозможно создать необходимые файлы.\n\nПодробная информация в randomizer.log"
     eng: "Unable to create necessary files.\n\nSee randomizer.log for details."
