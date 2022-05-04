@@ -2380,7 +2380,6 @@ Models:
       - data/maps/r3m2/
       - data/maps/r4m1/
       - data/maps/r4m2/
-
     Files:
       - mask_axel
       - mask_ben
@@ -3785,7 +3784,7 @@ Other:
       - data/maps/r4m2/
     BackupPath: data/maps/
     File: displace.bin
-    PreventMultiple: True
+    PreventMultiple: False
 # Динамический рандом
 # (синий цвет в окне опций)
 LuaRandom:

@@ -849,19 +849,17 @@ Sounds:
         - techno02.ogg
         - techno03.ogg
         - techno04.ogg
-        - Bio02Loco.ogg
-        - Bio04Loco.ogg
         - foreverandone.ogg
         - greenleaves.ogg
         - nochnoi.ogg
         - promise.ogg
         - PromiseGuitar.ogg
-        - QuietDialogue01Loco.ogg
         - quietdialogue5.ogg
         - region5.ogg
         - SpecEndSong.ogg
         - Tiamat.ogg
         - ToastTo.ogg
+        - Silentium.ogg
     Blocks:
       1-3:
         Path: data/music/blocks/region1/1-3/
@@ -1737,6 +1735,7 @@ Sounds:
         - energyworking.wav
         - flyingdroid.wav
         - ufo01.wav
+        - locomotive.wav
     Cutscenes:
       Path: data/sounds/cutscenes/r1m1/
       Files:
@@ -2480,6 +2479,21 @@ Models:
         - r3_t_bush_flower3
   # Модели NPC в диалогах
   BarNpc:
+    DynamicScene: dynamicscene.xml
+    Strings: strings.xml
+    Paths:
+      - data/maps/r1m1/
+      - data/maps/r1m2/
+      - data/maps/r1m3/
+      - data/maps/r1m4/
+      - data/maps/r1m5/
+      - data/maps/r1m6/
+      - data/maps/r2m1/
+      - data/maps/r2m2/
+      - data/maps/r3m1/
+      - data/maps/r3m2/
+      - data/maps/r4m1/
+      - data/maps/r4m2/
     Files:
       - mask_axel
       - mask_ben
@@ -2541,7 +2555,6 @@ Models:
         - dweller_felix
         - dweller_ben
         - dweller_white
-        - dweller_brodyaga
 # Текстуры
 Textures:
   # Текстуры окружения
@@ -2900,6 +2913,7 @@ Textures:
         - rock_stones.dds
         - rock_sun_stones.dds
         - seedbad_tomato.dds
+        - seedbad_tomato_snow.dds
         - seedbed.dds
         - sosna.dds
         - swamp_crag.dds
@@ -3020,7 +3034,6 @@ Textures:
         - cargo.dds
         - coat_ben02_01.dds
         - coat_ben02_02.dds
-        - coat_player00.dds
         - coat_player01.dds
         - coat_player02.dds
         - coat_player022.dds
@@ -3034,7 +3047,6 @@ Textures:
         - helmet_ben01.dds
         - helmet_ben02.dds
         - hood01_lisa.dds
-        - main_hero_1.dds
         - monocle01.dds
         - motor.dds
         - odnoglazaya_hood.dds
@@ -3162,11 +3174,9 @@ Textures:
         - body01.dds
         - cap02.dds
         - cap023_player.dds
-        - coat_player01.dds
         - glasses01.dds
         - glasses022.dds
         - helmet01.dds
-        - main_hero_1.dds
         - mekchanik_body.dds
         - mekchanik_cap.dds
         - mekchanik_headfones.dds
@@ -3991,7 +4001,7 @@ Other:
       - data/maps/r4m2/
     BackupPath: data/maps/
     File: displace.bin
-    PreventMultiple: False
+    PreventMultiple: True
 # Динамический рандом
 # (синий цвет в окне опций)
 LuaRandom:
@@ -4009,7 +4019,8 @@ LuaRandom:
     Prototypes:
       server.lua: rand_team
       debug.lua: rand_vehex
-      triggers.xml: rand_vehex
+    PlayerVehicle:
+      triggers.xml: rand_vehPlayer
     VehicleGuns:
       server.lua: rand_guns
       debug.lua: rand_guns
