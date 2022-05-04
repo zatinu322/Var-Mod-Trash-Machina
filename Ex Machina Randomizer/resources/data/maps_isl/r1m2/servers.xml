@@ -1,24 +1,9 @@
 <?xml version="1.0" encoding="windows-1251" standalone="yes" ?>
 <Servers>
 	<AnimatedModelsServer>
+
 		<Item
 			id="point"
-			file="data\models\AnimModels.xml" />
-		
-		<Item
-			id="boss04dronegun"
-			file="data\models\AnimModels.xml"/>
-
-		<Item
-			id="MidGard"
-			file="data\models\AnimModels.xml" />
-
-		<Item
-			id="mask_father"
-			file="data\models\AnimModels.xml" />
-
-		<Item
-			id="mask_hero"
 			file="data\models\AnimModels.xml" />
 
 		<Item
@@ -44,6 +29,14 @@
 		<Item
 			id="r4_man"
 			file="data\models\AnimModels.xml" />
+        
+        <Item
+			id="mask_father"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="mask_hero"
+			file="data\models\AnimModels.xml" />
 
 		<Item
 			id="mask_lisa"
@@ -52,13 +45,73 @@
 		<Item
 			id="mask_ben"
 			file="data\models\AnimModels.xml" />
-		
+	
 		<Item
 			id="mask_axel"
 			file="data\models\AnimModels.xml" />
 		
 		<Item
 			id="mask_oracul"
+			file="data\models\AnimModels.xml" />
+        
+        <Item
+			id="mask_thief"
+			file="data\models\AnimModels.xml" />
+        
+        <Item
+			id="mask_snowlisa"
+			file="data\models\AnimModels.xml" />
+        
+        <Item
+			id="dweller_player"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="dweller_father"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="dweller_lisa"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="dweller_felix"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="dweller_ben"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="dweller_axel"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="dweller_white"
+			file="data\models\AnimModels.xml" />
+
+        <Item
+			id="dweller_snowlisa"
+			file="data\models\AnimModels.xml" />
+		
+		<Item
+			id="boss04dronegun"
+			file="data\models\AnimModels.xml" />
+		
+		<Item
+			id="dweller"
+			file="data\models\AnimModels.xml" />
+		
+		<Item
+			id="dweller2"
+			file="data\models\AnimModels.xml" />
+		
+		<Item
+			id="dweller3"
+			file="data\models\AnimModels.xml" />
+		
+			<Item
+			id="MidGard"
 			file="data\models\AnimModels.xml" />
 
 		<Item
@@ -921,48 +974,6 @@
 		<Item
 			 id="cannonbullet"
 			 file="data\models\AnimModels.xml"/>
-
-<!-- dweller ragdoll -->
-		<Item
-			id="dweller"
-			file="data\models\AnimModels.xml"/>
-
-		<Item 
-			id="dweller2" 
-			file="data\models\AnimModels.xml"/>
-
-		<Item 
-			id="dweller3" 
-			file="data\models\AnimModels.xml"/>
-
-		<Item
-			id="dweller_player"
-			file="data\models\AnimModels.xml" />
-
-		<Item
-			id="dweller_ben"
-			file="data\models\AnimModels.xml" />
-
-		<Item
-			id="dweller_lisa"
-			file="data\models\AnimModels.xml" />
-
-		<Item
-			id="dweller_white"
-			file="data\models\AnimModels.xml" />
-		
-		<Item
-			id="dweller_father"
-			file="data\models\AnimModels.xml" />
-
-		<Item
-			id="dweller_felix"
-			file="data\models\AnimModels.xml" />
-
-		<Item
-			id="dweller_axel"
-			file="data\models\AnimModels.xml" />
-
 
 <!-- Segments -->
 		<Item 
@@ -2319,9 +2330,13 @@
 			id="quest_letter" 
 			file="data\models\AnimModels.xml"/>
 
-		<Item 
-			id="quest_medicine_box" 
-			file="data\models\AnimModels.xml"/>
+		<Item
+			id="quest_medicine_box"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="crimson_medal"
+			file="data\models\AnimModels.xml" />
 
 		<Item 	
 			id="quest_komp_splav" 
@@ -2405,6 +2420,7 @@
 	<ParticlesServer />
 
 	<SoundsServer>
+
 		<Item id="S_CRASH_METAL01" />
 		<Item id="S_CRASH_METAL02" />
 		<Item id="S_CRASH_METAL03" />
@@ -2424,17 +2440,16 @@
 		<Item id="S_CRASH_WOOD06" />
 		<Item id="S_CRASH_WOOD07" />
 		<Item id="S_CRASH_WOOD08" />
-            <Item id="S_WOODVEHICLEHIT" />
 		<Item id="S_WOODVEHICLECRASH" />
-            <Item id="S_BRICKVEHICLEHIT01" />
-            <Item id="S_BRICKVEHICLEHIT02" />
-            <Item id="S_SACKVEHICLEHIT" />
-            <Item id="S_VEHICLESPARKLE" />
-            <Item id="S_VEHICLESPARKLE_SLOW" />
-            <Item id="S_VEHICLEONGROUND" />
-            <Item id="S_VEHICLEONGROUND_SLOW" />
-            <Item id="S_STATICSSPARKLE" />
-            <Item id="S_STATICSSPARKLE_SLOW" />
+        <Item id="S_BRICKVEHICLEHIT01" />
+        <Item id="S_BRICKVEHICLEHIT02" />
+        <Item id="S_SACKVEHICLEHIT" />
+        <Item id="S_VEHICLESPARKLE" />
+        <Item id="S_VEHICLESPARKLE_SLOW" />
+        <Item id="S_VEHICLEONGROUND" />
+        <Item id="S_VEHICLEONGROUND_SLOW" />
+        <Item id="S_STATICSSPARKLE" />
+        <Item id="S_STATICSSPARKLE_SLOW" />
 
 
 		<!-- Braking -->
@@ -2445,38 +2460,65 @@
 
 		<!-- Engines --> 
 
+		<Item id="S_ENGINE_BEETLE_1_LOW" />
 		<Item id="S_ENGINE_BEETLE_1_HIGH" />
+		<Item id="S_ENGINE_BEETLE_2_LOW" />
 		<Item id="S_ENGINE_BEETLE_2_HIGH" />
+		<Item id="S_ENGINE_BEETLE_3_LOW" />
 		<Item id="S_ENGINE_BEETLE_3_HIGH" />
 
+		<Item id="S_ENGINE_MOLOKO_1_LOW" />
 		<Item id="S_ENGINE_MOLOKO_1_HIGH" />
+		<Item id="S_ENGINE_MOLOKO_2_LOW" />
 		<Item id="S_ENGINE_MOLOKO_2_HIGH" />
+		<Item id="S_ENGINE_MOLOKO_3_LOW" />
 		<Item id="S_ENGINE_MOLOKO_3_HIGH" />
 
+		<Item id="S_ENGINE_URAL_1_LOW" />
 		<Item id="S_ENGINE_URAL_1_HIGH" />
+		<Item id="S_ENGINE_URAL_2_LOW" />
 		<Item id="S_ENGINE_URAL_2_HIGH" />
+		<Item id="S_ENGINE_URAL_3_LOW" />
 		<Item id="S_ENGINE_URAL_3_HIGH" />
+		<Item id="S_ENGINE_URAL_4_LOW" />
 		<Item id="S_ENGINE_URAL_4_HIGH" />
+		<Item id="S_ENGINE_URAL_5_LOW" />
 		<Item id="S_ENGINE_URAL_5_HIGH" />
+		<Item id="S_ENGINE_BELAZ_1_LOW" />
 		<Item id="S_ENGINE_BELAZ_1_HIGH" />
+		<Item id="S_ENGINE_BELAZ_2_LOW" />
 		<Item id="S_ENGINE_BELAZ_2_HIGH" />
+		<Item id="S_ENGINE_BELAZ_3_LOW" />
 		<Item id="S_ENGINE_BELAZ_3_HIGH" />
+		<Item id="S_ENGINE_BELAZ_4_LOW" />
 		<Item id="S_ENGINE_BELAZ_4_HIGH" />
+		<Item id="S_ENGINE_BELAZ_5_LOW" />
 		<Item id="S_ENGINE_BELAZ_5_HIGH" />
 
+		<Item id="S_BELAZ_ENGINE_LOW" />
 		<Item id="S_BELAZ_ENGINE_HIGH" />
 
 
 		<Item id="S_ENGINE_MIR_1_HIGH" />
+		<Item id="S_ENGINE_MIR_1_LOW" />
 		<Item id="S_ENGINE_MIR_2_HIGH" />
+		<Item id="S_ENGINE_MIR_2_LOW" />
 		<Item id="S_ENGINE_MIR_3_HIGH" />
+		<Item id="S_ENGINE_MIR_3_LOW" />
 		<Item id="S_ENGINE_MIR_4_HIGH" />
+		<Item id="S_ENGINE_MIR_4_LOW" />
 		<Item id="S_ENGINE_MIR_5_HIGH" />
+		<Item id="S_ENGINE_MIR_5_LOW" />
 		<Item id="S_ENGINE_SMALL_1_HIGH" />
+		<Item id="S_ENGINE_SMALL_1_LOW" />
 		<Item id="S_ENGINE_SCOUT_1_HIGH" />
+		<Item id="S_ENGINE_SCOUT_1_LOW" />
 		<Item id="S_ENGINE_FIGHTER_1_HIGH" />
+		<Item id="S_ENGINE_FIGHTER_1_LOW" />
 		<Item id="S_ENGINE_HUNTER_1_HIGH" />
+		<Item id="S_ENGINE_HUNTER_1_LOW" />
 		<Item id="S_ENGINE_CRUISER_1_HIGH" />
+		<Item id="S_ENGINE_CRUISER_1_LOW" />
 
 		<!-- Missiles --> 
 
@@ -2629,7 +2671,6 @@
 		<Item id="S_ROCK_EXPL" />
 		<Item id="S_GROUND_EXPL" />
 		<Item id="S_SAND_EXPL" />
-		<Item id="S_GROUND_EXPL" />
 		<Item id="S_WOOD_EXPL" />
 		<Item id="S_WATER_AC" />
 		<Item id="S_STATIC_AC" />
@@ -2714,17 +2755,10 @@
 		<Item id="S_WOODVEHICLEHIT1"/>
 	      <Item id="S_WOODVEHICLEHIT2"/>
 	      <Item id="S_WOODVEHICLEHIT3"/>
-		<Item id="S_WOODVEHICLECRASH"/>
-		<Item id="S_BRICKVEHICLEHIT01"/>
-		<Item id="S_BRICKVEHICLEHIT02"/>
             <Item id="S_BRICKVEHICLEHIT03"/>
 
-		<Item id="S_SACKVEHICLEHIT"/>
             <Item id="S_SACKVEHICLEHIT02"/>
             <Item id="S_TREEVEHICLECRASH"/>
-		<Item id="S_VEHICLEONGROUND"/>
-		<Item id="S_VEHICLESPARKLE"/>
-		<Item id="S_VEHICLEONGROUND"/>
 		<Item id="S_DRIFT01"/>
             <Item id="S_CARJUMP"/>
 

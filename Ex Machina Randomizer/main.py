@@ -9,7 +9,7 @@ logging.basicConfig(filename = "randomizer.log",
 
 logger = logging.getLogger()
 
-VERSION = "Ex Machina Randomizer beta v1.0"
+VERSION = "Ex Machina Randomizer beta v1.1"
 
 MAIN_PATH = os.getcwd()
 ERRORS = 0
@@ -46,8 +46,8 @@ class OptionsWindow(QtWidgets.QMainWindow, options.Ui_Options):
                       self.textures_1, self.textures_2, self.textures_3, 
                       self.textures_4, self.textures_5, self.textures_6, 
                       self.other_1, self.other_2, self.other_3, 
-                      self.other_4, self.exe_1, self.exe_2, 
-                      self.exe_3, self.exe_4]
+                      self.other_3_1, self.other_4, self.exe_1, 
+                      self.exe_2, self.exe_3, self.exe_4]
         
         for chkbx in checkboxes:
             chkbx.setChecked(True)
@@ -68,8 +68,8 @@ class OptionsWindow(QtWidgets.QMainWindow, options.Ui_Options):
                       self.textures_1, self.textures_2, self.textures_3, 
                       self.textures_4, self.textures_5, self.textures_6, 
                       self.other_1, self.other_2, self.other_3, 
-                      self.other_4, self.exe_1, self.exe_2, 
-                      self.exe_3, self.exe_4]
+                      self.other_3_1, self.other_4, self.exe_1, 
+                      self.exe_2,  self.exe_3, self.exe_4]
         
         for chkbx in checkboxes:
             chkbx.setChecked(False)
@@ -93,8 +93,8 @@ class OptionsWindow(QtWidgets.QMainWindow, options.Ui_Options):
                            ["Textures", "Surround"], ["Textures", "Masks"], ["Textures", "VehicleSkins"], 
                            ["Textures", "Lightmaps"], ["Textures", "WeatherTex"], ["Textures", "Tiles"], 
                            ["Other", "Weather"], ["Other", "Landscape"], ["Other", "Prototypes"], 
-                           ["Other", "VehicleGuns"], ["Exe", "ModelsRender"], ["Exe", "Gravity"], 
-                           ["Exe", "FOV"], ["Exe", "ArmorColor"]]
+                           ["Other", "PlayerVehicle"], ["Other", "VehicleGuns"], ["Exe", "ModelsRender"], 
+                           ["Exe", "Gravity"], ["Exe", "FOV"], ["Exe", "ArmorColor"]]
 
         checkboxes_values = [self.icons_1.isChecked(), self.icons_2.isChecked(), self.icons_3.isChecked(), 
                              self.icons_4.isChecked(), self.icons_5.isChecked(), self.icons_6.isChecked(), 
@@ -111,8 +111,8 @@ class OptionsWindow(QtWidgets.QMainWindow, options.Ui_Options):
                              self.textures_1.isChecked(), self.textures_2.isChecked(), self.textures_3.isChecked(), 
                              self.textures_4.isChecked(), self.textures_5.isChecked(), self.textures_6.isChecked(), 
                              self.other_1.isChecked(), self.other_2.isChecked(), self.other_3.isChecked(), 
-                             self.other_4.isChecked(), self.exe_1.isChecked(), self.exe_2.isChecked(), 
-                             self.exe_3.isChecked(), self.exe_4.isChecked()]
+                             self.other_3_1.isChecked(), self.other_4.isChecked(), self.exe_1.isChecked(), 
+                             self.exe_2.isChecked(), self.exe_3.isChecked(), self.exe_4.isChecked()]
 
         index = 0
         for key in checkboxes_keys:
@@ -151,29 +151,74 @@ class RandomizerApp(QtWidgets.QMainWindow, design.Ui_ExMachinaRandomizer):
         self.btnOptions.clicked.connect(self.options_create)
         self.btnStart.clicked.connect(self.StartRandomizing)
 
+        self.trans = QtCore.QTranslator(self)
+
         self._closable = True
 
         rb = self.ImportSetting("RadioButton")
         rb.setChecked(True)
         
-        self.DestFolder.setText(QtCore.QCoreApplication.translate("ExMachinaRandomizer", self.ImportSetting("Path")))
+        self.DestFolder.setText(self.ImportSetting("Path"))
 
         self.in_logger.append(f"{VERSION}\n")
+
+        languages = [("Русский", "rus"), ("English", "eng")]
+        for item, (text, lang) in enumerate(languages):
+            self.LangSelect.addItem(text)
+            self.LangSelect.setItemData(item, lang)
+        
+        self.LangSelect.currentIndexChanged.connect(self.lang_changed)
+
+        self.LangSelect.setCurrentText(self.ImportSetting("Language"))
+
+        self._translate = QtCore.QCoreApplication.translate
+
+        global MESSAGES
+        MESSAGES = self.messages_setup()
 
         # remove this, when cp and cr compability appears
         self.rbtn_cp.setEnabled(False)
         self.rbtn_cr.setEnabled(False)
     
+    def lang_changed(self):
+        data = self.LangSelect.currentData()
+        if data:
+            self.trans.load(f"resources/localizations/{data}/design.qm")
+            QtWidgets.QApplication.instance().installTranslator(self.trans)
+            self.retranslateUi(self)
+        else:
+            QtWidgets.QApplication.instance().removeTranslator(self.trans)
+    
+    def messages_setup(self):
+        message_loc = os.path.join(MAIN_PATH, "resources/localizations/messages.yaml")
+
+        if os.path.exists(message_loc):
+            with open(message_loc, encoding="utf-8") as messages_yaml:
+                messages = yaml.safe_load(messages_yaml)
+                return messages
+    
+    def loc_string(self, yaml_messages, module, string):
+        lang = self.LangSelect.currentData()
+        localized_string = yaml_messages[module][string][lang]
+        return localized_string
+        
     def browse_folder(self):
-        directory = QtWidgets.QFileDialog.getExistingDirectory(self, "Выберите папку")
+        directory = QtWidgets.QFileDialog.getExistingDirectory(self, self.loc_string(MESSAGES, "Main", "DirectoryChoose"))
         if directory:
-            self.DestFolder.setText(QtCore.QCoreApplication.translate("ExMachinaRandomizer", directory))
+            self.DestFolder.setText(directory)
             return directory
     
     def options_create(self):
         self.optionsWindow = OptionsWindow()
         self.optionsWindow.submitted.connect(self.EnableMainWindow)
         self.optionsWindow.show()
+        
+        data = self.LangSelect.currentData()
+        if data:
+            self.trans.load(f"resources/localizations/{data}/options.qm")
+            QtWidgets.QApplication.instance().installTranslator(self.trans)
+        self.optionsWindow.retranslateUi(self.optionsWindow)
+
         self.setEnabled(False)
         self._closable = False
     
@@ -200,7 +245,7 @@ class RandomizerApp(QtWidgets.QMainWindow, design.Ui_ExMachinaRandomizer):
             msg.setWindowTitle("Error")
             msg.setIcon(QtWidgets.QMessageBox.Critical)
 
-            self.addMessage("Рандомизация прервана.")
+            self.addMessage(self.loc_string(MESSAGES, "Main", "RandomAborted"))
         
         msg.exec_()
         
@@ -218,10 +263,13 @@ class RandomizerApp(QtWidgets.QMainWindow, design.Ui_ExMachinaRandomizer):
                 last_version = "CommunityRemaster"
             elif self.rbtn_isl.isChecked():
                 last_version = "ImprovedStoryline"
+            
+            last_language = self.LangSelect.currentText()
 
             settings = self.ImportSetting("ReadOnly")
             settings["Settings"]["LastPath"] = last_path
             settings["Settings"]["LastVersion"] = last_version
+            settings["Settings"]["LastLanguage"] = last_language
 
             with open("resources/settings.yaml", "w") as new_yaml:
                 yaml.dump(settings, new_yaml)
@@ -248,7 +296,7 @@ class RandomizerApp(QtWidgets.QMainWindow, design.Ui_ExMachinaRandomizer):
                 exe_version = "Unsupported"
             return exe_version
         except PermissionError:
-            self.addMessage(f"Невозможно получить доступ к {exe_name}. Закройте игру и попробуйте снова.")
+            self.addMessage(f"{self.loc_string(MESSAGES, 'Main', 'PermissionErrorExe1')} {exe_name}. {self.loc_string(MESSAGES, 'Main', 'PermissionErrorExe2')}")
             logger.critical(f"Unable to open {exe_name} due to permission error. Make sure that your game is not running.")
         
 
@@ -269,8 +317,8 @@ class RandomizerApp(QtWidgets.QMainWindow, design.Ui_ExMachinaRandomizer):
                     if file in data_dir:
                         continue
                     else:
-                        logger.critical(f"{file} missing in {os.chdir()}. Randomization aborted.")
-                        self.addMessage("Введённый путь не является директорией с игрой.\nРандомизация прервана.\n")
+                        logger.critical(f"{file} missing in {os.getcwd()}. Randomization aborted.")
+                        self.addMessage(self.loc_string(MESSAGES, 'Main', 'WrongGamePath'))
                         validation = False
                         break
                 
@@ -283,9 +331,9 @@ class RandomizerApp(QtWidgets.QMainWindow, design.Ui_ExMachinaRandomizer):
                         try:
                             exe_name = config["Exe"]
                         except KeyError:
-                            logger.critical(f"Unable to read yaml-configuration file.")
-                            self.showPopUp(f"Невозможно прочитать YAML-конфиг.")
-                            return [False, None]
+                            logger.critical("Unable to read yaml-configuration file.")
+                            self.showPopUp(self.loc_string(MESSAGES, "Main", "CorruptedConfig"))
+                            return [False, None, None]
 
                         if exe_name: 
                             if exe_name in os.listdir():
@@ -296,87 +344,94 @@ class RandomizerApp(QtWidgets.QMainWindow, design.Ui_ExMachinaRandomizer):
 
                                     if gameversion == "Steam":
                                         if exe_version == "Steam":
-                                            return [True, gameversion]
+                                            return [True, gameversion, exe_version]
                                         elif exe_version == "CommunityPatch":
                                             logger.critical(f"Community Patch is installed in {workpath}, but {gameversion} version expected. Randomization aborted.")
-                                            self.showPopUp("Обнаружен установленный Community Patch. Пожалуйста, выберите правильную версию игры и попробуйте снова.")
-                                            return [False, exe_version]
+                                            self.showPopUp(self.loc_string(MESSAGES, "Main", "CommunityPatchInstalled"))
+                                            return [False, gameversion, exe_version]
                                         elif exe_version == "CommunityRemaster":
                                             logger.critical(f"Community Remaster is installed in {workpath}, but {gameversion} version expected. Randomization aborted.")
-                                            self.showPopUp("Обнаружен установленный Community Remaster. Пожалуйста, выберите правильную версию игры и попробуйте снова.")
-                                            return [False, exe_version]
+                                            self.showPopUp(self.loc_string(MESSAGES, "Main", "CommunityRemasterInstalled"))
+                                            return [False, gameversion, exe_version]
                                         elif exe_version == "Unsupported":
                                             logger.warning("Unsupported game version detected. Waiting user input...")
-                                            msg = QtWidgets.QMessageBox.warning(self, "Warning", "Ваша копия игры не является русской лицензией из Steam. Желаете продолжить на свой страх и риск?\n\nВсе опции рандомизации, связанные с исполняемым файлом, будут отключены.", QtWidgets.QMessageBox.Ok|QtWidgets.QMessageBox.Cancel)
+                                            msg = QtWidgets.QMessageBox.warning(self, "Warning", self.loc_string(MESSAGES, "Main", "NotSteamLicense"), QtWidgets.QMessageBox.Ok|QtWidgets.QMessageBox.Cancel)
                                             if msg == QtWidgets.QMessageBox.Ok:
                                                 logger.info("User proceeded randomization.")
-                                                return [True, gameversion]
+                                                return [True, gameversion, exe_version]
                                             else:
                                                 logger.info("Randomization aborted by user.")
-                                                return [False, gameversion]
+                                                return [False, gameversion, exe_version]
                                     elif gameversion == "CommunityPatch":
                                         if exe_version == "CommunityPatch":
-                                            return [True, exe_version]
+                                            return [True, gameversion, exe_version]
                                         else:
                                             logger.critical(f"Community Patch is not installed in {workpath}. Randomization aborted.")
-                                            self.showPopUp("Не обнаружен установленный Community Patch. Убедитесь, что вы правильно установили этот мод и попробуйте снова.")
-                                            return [False, exe_version]
+                                            self.showPopUp(self.loc_string(MESSAGES, "Main", "CommunityPatchNotInstalled"))
+                                            return [False, gameversion, exe_version]
                                     elif gameversion == "CommunityRemaster":
                                         if exe_version == "CommunityRemaster":
-                                            return [True, exe_version]
+                                            return [True, gameversion, exe_version]
                                         else:
                                             logger.critical(f"Community Remaster is not installed in {workpath}. Randomization aborted.")
-                                            self.showPopUp("Не обнаружен установленный Community Remaster. Убедитесь, что вы правильно установили этот мод и попробуйте снова.")
-                                            return [False, exe_version]
+                                            self.showPopUp(self.loc_string(MESSAGES, "Main", "CommunityRemasterNotInstalled"))
+                                            return [False, gameversion, exe_version]
                                     elif gameversion == "ImprovedStoryline":
                                         if exe_version == "Steam":
                                             check_path = os.path.join(workpath, "data/if/map/r1m5.dds")
                                             if os.path.exists(check_path):
-                                                return [True, gameversion]
+                                                return [True, gameversion, exe_version]
                                             else:
                                                 logger.critical(f"Improved Storyline is not installed in {workpath}. Randomization aborted.")
-                                                self.showPopUp("Не обнаружен установленный Improved Storyline. Пожалуйста, выберите правильную версию игры и попробуйте снова.")
-                                                return(False, gameversion)
+                                                self.showPopUp(self.loc_string(MESSAGES, "Main", "NotImprovedStoryline"))
+                                                return(False, gameversion, exe_version)
                                         elif exe_version == "CommunityPatch":
                                             logger.critical(f"Community Patch is installed in {workpath}, but {gameversion} version expected. Randomization aborted.")
-                                            self.showPopUp("Обнаружен установленный Community Patch. Пожалуйста, выберите правильную версию игры и попробуйте снова.")
-                                            return [False, exe_version]
+                                            self.showPopUp(self.loc_string(MESSAGES, "Main", "CommunityPatchInstalled"))
+                                            return [False, gameversion, exe_version]
                                         elif exe_version == "CommunityRemaster":
                                             logger.critical(f"Community Remaster is installed in {workpath}, but {gameversion} version expected. Randomization aborted.")
-                                            self.showPopUp("Обнаружен установленный Community Remaster. Пожалуйста, выберите правильную версию игры и попробуйте снова.")
-                                            return [False, exe_version]
+                                            self.showPopUp(self.loc_string(MESSAGES, "Main", "CommunityRemasterInstalled"))
+                                            return [False, gameversion, exe_version]
                                         elif exe_version == "Unsupported":
                                             logger.warning("Unsupported game version detected. Waiting user input...")
-                                            msg = QtWidgets.QMessageBox.warning(self, "Warning", "Ваша копия игры не является русской лицензией из Steam. Желаете продолжить на свой страх и риск?\n\nВсе опции рандомизации, связанные с исполняемым файлом, будут отключены.", QtWidgets.QMessageBox.Ok|QtWidgets.QMessageBox.Cancel)
+                                            msg = QtWidgets.QMessageBox.warning(self, "Warning", self.loc_string(MESSAGES, "Main", "NotSteamLicense"), QtWidgets.QMessageBox.Ok|QtWidgets.QMessageBox.Cancel)
                                             if msg == QtWidgets.QMessageBox.Ok:
                                                 logger.info("User proceeded randomization.")
-                                                return [True, gameversion]
+                                                check_path = os.path.join(workpath, "data/if/map/r1m5.dds")
+                                                if os.path.exists(check_path):
+                                                    return [True, gameversion, exe_version]
+                                                else:
+                                                    logger.critical(f"Improved Storyline is not installed in {workpath}. Randomization aborted.")
+                                                    self.showPopUp(self.loc_string(MESSAGES, "Main", "NotImprovedStoryline"))
+                                                    return(False, gameversion, exe_version)
                                             else:
                                                 logger.info("Randomization aborted by user.")
-                                                return [False, gameversion]
+                                                return [False, gameversion, exe_version]
                                 else:
-                                    self.showPopUp(f"Ошибка доступа: {exe_name}")
-                                    return [False, None]
+                                    self.showPopUp(f"{self.loc_string(MESSAGES, 'Main', 'PermissionErrorExe3')} {exe_name}")
+                                    return [False, None, None]
                             else:
                                 logger.critical(f"{exe_name} is missing in {workpath}")
-                                self.showPopUp(f"{exe_name} отсутствует в {workpath}.\n\nУбедитесь, что исполняемый файл вашей версии игры имеет корректное название.")
-                                return [False, None]
+                                self.showPopUp(f"{exe_name} {self.loc_string(MESSAGES, 'Main', 'MissingExe')}")
+                                return [False, None, None]
                     else:
-                        return [False, None]
+                        return [False, None, None]
                 else:
-                    return [False, None]
+                    return [False, None, None]
             else:
                 logger.critical(f"Path {workpath} does not exists.")
-                self.addMessage("Введённый путь не существует.\nРандомизация прервана.\n")
-                return [False, None]
+                self.addMessage(self.loc_string(MESSAGES, "Main", "PathDoesNotExists"))
+                return [False, None, None]
 
         else:
             logger.critical(f"Path {workpath} does not exists.")
-            self.addMessage("Введённый путь не существует.\nРандомизация прервана.\n")
-            return False
+            self.addMessage(self.loc_string(MESSAGES, "Main", "PathDoesNotExists"))
+            return [False, None, None]
     
     def StartRandomizing(self):
         self.clearTextLog()
+        self.lang_changed()
 
         if self.rbtn_steam.isChecked():
             gameversion = "Steam"
@@ -394,16 +449,18 @@ class RandomizerApp(QtWidgets.QMainWindow, design.Ui_ExMachinaRandomizer):
         access = self.validateUserInput(workpath, gameversion)
         if access[0]:
             gameversion = access[1]
+            exe_version = access[2]
             logger.info("Game version checked.")
-            self.addMessage("Введённые данные проверены.")
+            self.addMessage(self.loc_string(MESSAGES, "Main", "CorrectInput"))
             self.btnStart.setEnabled(False)
             self._closable = False
             self.btnStart.repaint()
-            randomizer.main_randomizing_start(self, logger, MAIN_PATH, gameversion, workpath, settings)
+            language = self.LangSelect.currentData()
+            randomizer.main_randomizing_start(self, logger, MAIN_PATH, gameversion, workpath, settings, language, MESSAGES, exe_version)
             self.btnStart.setEnabled(True)
             self._closable = True
         else:
-            self.in_logger.append("Рандомизация прервана.")
+            self.in_logger.append(self.loc_string(MESSAGES, "Main", "RandomAborted"))
 
     def ImportSetting(self, setting):
         os.chdir(MAIN_PATH)
@@ -414,31 +471,32 @@ class RandomizerApp(QtWidgets.QMainWindow, design.Ui_ExMachinaRandomizer):
 
             checkbox = settings["Settings"]["Checkboxes"]
             checkbox_values = [checkbox["Icons"]["Maps"], checkbox["Icons"]["Digits"], 
-                            checkbox["Icons"]["Splashes"], checkbox["Icons"]["DialogsBackground"], 
-                            checkbox["Icons"]["Clans"], checkbox["Icons"]["Interface"], 
-                            checkbox["Icons"]["Radar"], checkbox["Icons"]["GunsAndWares"], 
-                            checkbox["Icons"]["CabinsAndBaskets"], checkbox["Icons"]["Smartcursor"], 
-                            checkbox["Text"]["Names"], checkbox["Text"]["Dialogs"], 
-                            checkbox["Text"]["QuestInfoGlobal"], checkbox["Text"]["BindNames"], 
-                            checkbox["Text"]["FadingMsgs"], checkbox["Text"]["Interface"], 
-                            checkbox["Text"]["BooksAndHistory"], checkbox["Text"]["Descriptions"], 
-                            checkbox["Sounds"]["Music"], checkbox["Sounds"]["Speech"], 
-                            checkbox["Sounds"]["RadioSounds"], checkbox["Sounds"]["Crash"], 
-                            checkbox["Sounds"]["Explosion"], checkbox["Sounds"]["Engine"], 
-                            checkbox["Sounds"]["Horn"], checkbox["Sounds"]["Hit"], 
-                            checkbox["Sounds"]["Shooting"], checkbox["Sounds"]["Other"], 
-                            checkbox["Models"]["Static"], checkbox["Models"]["Towns"], 
-                            checkbox["Models"]["Guns"], checkbox["Models"]["Trees"], 
-                            checkbox["Models"]["BarNpc"], checkbox["Models"]["Wheels"], 
-                            checkbox["Models"]["Humans"], checkbox["Models"]["Dwellers"], 
-                            checkbox["Textures"]["Surround"], checkbox["Textures"]["Masks"], 
-                            checkbox["Textures"]["VehicleSkins"], checkbox["Textures"]["Lightmaps"], 
-                            checkbox["Textures"]["WeatherTex"], checkbox["Textures"]["Tiles"], 
-                            checkbox["Other"]["Weather"], checkbox["Other"]["Landscape"], 
-                            checkbox["Other"]["Prototypes"], checkbox["Other"]["VehicleGuns"], 
-                            checkbox["Exe"]["ModelsRender"], checkbox["Exe"]["Gravity"], 
-                            checkbox["Exe"]["FOV"], checkbox["Exe"]["ArmorColor"]]
-
+                               checkbox["Icons"]["Splashes"], checkbox["Icons"]["DialogsBackground"], 
+                               checkbox["Icons"]["Clans"], checkbox["Icons"]["Interface"], 
+                               checkbox["Icons"]["Radar"], checkbox["Icons"]["GunsAndWares"], 
+                               checkbox["Icons"]["CabinsAndBaskets"], checkbox["Icons"]["Smartcursor"], 
+                               checkbox["Text"]["Names"], checkbox["Text"]["Dialogs"], 
+                               checkbox["Text"]["QuestInfoGlobal"], checkbox["Text"]["BindNames"], 
+                               checkbox["Text"]["FadingMsgs"], checkbox["Text"]["Interface"], 
+                               checkbox["Text"]["BooksAndHistory"], checkbox["Text"]["Descriptions"], 
+                               checkbox["Sounds"]["Music"], checkbox["Sounds"]["Speech"], 
+                               checkbox["Sounds"]["RadioSounds"], checkbox["Sounds"]["Crash"], 
+                               checkbox["Sounds"]["Explosion"], checkbox["Sounds"]["Engine"], 
+                               checkbox["Sounds"]["Horn"], checkbox["Sounds"]["Hit"], 
+                               checkbox["Sounds"]["Shooting"], checkbox["Sounds"]["Other"], 
+                               checkbox["Models"]["Static"], checkbox["Models"]["Towns"], 
+                               checkbox["Models"]["Guns"], checkbox["Models"]["Trees"], 
+                               checkbox["Models"]["BarNpc"], checkbox["Models"]["Wheels"], 
+                               checkbox["Models"]["Humans"], checkbox["Models"]["Dwellers"], 
+                               checkbox["Textures"]["Surround"], checkbox["Textures"]["Masks"], 
+                               checkbox["Textures"]["VehicleSkins"], checkbox["Textures"]["Lightmaps"], 
+                               checkbox["Textures"]["WeatherTex"], checkbox["Textures"]["Tiles"], 
+                               checkbox["Other"]["Weather"], checkbox["Other"]["Landscape"], 
+                               checkbox["Other"]["Prototypes"], checkbox["Other"]["PlayerVehicle"],
+                               checkbox["Other"]["VehicleGuns"], checkbox["Exe"]["ModelsRender"], 
+                               checkbox["Exe"]["Gravity"], checkbox["Exe"]["FOV"], 
+                               checkbox["Exe"]["ArmorColor"]]
+   
             checkboxes = [self.icons_1, self.icons_2, self.icons_3, 
                         self.icons_4, self.icons_5, self.icons_6,
                         self.icons_7, self.icons_8, self.icons_9, 
@@ -454,8 +512,8 @@ class RandomizerApp(QtWidgets.QMainWindow, design.Ui_ExMachinaRandomizer):
                         self.textures_1, self.textures_2, self.textures_3, 
                         self.textures_4, self.textures_5, self.textures_6, 
                         self.other_1, self.other_2, self.other_3, 
-                        self.other_4, self.exe_1, self.exe_2, 
-                        self.exe_3, self.exe_4]
+                        self.other_3_1, self.other_4, self.exe_1, 
+                        self.exe_2, self.exe_3, self.exe_4]
 
             index = 0
             for chkbx in checkboxes:
@@ -492,6 +550,11 @@ class RandomizerApp(QtWidgets.QMainWindow, design.Ui_ExMachinaRandomizer):
                 return self.rbtn_cr
             elif rb == "ImprovedStoryline":
                 return self.rbtn_isl
+        
+        elif setting == "Language":
+            lang = settings["Settings"]["LastLanguage"]
+            if lang:
+                return lang
                 
         elif setting == "ReadOnly":
             return settings
@@ -501,7 +564,7 @@ def ResourcesCheck():
     logger.info(f"Starting resources validation...")
 
     resources_path =  os.path.join(MAIN_PATH, "resources")
-    necessary_resources_files = ["data", "manifests", "settings.yaml", "randomizer.ico"]
+    necessary_resources_files = ["data", "localizations", "manifests", "settings.yaml", "randomizer.ico"]
 
     valid = True
 

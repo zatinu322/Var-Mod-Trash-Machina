@@ -26,11 +26,11 @@ def set_yaml(mainwindow, windowpath, gameversion):
             return config
     except FileNotFoundError:
         main.logger.critical(f"SET_YAML: FileNotFoundError: {manifest_path}")
-        mainwindow.showPopUp(f" Файл {manifest_path} не найден.")
+        mainwindow.showPopUp(f"{loc_string('Randomizer', 'FileNotFound')} {manifest_path}")
         return False
     except:
         main.logger.critical(f"SET_YAML: CRITICAL: {manifest_path}")
-        mainwindow.showPopUp(f"Невозможно загрузить {manifest_path}")
+        mainwindow.showPopUp(f"{loc_string('Randomizer', 'UnableToLoad')} {manifest_path}")
         return False
     
 def get_yaml(yaml, category, subcategory, sub1=None, sub2=None, sub3=None, sub4=None):
@@ -396,14 +396,24 @@ def generate_color():
     return hex_number
 
 def show_success(message, mainwindow):
-    mainwindow.addMessage(f"ЗАВЕРШЕНО:\n{message}")
+    mainwindow.addMessage(f"{loc_string('Randomizer', 'CompletionMessage')}\n{message}")
     main.logger.info(f"COMPLETED: {message}")
 
 def show_failure(message, mainwindow):
-    mainwindow.addMessage(f"ОШИБКА:\n{message}")
+    mainwindow.addMessage(f"{loc_string('Randomizer', 'FailureMessage')}\n{message}")
     main.logger.error(f"FAILURE: {message}")
 
-def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath, settings):
+def loc_string(module, string):
+    localized_string = MESSAGES[module][string][LANGUAGE]
+    return localized_string
+
+def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath, settings, language, messages, exe_version):
+
+    global MESSAGES
+    global LANGUAGE
+
+    MESSAGES = messages
+    LANGUAGE = language
 
     critical_stop = 0
 
@@ -428,21 +438,23 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
                         ["Textures", "Surround"], ["Textures", "Masks"], ["Textures", "VehicleSkins"], 
                         ["Textures", "Lightmaps"], ["Textures", "WeatherTex"], ["Textures", "Tiles"], 
                         ["Other", "Weather"], ["Other", "Landscape"], ["Other", "Prototypes"], 
-                        ["Other", "VehicleGuns"], ["Exe", "ModelsRender"], ["Exe", "Gravity"], 
-                        ["Exe", "FOV"], ["Exe", "ArmorColor"]]
+                        ["Other", "PlayerVehicle"], ["Other", "VehicleGuns"], ["Exe", "ModelsRender"], 
+                        ["Exe", "Gravity"], ["Exe", "FOV"], ["Exe", "ArmorColor"]]
     log_settings = settings["Settings"]["Checkboxes"]
             
     logger.info("Starting randomization...")
     logger.info(f"Game path: {workpath}")
     logger.info(f"Game version: {gameversion}")
+    logger.info(f"Exe version: {exe_version}")
     logger.info(f"Options:")
 
-    mainwindow.addMessage(f"Путь: {workpath}")
-    mainwindow.addMessage(f"Версия игры: {gameversion}")
+    mainwindow.addMessage(f"{loc_string('Randomizer', 'Path')} {workpath}")
+    mainwindow.addMessage(f"{loc_string('Randomizer', 'GameVersion')} {gameversion}")
+    mainwindow.addMessage(f"{loc_string('Randomizer', 'ExeVersion')} {exe_version}")
 
     for keys in log_strings_list:
         logger.info(f"{keys[0]} : {keys[1]} = {log_settings[keys[0]][keys[1]]}")
-    mainwindow.addMessage("Начало рандомизации...")
+    mainwindow.addMessage(loc_string("Randomizer", "RandomStart"))
 
     yaml_file = set_yaml(mainwindow, windowpath, gameversion)
 
@@ -451,7 +463,7 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
         try:
             mix_folder_path = yaml_file["MixingDir"]
         except KeyError:
-            mainwindow.showPopUp(f"Невозможно создать необходимые файлы.\n\nПодробная информация в randomizer.log")
+            mainwindow.showPopUp(loc_string("Randomizer", "UnableToCreateFiles"))
             logger.critical(f"Unable to read YAML configuration file. Randomization aborted.")
             mix_folder_path = False
             critical_stop = 1
@@ -468,7 +480,7 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
                 main.os.mkdir(mix_folder_fullpath)
                 logger.info(f"Created mixing folder at {mix_folder_fullpath}")
             except:
-                mainwindow.showPopUp(f"Невозможно создать необходимые файлы.\n\nПодробная информация в randomizer.log")
+                mainwindow.showPopUp(loc_string("Randomizer", "UnableToCreateFiles"))
                 critical_stop = 1
     else:
         critical_stop = 1
@@ -480,8 +492,9 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
         lua_dest_path = get_yaml(yaml_file, "LuaRandom", "DestPath")
         triggers_path = get_yaml(yaml_file, "LuaRandom", "TriggersDestPath")
         lua_res_path = get_yaml(yaml_file, "LuaRandom", "ResourcesPath")
+        names_count = 0
 
-        if current_dir(triggers_path, workpath):
+        if current_dir(triggers_path, workpath): # copying triggers to scripts folder
             if copy(lua_names[3], lua_dest_path, workpath):
                 if current_dir(lua_res_path, main.os.path.join(windowpath, "resources")):
                     for name in lua_names:
@@ -494,10 +507,13 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
                                     logger.info(f"Reload set to true. Reloading...")
                                     if copy(name, lua_dest_path, workpath):
                                         logger.info(f"Reloaded {name} successfully")
+                                        if names_count == 3:
+                                            mainwindow.addMessage(loc_string("Randomizer", "LuaRestored"))
+                                        names_count += 1
                                     else:
                                         critical_stop = 1
                                         logger.critical(f"Unable to copy {name} to {lua_dest_path}. Randomization aborted.")
-                                        mainwindow.showPopUp("Копирование необходимых файлов невозможно.\n\nПодробная информация в randomizer.log")
+                                        mainwindow.showPopUp(loc_string("Randomizer", "LuaNotRestored"))
                                         break
                             else:
                                 if copy(name, lua_dest_path, workpath):
@@ -505,20 +521,20 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
                                 else:
                                     critical_stop = 1
                                     logger.critical(f"Unable to copy {name} to {lua_dest_path}. Randomization aborted.")
-                                    mainwindow.showPopUp("Копирование необходимых файлов невозможно.\n\nПодробная информация в randomizer.log")
+                                    mainwindow.showPopUp(loc_string("Randomizer", "UnableToCopyFiles"))
                                     break
                 else:
                     critical_stop = 1
                     logger.critical(f"{lua_res_path} is not avaliable. Randomization aborted.")
-                    mainwindow.showPopUp("Копирование необходимых файлов невозможно.\n\nПодробная информация в randomizer.log")
+                    mainwindow.showPopUp(loc_string("Randomizer", "UnableToCopyFiles"))
             else:
                 critical_stop = 1
                 logger.critical(f"Unable to copy {lua_names[3]}. Randomization aborted.")
-                mainwindow.showPopUp("Копирование необходимых файлов невозможно.\n\nПодробная информация в randomizer.log")
+                mainwindow.showPopUp(loc_string("Randomizer", "UnableToCopyFiles"))
         else:
             critical_stop = 1
             logger.critical(f"{triggers_path} is not avaliable. Randomization aborted.")
-            mainwindow.showPopUp("Копирование необходимых файлов невозможно.\n\nПодробная информация в randomizer.log")
+            mainwindow.showPopUp(loc_string("Randomizer", "UnableToCopyFiles"))
     
     if critical_stop == 0:
         if copy_folder(main.os.path.join(windowpath, "resources/data/maps"), main.os.path.join(workpath, "data/maps")):
@@ -526,20 +542,20 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
                 if gameversion == "ImprovedStoryline":
                     copy_folder(main.os.path.join(windowpath, "resources/data/maps_isl"), main.os.path.join(workpath, "data/maps"))
                 if copy(lua_names[3], triggers_path, workpath):
-                    mainwindow.addMessage("Необходимые файлы успешно скопированы.")
+                    mainwindow.addMessage(loc_string("Randomizer", "FilesCopied"))
                     logger.info("Necessary files successfully copied.")
                 else:
                     critical_stop = 1
                     logger.critical("Unable to copy necessary files. Randomization aborted.")
-                    mainwindow.showPopUp("Копирование необходимых файлов невозможно.\n\nПодробная информация в randomizer.log")
+                    mainwindow.showPopUp(loc_string("Randomizer", "UnableToCopyFiles"))
             else:
                 critical_stop = 1
                 logger.critical("Unable to copy necessary files. Randomization aborted.")
-                mainwindow.showPopUp("Копирование необходимых файлов невозможно.\n\nПодробная информация в randomizer.log")
+                mainwindow.showPopUp(loc_string("Randomizer", "UnableToCopyFiles"))
         else:
             critical_stop = 1
             logger.critical("Unable to copy necessary files. Randomization aborted.")
-            mainwindow.showPopUp("Копирование необходимых файлов невозможно.\n\nПодробная информация в randomizer.log")
+            mainwindow.showPopUp(loc_string("Randomizer", "UnableToCopyFiles"))
 
     if critical_stop == 0:
         # Icons: Maps
@@ -618,7 +634,7 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
                     else:
                         show_failure("Icons : Digits: Hp_and_fuel_bars: File_1", mainwindow)
             else:
-                logger.info("SKIPPED IN YAML:\nIcons : Digits: Hp_and_fuel_bars")
+                logger.info("SKIPPED IN YAML: Icons : Digits: Hp_and_fuel_bars")
         else:
             logger.info("SKIPPED: Icons : Digits")
             
@@ -1089,7 +1105,7 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
 
                     for FullName in object_names_objects:
                         if "FullName" in FullName.attrib:
-                            if FullName.attrib["FullName"] != "" and FullName.attrib["FullName"] != "Дот":
+                            if FullName.attrib["FullName"] != "" and FullName.attrib["FullName"] != "Дот" and FullName.attrib["FullName"] != "Pillbox":
                                 all_names_list.append(FullName.attrib["FullName"])
             
             model_names_file = get_yaml(yaml_file, "Text", "Names", "ModelNames", "File")
@@ -1156,7 +1172,7 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
                 if object_names_tree:
                     for FullName in object_names_tree.findall("Object"):
                         if "FullName" in FullName.attrib:
-                            if FullName.attrib["FullName"] != "" and FullName.attrib["FullName"] != "Дот":
+                            if FullName.attrib["FullName"] != "" and FullName.attrib["FullName"] != "Дот" and FullName.attrib["FullName"] != "Pillbox":
                                 FullName.set("FullName", all_names_list[pl])
                                 pl += 1
                     if write(object_names_tree, object_names_file, path, workpath):
@@ -2334,34 +2350,115 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
         
         # Models: BarNpc
         if settings["Settings"]["Checkboxes"]["Models"]["BarNpc"] == True:
-            animmodels = parse(animmodels_path, workpath, animmodels_file)
-            if animmodels:
-                animmodels_root = animmodels.getroot()
-                animmodels_model = animmodels_root.findall("model")
+            BarNPC_Dyncs_name = get_yaml(yaml_file, "Models", "BarNpc", "DynamicScene")
+            BarNPC_strings_name = get_yaml(yaml_file, "Models", "BarNpc", "Strings")
+            BarNPC_paths = get_yaml(yaml_file, "Models", "BarNpc", "Paths")
+            BarNPCs_dynsc_list = []
+            BarNPCs_strings_list = []
 
-                mixmmasks_list = get_yaml(yaml_file, "Models", "BarNpc", "Files")
+            # NPC prototypes in dynamiscene.xml
 
-                for model in mixmmasks_list:
-                        for id in animmodels_model:
-                            if "id" in id.attrib:
-                                if model == id.attrib["id"]:
-                                    id.set("id", "PLACEHOLDER_MASKS")
-                
-                random.shuffle(mixmmasks_list)
+            for path in BarNPC_paths:
+                BarNPC_dynsc = parse(path, workpath, BarNPC_Dyncs_name)
+                if BarNPC_dynsc:
+                    BarNPC_dynsc_root = BarNPC_dynsc.getroot()
 
-                pl = 0
-                for id in animmodels_model:
-                        if "id" in id.attrib:
-                            if "PLACEHOLDER_MASKS" == id.attrib["id"]:
-                                id.set("id", mixmmasks_list[pl])
-                                pl += 1
-                
-                if write(animmodels, animmodels_file, animmodels_path, workpath):
-                    show_success("Models : BarNpc", mainwindow)
-                else:
-                    show_failure("Models : BarNpc", mainwindow)
-            else:
-                show_failure("Models : BarNpc", mainwindow)
+                    for object in BarNPC_dynsc_root.iter("Object"):
+                        attr = object.attrib["Prototype"]
+                        if attr == "NPC":
+                            NPCview = []
+                            if "skin" in object.attrib:
+                                NPCview.append(object.attrib["skin"])
+                            else:
+                                NPCview.append("0")
+
+                            if "cfg" in object.attrib:
+                                NPCview.append(object.attrib["cfg"])
+                            else:
+                                NPCview.append("0")
+
+                            NPCview.append(object.attrib["ModelName"])
+
+                            BarNPCs_dynsc_list.append(NPCview)
+                    
+            random.shuffle(BarNPCs_dynsc_list)
+
+            pl = 0
+            for path in BarNPC_paths:
+                BarNPC_dynsc = parse(path, workpath, BarNPC_Dyncs_name)
+                if BarNPC_dynsc:
+                    BarNPC_dynsc_root = BarNPC_dynsc.getroot()
+
+                    for object in BarNPC_dynsc_root.iter("Object"):
+                        attr = object.attrib["Prototype"]
+                        if attr == "NPC":
+
+                            object.set("skin", BarNPCs_dynsc_list[pl][0])
+
+                            object.set("cfg", BarNPCs_dynsc_list[pl][1])
+
+                            object.set("ModelName", BarNPCs_dynsc_list[pl][2])
+
+                            pl += 1
+                    
+                    if write(BarNPC_dynsc, BarNPC_Dyncs_name, path, workpath):
+                        show_success(f"Models : BarNpc : DynamicScene ({path[len(path)-5:len(path)-1]})", mainwindow)
+                    else:
+                        show_failure(f"Models : BarNpc : DynamicScene ({path[len(path)-5:len(path)-1]})", mainwindow)
+            
+            # NPC models in strings.xml
+
+            for path in BarNPC_paths:
+                BarNPC_strings = parse(path, workpath, BarNPC_strings_name)
+                if BarNPC_strings:
+                    BarNPC_strings_root = BarNPC_strings.getroot()
+
+                    for string in BarNPC_strings_root.findall("string"):
+                        if "modelName" in string.attrib:
+                            NPCview = []
+
+                            if "modelCfg" in string.attrib:
+                                NPCview.append(string.attrib["modelCfg"])
+                            else:
+                                NPCview.append("0")
+
+                            if "modelSkin" in string.attrib:
+                                NPCview.append(string.attrib["modelSkin"])
+                            else:
+                                NPCview.append("0")
+
+                            NPCview.append(string.attrib["modelName"])
+
+                            BarNPCs_strings_list.append(NPCview)
+
+            random.shuffle(BarNPCs_strings_list)
+
+            pl = 0
+            for path in BarNPC_paths:
+                BarNPC_strings = parse(path, workpath, BarNPC_strings_name)
+                if BarNPC_strings:
+                    BarNPC_strings_root = BarNPC_strings.getroot()
+
+                    for string in BarNPC_strings_root.findall("string"):
+                        if "modelName" in string.attrib:
+                            if BarNPCs_strings_list[pl][0] != "0":
+                                string.set("modelCfg", BarNPCs_strings_list[pl][0])
+                            elif "modelCfg" in string.attrib:
+                                string.attrib.pop("modelCfg", None)
+
+                            if BarNPCs_strings_list[pl][1] != "0":
+                                string.set("modelSkin", BarNPCs_strings_list[pl][1])
+                            elif "modelSkin" in string.attrib:
+                                string.attrib.pop("modelSkin", None)
+
+                            string.set("modelName", BarNPCs_strings_list[pl][2])
+
+                            pl += 1
+                    
+                    if write(BarNPC_strings, BarNPC_strings_name, path, workpath):
+                        show_success(f"Models : BarNpc : Strings ({path[len(path)-5:len(path)-1]})", mainwindow)
+                    else:
+                        show_failure(f"Models : BarNpc : Strings ({path[len(path)-5:len(path)-1]})", mainwindow)
         else:
             logger.info("SKIPPED: Models : BarNpc")
         
@@ -3300,7 +3397,7 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
                         if multiple_mix == False:
                             logger.debug(f"Multiple landscape randomizing is allowed.")
                         else:
-                            mainwindow.addMessage(f"Other : Landscape:\nЗапрещено повторное искажение ландшафта в {path}")
+                            mainwindow.addMessage(f"Other : Landscape:\n{loc_string('Randomizer', 'LandscapeProhibition')} {path}")
                             logger.warning(f"Landscape randomizing in {path} is restricted in YAML.")
                             abortLandscape = True
                     else:
@@ -3325,7 +3422,7 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
                             with open(mixland_name, "wb") as stream:
                                 stream.write(struct.pack(fmt, *data))
                                 displaceCount += 1
-                                logger.debug(f"SUCCESS: {mixland_name} in {path}...")
+                                show_success(f"Other : Landscape ({path[10:14]})", mainwindow)
                             
                         except FileNotFoundError:
                             logger.error(f"Other : Landscape: FileNotFoundError: {mixland_name}: {path}")
@@ -3343,7 +3440,9 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
                     if backup_name in main.os.listdir():
                         remove(backup_name, backup_path, workpath)
             
-            if displaceCount == 11:
+            if displaceCount == 11 and gameversion == "Steam":
+                show_success("Other : Landscape", mainwindow)
+            elif displaceCount == 14 and gameversion == "ImprovedStoryline":
                 show_success("Other : Landscape", mainwindow)
         else:
             logger.info("SKIPPED: Other : Landscape")
@@ -3372,18 +3471,28 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
             if settings["Settings"]["Checkboxes"]["Other"]["Prototypes"]:
                 server_var_prots = get_yaml(yaml_file, "LuaRandom", "Variables", "Prototypes", "server.lua")
                 debug_var_prots = get_yaml(yaml_file, "LuaRandom", "Variables", "Prototypes", "debug.lua")
-                triggers_var_prots = get_yaml(yaml_file, "LuaRandom", "Variables", "Prototypes", "triggers.xml")
 
                 if turn_on_lua(lua_names[0], server_var_prots, workpath, yaml_file):
                     if turn_on_lua(lua_names[1], debug_var_prots, workpath, yaml_file):
-                        if turn_on_lua(lua_names[3], triggers_var_prots, workpath, yaml_file):
                             show_success("Other : Prototypes", mainwindow)
-                        else:
-                            show_failure("Other : Prototypes", mainwindow)
+                    else:
+                        show_failure("Other : Prototypes", mainwindow)
             else:
                 logger.info("SKIPPED: Other : Prototypes")
             
-            # Other: Prototypes
+            # Other: PlayerVehicle
+            if settings["Settings"]["Checkboxes"]["Other"]["PlayerVehicle"]:
+                triggers_var_prots = get_yaml(yaml_file, "LuaRandom", "Variables", "PlayerVehicle", "triggers.xml")
+
+                if turn_on_lua(lua_names[3], triggers_var_prots, workpath, yaml_file):
+                    show_success("Other : PlayerVehicle", mainwindow)
+                else:
+                    show_failure("Other : PlayerVehicle", mainwindow)
+            
+            else:
+                logger.info("SKIPPED: Other : PlayerVehicle")
+            
+            # Other: VehicleGuns
             if settings["Settings"]["Checkboxes"]["Other"]["VehicleGuns"]:
                 server_var_protguns = get_yaml(yaml_file, "LuaRandom", "Variables", "VehicleGuns", "server.lua")
                 debug_var_protguns = get_yaml(yaml_file, "LuaRandom", "Variables", "VehicleGuns", "debug.lua")
@@ -3401,9 +3510,9 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
             copy(lua_names[3], triggers_path, workpath)
         
         # Exe (by Seel: https://github.com/Zvetkov)
-        if gameversion != "Unsupported":
-            if any([settings["Settings"]["Checkboxes"]["Exe"]["ArmorColor"], settings["Settings"]["Checkboxes"]["Exe"]["FOV"],
-                    settings["Settings"]["Checkboxes"]["Exe"]["Gravity"], settings["Settings"]["Checkboxes"]["Exe"]["ModelsRender"]]):
+        if any([settings["Settings"]["Checkboxes"]["Exe"]["ArmorColor"], settings["Settings"]["Checkboxes"]["Exe"]["FOV"],
+                settings["Settings"]["Checkboxes"]["Exe"]["Gravity"], settings["Settings"]["Checkboxes"]["Exe"]["ModelsRender"]]):
+            if exe_version != "Unsupported":
                 hta_name = yaml_file["Exe"]
 
                 if current_dir("", workpath):
@@ -3478,7 +3587,7 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
                                 logger.info(f"Exe: FOV: {RAND_ASPECT}")
                                 mainwindow.addMessage(f"Exe: FOV: {RAND_ASPECT}")
                             else:
-                                mainwindow.showPopUp("Опция рандомизации FOV временно недоступна для Community Patch и Community Remaster", "warning")
+                                mainwindow.showPopUp(loc_string("Randomizer", "FOVInavaliable"), "warning")
                         if settings["Settings"]["Checkboxes"]["Exe"]["ArmorColor"]:
                             offsets_exe.update(sexy_armor_color)
 
@@ -3492,20 +3601,22 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
                                         f.write(struct.pack("<L", int(offsets_exe[offset], base=16)))
                                     elif type(offsets_exe[offset]) == float:
                                         f.write(struct.pack("f", offsets_exe[offset]))
+                                
+                                show_success("Exe", mainwindow)
                         except PermissionError:
                             logger.error(f"Exe: Permission Error: {hta_name}")
                             show_failure("Exe", mainwindow)
                         except:
                             logger.error(f"Exe: ERROR: {hta_name}")
                             show_failure("Exe", mainwindow)
-
-                        show_success("Exe", mainwindow)
                     else:
                         logger.error(f"Exe: {hta_name} not found in {workpath}")
             else:
-                logger.info("SKIPPED: Exe")
+                mainwindow.addMessage(f"Exe:\n{loc_string('Randomizer', 'InvalidVersionNoRandom')}")
+                logger.warning("Executable randomization is impossible due to an incorrect version of the game.")
         else:
-            mainwindow.addMessage("Exe:\nРандомизация невозможна из-за некорректной версии игры.")
+            logger.info("SKIPPED: Exe")
+            
             
         if current_dir("", workpath):
             try:
@@ -3532,17 +3643,22 @@ def main_randomizing_start(mainwindow, logger, windowpath, gameversion, workpath
             str_errors_count = str(errors_count)
         
             ending = str_errors_count[len(str_errors_count)-1]
-            if ending == "1":
-                mistakes = "ошибка"
-            elif ending == "2" or ending == "3" or ending == "4":
-                mistakes = "ошибки"
-            else:
-                mistakes = "ошибок"
+            if language == "rus":
+                if ending == "1" and str_errors_count[len(str_errors_count)-2:len(str_errors_count)] != "11":
+                    mistakes = "ошибка"
+                elif ending == "2" or ending == "3" or ending == "4":
+                    mistakes = "ошибки"
+                else:
+                    mistakes = "ошибок"
+
+                mainwindow.showPopUp(f"{loc_string('Randomizer', 'TotalMistakes1')} {errors_count} {mistakes}.\n\n{loc_string('Randomizer', 'SeeLog')}", "warning")
+            elif language == "eng":
+                mainwindow.showPopUp(f"{errors_count} {loc_string('Randomizer', 'TotalMistakes1')}\n\n{loc_string('Randomizer', 'SeeLog')}", "warning")
         
-            mainwindow.showPopUp(f"Во время рандомизации возникло {errors_count} {mistakes}.\n\nПодробности в randomizer.log", "warning")
             mainwindow.errors.setText(str(new_errors))
-            mainwindow.addMessage("Рандомизация завершена.")
-            mainwindow.addMessage(f"Во время рандомизации возникло {errors_count} {mistakes}.")
+            mainwindow.addMessage(loc_string("Randomizer", "RandomCompletion"))
+            mainwindow.addMessage(f"{loc_string('Randomizer', 'TotalMistakes1')} {errors_count} {mistakes}.")
+            logger.warning(f"{str_errors_count} errors occured while randomization.")
         else:
-            mainwindow.addMessage("Рандомизация успешно завершена.")
+            mainwindow.addMessage(loc_string("Randomizer", "RandomSuccessCompletion"))
             logger.info("Randomization successfully completed.")

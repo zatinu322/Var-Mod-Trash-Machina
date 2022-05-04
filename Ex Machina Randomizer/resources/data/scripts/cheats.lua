@@ -166,6 +166,7 @@ function giveguns (Name)
 	else
 		veh=getObj(Name)
 	end
+	local rand_guns = 0
 	local parts={"CABIN_","BASKET_","CHASSIS_"}
 	local slots={"SMALL_","BIG_","GIANT_","SIDE_"}
 	local guns={"GUN","GUN_0","GUN_1","GUN_2"}
