@@ -2367,6 +2367,19 @@ Models:
         - r3_t_bush_flower3
   # Модели NPC в диалогах
   BarNpc:
+    DynamicScene: dynamicscene.xml
+    Strings: strings.xml
+    Paths:
+      - data/maps/r1m1/
+      - data/maps/r1m2/
+      - data/maps/r1m3/
+      - data/maps/r1m4/
+      - data/maps/r2m1/
+      - data/maps/r2m2/
+      - data/maps/r3m1/
+      - data/maps/r3m2/
+      - data/maps/r4m1/
+      - data/maps/r4m2/
     Files:
       - mask_axel
       - mask_ben
@@ -3771,7 +3784,7 @@ Other:
       - data/maps/r4m2/
     BackupPath: data/maps/
     File: displace.bin
-    PreventMultiple: True
+    PreventMultiple: False
 # Динамический рандом
 # (синий цвет в окне опций)
 LuaRandom:
@@ -3789,7 +3802,8 @@ LuaRandom:
     Prototypes:
       server.lua: rand_team
       debug.lua: rand_vehex
-      triggers.xml: rand_vehex
+    PlayerVehicle:
+      triggers.xml: rand_vehPlayer
     VehicleGuns:
       server.lua: rand_guns
       debug.lua: rand_guns

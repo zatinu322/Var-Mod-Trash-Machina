@@ -53,9 +53,10 @@
 
 			if not( IsQuestTaken("Buyer_Quest1")) and not( IsQuestComplete("Buyer_Quest1")) then
 				local rand_guns = 0
-				local rand_vehex = 0
-				if rand_vehex == 1 then
+				local rand_vehPlayer = 0
+				if rand_vehPlayer == 1 then
 					AddPlayerVehicle(prot_random())
+					GetPlayerVehicle():setGodMode(1)
 				end
 				if rand_guns == 1 then
 					giveguns()

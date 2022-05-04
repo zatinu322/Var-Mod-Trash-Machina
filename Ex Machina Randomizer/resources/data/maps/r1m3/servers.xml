@@ -5,9 +5,17 @@
 		<Item
 			id="tunnel_gate"
 			file="data\models\AnimModels.xml" />
+		
+		<Item
+			id="boss04dronegun"
+			file="data\models\AnimModels.xml"/>
 
 		<Item
 			id="parsel"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="mask_father"
 			file="data\models\AnimModels.xml" />
 
 		<Item
@@ -15,15 +23,47 @@
 			file="data\models\AnimModels.xml" />
 
 		<Item
-			id="cub"
+			id="r1_man"
 			file="data\models\AnimModels.xml" />
 
+		<Item
+			id="r1_woman"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="r2_man"
+			file="data\models\AnimModels.xml" />
+		
+		<Item
+			id="r2_woman"
+			file="data\models\AnimModels.xml" />
+		
+		<Item
+			id="r3_man"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="r4_man"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="mask_lisa"
+			file="data\models\AnimModels.xml" />
+
+		<Item
+			id="mask_ben"
+			file="data\models\AnimModels.xml" />
+		
+		<Item
+			id="mask_axel"
+			file="data\models\AnimModels.xml" />
+		
 		<Item
 			id="mask_oracul"
 			file="data\models\AnimModels.xml" />
 
 		<Item
-			id="mask_lisa"
+			id="cub"
 			file="data\models\AnimModels.xml" />
 
 		<Item
@@ -1194,18 +1234,6 @@
 
 		<Item
 			id="laser01"
-			file="data\models\AnimModels.xml" />
-
-		<Item
-			id="r1_man"
-			file="data\models\AnimModels.xml" />
-
-		<Item
-			id="r1_woman"
-			file="data\models\AnimModels.xml" />
-
-		<Item
-			id="r2_man"
 			file="data\models\AnimModels.xml" />
 
 		<Item

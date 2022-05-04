@@ -27,6 +27,7 @@ Settings:
       Wheels: false
     Other:
       Landscape: false
+      PlayerVehicle: false
       Prototypes: false
       VehicleGuns: false
       Weather: true
@@ -58,6 +59,7 @@ Settings:
       VehicleSkins: true
       WeatherTex: true
   DebugMode: false
+  LastLanguage: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439"
   LastPath: ''
   LastVersion: Steam
   RestoreLua: false
