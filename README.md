@@ -13,20 +13,22 @@ Various Modification (сокращённо Var Mod), также известны
 
 Огромная благодарность выражается товарищам [Seel](https://github.com/Zvetkov) и [ThePlain](https://github.com/ThePlain) за неоценимую помощь и частичное участие в разработке.
 
+# **Системные требования**
+* Windows 10/11 64 bit
+* Русская steam-лицензия игры
 # **Установка**
-### **ВАЖНО!** Программа работает только на Windows 10 и 11 64bit.
 
 1. Скачайте последний релиз [отсюда](https://github.com/zatinu322/Var-Mod-Trash-Machina/releases).
 2. **Обязательно** распакуйте архив в любую директорию.
 3. Запустите _randomizer.exe_ и следуйте инструкциям внутри него.
 
-**ВАЖНО!** Если вы хотите рандомизировать нелицензионную версию Ex Machina, то переименуйте исполняемый файл игры в "hta.exe". Однако следует осознавать, что техническая поддержка в подобном случае оказываться не будет, а опции, связанные с рандомизацией исполняемого файла, будут принудительно отключены.
+**ВАЖНО!** Если вы хотите рандомизировать нелицензионную версию Ex Machina, то переименуйте исполняемый файл игры в "_hta.exe_". Однако следует осознавать, что техническая поддержка в подобном случае оказываться не будет, а опции, связанные с рандомизацией исполняемого файла, будут принудительно отключены.
 
 Помимо прочего, некоторые антивирусы могут распознать исполняемый файл программы как вредоносный. К сожалению, полностью исправить эту проблему невозможно.
 
-Вот ссылка на [VirusTotal](https://www.virustotal.com/gui/file/45253605eedff58f39a007d7ba4867df98debd5173726af68f59ed80edc48ad4), где этот файл успешно прошёл проверку большинства антивирусных систем.
+Вот ссылка на [VirusTotal](https://www.virustotal.com/gui/file/fe47dc22f0722c21b065729470d9e483f8d12af39fc7e27816961a6c32461199), где этот файл успешно прошёл проверку большинства антивирусных систем.
 
-В случае сомнений в моей порядочности, исходный код программы вы можете найти в бранче _randomizer-source_.
+В случае сомнений в моей порядочности, исходный код программы вы можете найти [здесь](https://github.com/zatinu322/Var-Mod-Trash-Machina/tree/randomizer-source).
 
 # **Настройка**
 ## 1. **Путь**
@@ -49,7 +51,7 @@ Various Modification (сокращённо Var Mod), также известны
 **ВНИМАНИЕ!** По техническим причинам функция рандомизации FOV для Community Remaster временно отключена.
 
 ## 3. **Версия игры**
-Затем выберите версию игры. Пока что поддерживаются только лицензия Steam 1.02 и Improved Storyline. В дальнейшем будет введена поддержка Community Patch и Community Remaster.
+Затем выберите версию игры. Пока что поддерживаются только русская steam-лицензия и [Improved Storyline v1.0.5.3](https://github.com/zatinu322/ImprovedStoryline). В дальнейшем будет введена поддержка [Community Patch/Remaster](https://github.com/DeusExMachinaTeam/EM-CommunityPatch).
 
 Если вы случайно выбрали не ту версию, в большинстве случаев рандомайзер обнаружит несоответсвие и сообщит вам, что вы не правы.
 ## 4. **Начните рандомизацию**
@@ -78,20 +80,22 @@ To achieve this effect, a special program was created that, depending on your se
 So far, the program is in beta test, but its main functions work fine.
 
 Many thanks are expressed to the comrades [Seel](https://github.com/Zvetkov) and [ThePlain](https://github.com/ThePlain) for their invaluable help and partial participation in the development.
+# **System Requirements**
+* Windows 10/11 64 bit
+* Russian Hard Truck Apocalypse steam license
 # **Installation**
-**ATTENTION!** The program only works on Windows 10 and 11 64bit.
 
 1. Download the latest release from [here](https://github.com/zatinu322/Var-Mod-Trash-Machina/releases).
 2. **Be sure** to unzip the archive to any directory.
 3. Run _randomizer.exe_ and follow the instructions in it.
 
- **ATTENTION!** If you want to randomize the unlicensed version of Ex Machina, then rename the game executable to "hta.exe". However, you should be aware that technical support will not be provided in such a case, and the options related to the randomization of the executable file will be forcibly disabled.
+ **ATTENTION!** If you want to randomize the unlicensed version of Ex Machina, then rename the game executable to "_hta.exe_". However, you should be aware that technical support will not be provided in such a case, and the options related to the randomization of the executable file will be forcibly disabled.
 
 Among other things, some antiviruses may recognize the program's executable file as malicious. Unfortunately, there is no way to completely fix this problem.
 
-Here's a [VirusTotal](https://www.virustotal.com/gui/file/45253605eedff58f39a007d7ba4867df98debd5173726af68f59ed80edc48ad4) link, where this file was successfully checked by most antivirus systems.
+Here's a [VirusTotal](https://www.virustotal.com/gui/file/fe47dc22f0722c21b065729470d9e483f8d12af39fc7e27816961a6c32461199) link, where this file was successfully checked by most antivirus systems.
 
-If you doubt my integrity, you can always find the source code of the program in the _randomizer-source_ branch.
+If you doubt my integrity, you can always find the source code of the program [here](https://github.com/zatinu322/Var-Mod-Trash-Machina/tree/randomizer-source).
 
 # **Settings**
 ## 1. **Path**
@@ -114,7 +118,7 @@ Blue color indicates options that randomize the game at the level of internal lu
 **ATTENTION!** For technical reasons, the FOV randomization feature for Community Remaster is temporarily disabled.
 
 ## 3. **Game version**
-Then select the version of the game. So far, only the Steam 1.02 russian license and Improved Storyline are supported. Support for Community Patch and Community Remaster will be added in the future.
+Then select the version of the game. So far, only the russian Steam license and [Improved Storyline v1.0.5.3](https://github.com/zatinu322/ImprovedStoryline) are supported. Support for [Community Patch/Remaster](https://github.com/DeusExMachinaTeam/EM-CommunityPatch) will be added in the future.
 
 If you accidentally choose the wrong version, in most cases the randomizer will detect the mismatch and tell you that you did something wrong.
 ## 4. **Start randomization**
