@@ -11,8 +11,7 @@ LOCALIZATION_PATH = Path(os.path.join(RESOURCES_PATH, "localisation.yaml"))
 SETTINGS_PATH = Path(os.path.join(RESOURCES_PATH, "settings.yaml"))
 
 REQUIRED_FILES = [
-    RESOURCES_PATH,
-    LOCALIZATION_PATH
+    RESOURCES_PATH
 ]
 
 REQUIRED_GAME_FILES = [

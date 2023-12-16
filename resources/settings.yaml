@@ -51,7 +51,7 @@ cb_weather: true
 cb_wheels: true
 game_path: K:\ExMachinaRandomizer\game
 language: rus
-pos_x: 31.0
-pos_y: 82.0
+pos_x: -1435.0
+pos_y: 86.0
 preset: p_custom
 version: cr114

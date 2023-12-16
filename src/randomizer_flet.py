@@ -280,6 +280,22 @@ def main(page: Page) -> None:
             
             page.window_destroy()
     
+    def create_error_container(message: str) -> None:
+        return Container(
+            Row(
+                controls=[
+                    Text(
+                    value=message,
+                    size=18
+                    )
+                ],
+                alignment=MainAxisAlignment.CENTER
+            ),
+            width=1320,
+            height=100,
+            bgcolor="#610606"
+        )
+    
     logger.info(f"Running {NAME} in {MAIN_PATH}")
 
     page.title = NAME
@@ -289,10 +305,6 @@ def main(page: Page) -> None:
     page.window_height = 850
 
     # page.window_resizable = False
-    
-    # le kostylue to make AlertDialog appear
-    # if except block executes
-    page.add(Container(Text()))
 
     try:
         app = RandomizerWindow(
@@ -302,22 +314,13 @@ def main(page: Page) -> None:
         main_width = 1300,
         working_width = 1280
         )
-        # removing le kostylue
-        page.controls.clear()
     except LocalisationMissingError as loc_missing:
         logger.critical(loc_missing)
-        # not using app.create_dialog
-        # because it does not exist at this moment
-        # TODO: make this method static or move it to main func
-        loc_missing_dlg = AlertDialog(
-            modal=True,
-            title=Text("Unable to load localisation info!"),
-            content = Text(loc_missing),
-            actions=[]
-        )
-        page.add(loc_missing_dlg)
-        loc_missing_dlg.open = True
+        page.add(create_error_container(loc_missing))
         page.update()
+        return
+    except Exception as exc:
+        page.add(exc)
         return
     
     page.window_prevent_close = True
