@@ -23,7 +23,11 @@ class Localisation(YamlConfig):
         self.lang = lang
         self.cur_locale = self.yaml.get(self.lang, {})
         if not self.cur_locale:
-            logger.error(f"\"{self.lang}\" key is missing in {self.path}.")
+            logger.error(f"\"{self.lang}\" language info is missing in {self.path}.")
 
     def tr(self, k: str) -> str:
-        return self.cur_locale.get(k, "null")
+        if k in self.cur_locale:
+            return self.cur_locale.get(k)
+        else:
+            logger.error(f"{k} key is missing for {self.lang} language.")
+            return k

@@ -8,13 +8,18 @@ class Validation():
     def __init__(self) -> None:
         pass
 
-    def path(self, path_to_file: str, *paths):
-        path_to_file = Path(path_to_file)
+    @staticmethod
+    def path(path_to_file: Path, *paths):
+        if not isinstance(path_to_file, Path): path_to_file
         
-        for i in paths:
-            path_to_file = Path(path_to_file) / i
+        for path in paths:
+            path_to_file = Path(path_to_file) / path
         
         return path_to_file.exists()
+    
+    def game_dir(self, path_to_dir: Path) -> bool:
+        pass
+
     
     def path_list(self, paths_list: list[str] | str):
         if isinstance(paths_list, str): paths_list = [paths_list]

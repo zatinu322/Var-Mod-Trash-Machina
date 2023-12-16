@@ -37,12 +37,7 @@ class RandomizerWindow(MainGui):
         self.page = page
         self.config = config
         self.locale = locale
-        self.validate = Validation()
         self.manifest = ""
-
-        # Add FilePicker to page overlay
-        self.get_dir_dialog = FilePicker(on_result=self.get_dir_result)
-        page.overlay.extend([self.get_dir_dialog])
 
         self.opt_column_widths = {
             (self.opt_icons, self.t_icons_row): {"rus": 160, "eng": 180},
@@ -53,6 +48,12 @@ class RandomizerWindow(MainGui):
             (self.opt_other, self.t_other_row): {"rus": 150, "eng": 135},
             (self.opt_exe, self.t_executable_row): {"rus": 185, "eng": 165}
         }
+
+        self.validate = Validation()
+
+        # Add FilePicker to page overlay
+        self.get_dir_dialog = FilePicker(on_result=self.get_dir_result)
+        page.overlay.extend([self.get_dir_dialog])
     
     def fill_versions_dd(self, versions: dict) -> None:
         for key,text in versions.items():
@@ -150,25 +151,6 @@ class RandomizerWindow(MainGui):
         self.update()
         self.page.update()
         self.expandable_options.update()
-
-    def validate_resources(self, resources_path: list[str]) -> None:
-        """
-        Validates necessary files from data.py.
-        Shows unclosable AlertDialog if any files are missing.
-        """
-
-        status, file = self.validate.path_list(resources_path)
-        if not status:
-            dlg = self.create_dialog(
-                modal = True,
-                title = "Unable to validate resources!",
-                content = f"File not found: {file}",
-                actions=[]
-            )
-            # hardcode strings here, in case localisation.yaml is not avaliable
-            self.page.dialog = dlg
-            dlg.open = True
-            self.update_app()
     
     def validate_game_path(self, game_path: str, necessary_files: list[str]) -> bool:
         status, _ = self.validate.path_list(self.validate.generate_path_list(game_path, necessary_files))
@@ -202,18 +184,18 @@ class RandomizerWindow(MainGui):
     def get_dir_result(self, e: FilePickerResultEvent) -> None:
         if e.path:
             self.game_path_tf.value = e.path
-            self.update_path_status(Path(e.path))
+            self.update_path_status()
             self.update_app()
     
     def game_path_changed(self, e: ControlEvent) -> None:
-        self.update_path_status(Path(e.data))
+        self.update_path_status()
 
-    def update_path_status(self, game_path: Path = None) -> None:
-        if not game_path:
-            if self.game_path_tf.value != "":
-                game_path = Path(self.game_path_tf.value)
-            else:
-                return None
+    def update_path_status(self) -> None:
+        if not self.game_path_tf.value:
+            self.game_path_status_t.value=""
+            return
+
+        game_path = Path(self.game_path_tf.value)
 
         validation = self.validate_game_path(game_path, REQUIRED_GAME_FILES)
         if validation:
@@ -293,7 +275,8 @@ def main(page: Page) -> None:
             ),
             width=1320,
             height=100,
-            bgcolor="#610606"
+            bgcolor="#610606",
+            border_radius=20
         )
     
     logger.info(f"Running {NAME} in {MAIN_PATH}")
@@ -305,6 +288,7 @@ def main(page: Page) -> None:
     page.window_height = 850
 
     # page.window_resizable = False
+    page.theme_mode = ThemeMode.DARK
 
     try:
         app = RandomizerWindow(
@@ -330,7 +314,6 @@ def main(page: Page) -> None:
     page.add(app)
     page.update()
 
-    app.validate_resources(REQUIRED_FILES)
     app.set_widget_connections()
     app.fill_versions_dd(SUPPORTED_VERSIONS)
     app.fill_presets_dd(PRESETS)
