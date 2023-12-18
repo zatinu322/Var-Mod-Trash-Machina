@@ -11,11 +11,11 @@ from config import Config
 from localisation import Localisation
 from validation import Validation
 from yaml_operations import YamlConfig
-from errors import LocalisationMissingError
-from data import NAME, MAIN_PATH, REQUIRED_FILES, SETTINGS_PATH, LOCALIZATION_PATH, REQUIRED_GAME_FILES, SUPPORTED_VERSIONS, PRESETS, VERSIONS_INFO
+from errors import LocalisationMissingError, RootNotFoundError, ExeMissingError, GameNotFoundError, VersionError, ManifestMissingError
+from data import NAME, MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, SUPPORTED_VERSIONS, PRESETS
 
 logging.basicConfig(filename = "randomizer.log",
-                    level = logging.INFO,
+                    level = logging.DEBUG,
                     format = "[%(levelname)s][%(asctime)s]: %(message)s", 
                     filemode= "w", 
                     datefmt="%m/%d/%Y %H:%M:%S",
@@ -37,7 +37,6 @@ class RandomizerWindow(MainGui):
         self.page = page
         self.config = config
         self.locale = locale
-        self.manifest = ""
 
         self.opt_column_widths = {
             (self.opt_icons, self.t_icons_row): {"rus": 160, "eng": 180},
@@ -152,21 +151,6 @@ class RandomizerWindow(MainGui):
         self.page.update()
         self.expandable_options.update()
     
-    def validate_game_path(self, game_path: str, necessary_files: list[str]) -> bool:
-        status, _ = self.validate.path_list(self.validate.generate_path_list(game_path, necessary_files))
-        if status:
-            return True
-        else:
-            logger.error(f"Unable to detect installed game in {game_path}")
-            return False
-    
-    def validate_executable(self):
-        pass
-    
-    def validate_settings(self):
-        if not self.validate_game_path(): return False
-        if not self.validate.executable(): return False
-    
     def create_dialog(
         self,
         modal: bool = False,
@@ -197,13 +181,21 @@ class RandomizerWindow(MainGui):
 
         game_path = Path(self.game_path_tf.value)
 
-        validation = self.validate_game_path(game_path, REQUIRED_GAME_FILES)
+        try:
+            validation, info = self.validate.game_dir(game_path)
+        except (RootNotFoundError, ExeMissingError, GameNotFoundError, VersionError):
+            validation = False
+            info = ""
+
         if validation:
             self.game_path_status_t.value = self.locale.tr("valid_path")
             self.game_path_status_t.color="green"
         else:
-            self.game_path_status_t.value = self.locale.tr("invalid_path")
             self.game_path_status_t.color="red"
+            if info == "gdp":
+                self.game_path_status_t.value = self.locale.tr("gdp_found")
+            else:
+                self.game_path_status_t.value = self.locale.tr("invalid_path")
         self.update_app()
     
     def select_or_deselect(self, e: ControlEvent):
@@ -237,9 +229,9 @@ class RandomizerWindow(MainGui):
         self.config.preset = self.dd_preset.value
         self.config.game_path = self.game_path_tf.value
         self.config.game_version = self.game_version_dd.value
-        self.config.update_config(
-            chkbxs=self.collect_chkbxs_values()
-        )
+        chkbxs = self.collect_chkbxs_values()
+        self.config.chkbxs.update(chkbxs)
+        self.config.update_config()
         
     def set_custom_preset(self, e: ControlEvent = None):
         self.dd_preset.value = "p_custom"
@@ -247,9 +239,74 @@ class RandomizerWindow(MainGui):
     
     def start_randomization(self, e: ControlEvent = None):
         self.update_config()
-        self.validate_settings
-        # self.manifest = YamlConfig("resources/manifests/manifest_steam.yaml")
-        # main_randomizer.main(self)
+
+        try:
+            validation = self.validate.settings(self.config)
+        except RootNotFoundError as no_root:
+            dlg = self.create_dialog(
+                False,
+                self.locale.tr("error"),
+                f"{self.locale.tr('game_path_missing')}\n{no_root}"
+            )
+            self.page.dialog = dlg
+            dlg.open = True
+            self.update_app()
+            return
+        except ExeMissingError as no_exe:
+            dlg = self.create_dialog(
+                False,
+                self.locale.tr("error"),
+                f"{self.locale.tr('exe_not found')}\n{no_exe}"
+            )
+            self.page.dialog = dlg
+            dlg.open = True
+            self.update_app()
+            return
+        except GameNotFoundError as no_game:
+            dlg = self.create_dialog(
+                False,
+                self.locale.tr("error"),
+                f"{self.locale.tr('not_game_dir')}\n{no_game}"
+            )
+            self.page.dialog = dlg
+            dlg.open = True
+            self.update_app()
+            return
+        except VersionError as bad_version:
+            dlg = self.create_dialog(
+                False,
+                self.locale.tr("error"),
+                f"{self.locale.tr('incorrect_version')}"
+            )
+            self.page.dialog = dlg
+            dlg.open = True
+            self.update_app()
+            return
+        except ManifestMissingError as no_manifest:
+            dlg = self.create_dialog(
+                False,
+                self.locale.tr("error"),
+                f"{self.locale.tr('manifest_missing')}\n{no_manifest}"
+            )
+            self.page.dialog = dlg
+            dlg.open = True
+            self.update_app()
+            return
+
+        if validation:
+            try:
+                main_randomizer.main(self.config)
+            except ManifestMissingError as bad_manifest:
+                dlg = self.create_dialog(
+                False,
+                self.locale.tr("error"),
+                f"{self.locale.tr('bad_manifest')}"
+                )
+                self.page.dialog = dlg
+                dlg.open = True
+                self.update_app()
+                return
+
 
 def main(page: Page) -> None:
     def save_config(e: ControlEvent) -> None:
@@ -287,7 +344,8 @@ def main(page: Page) -> None:
     page.window_width = 1340
     page.window_height = 850
 
-    # page.window_resizable = False
+    page.window_resizable = False
+
     page.theme_mode = ThemeMode.DARK
 
     try:

@@ -14,6 +14,7 @@ class Config(YamlConfig):
         self.game_path: str = ""
         self.game_version: str = ""
         self.preset: str = ""
+        self.manifest = ""
 
         self.chkbxs: dict = {
                 "cb_ai_vehs": False, 
@@ -87,7 +88,7 @@ class Config(YamlConfig):
         for k in self.chkbxs.keys():
             self.chkbxs.update({k: self.yaml.get(k, False)})
     
-    def update_config(self, chkbxs: dict) -> None:
+    def update_config(self) -> None:
         self.yaml.update(
             {
                 "language": self.lang,
@@ -96,7 +97,7 @@ class Config(YamlConfig):
                 "pos_y": self.pos_y,
                 "preset": self.preset,
                 "version": self.game_version,
-                **chkbxs
+                **self.chkbxs
             }
         )
 

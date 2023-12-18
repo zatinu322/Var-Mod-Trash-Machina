@@ -1,9 +1,24 @@
 from file_copier import FileCopier
 from file_randomizer import FileRandomizer
+from config import Config
 
 from icecream import ic
 
-def main(main_app) -> None: 
+import logging
+
+logger = logging.getLogger("pavlik")
+
+def main(config: Config) -> None:
+    logger.info("Copying necessary files.")
+
+    file_copier = FileCopier(config)
+    file_copier.transfer_files()
+
+    logger.info("Randomizing files.")
+
+    file_randomizer = FileRandomizer(config)
+    file_randomizer.start_randomization()
+
     # try:
     # FileCopier(main_app)
     # ic("Copying files")

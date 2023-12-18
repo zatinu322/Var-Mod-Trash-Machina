@@ -1,11 +1,8 @@
 # Validation
-ProgramFiles:
-  - resources/randomizer.ico
-  - resources/Vanilla
-  - resources/manifest.yaml
-GameFiles:
-  - data/
-  - hta.exe
+Necessary_files:
+  - Vanilla/data/maps
+  - Vanilla/data/profiles
+  - Vanilla/data/scripts
 # FileCopier class
 FolderToCopy: resources/Vanilla
 LuaToEdit: data/scripts/server.lua

@@ -1,15 +1,30 @@
-import os
 import logging
 from errors import ManifestMissingError
+from config import Config
+from yaml_operations import YamlConfig
+
+from pathlib import Path
 
 logger = logging.getLogger("pavlik")
 
 class Randomizer():
-    def __init__(self, main_app) -> None:
-        self.main_app = main_app
-        self.config = main_app.config
-        print(main_app.config.__dict__)
-        if main_app.manifest:
-            self.manifest = main_app.manifest.config
+    def __init__(self, config: Config) -> None:
+        self.game_path = Path(config.game_path)
+        # self.game_version = config.game_version
+        self.params = config.chkbxs
+        manifest = YamlConfig(config.manifest)
+        self.options = {}
+        if manifest.yaml:
+            self.manifest = manifest.yaml
         else:
-            raise ManifestMissingError()
+            raise ManifestMissingError(config.manifest)
+    
+    def configure_randomization(self):
+        working_set = []
+        for option, groups in self.options.items():
+            if not self.params.get(option, False):
+                continue
+            for group in groups.values():
+                working_set.append(group)
+        
+        return working_set
