@@ -11,12 +11,12 @@ from config import Config
 from localisation import Localisation
 from validation import Validation
 from yaml_operations import YamlConfig
-from errors import LocalisationMissingError, RootNotFoundError, ExeMissingError, GameNotFoundError, VersionError, ManifestMissingError
+from errors import LocalisationMissingError, RootNotFoundError, ExeMissingError, GameNotFoundError, VersionError, ManifestMissingError, GDPFoundError
 from data import NAME, MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, SUPPORTED_VERSIONS, PRESETS
 
 logging.basicConfig(filename = "randomizer.log",
-                    level = logging.DEBUG,
-                    format = "[%(levelname)s][%(asctime)s]: %(message)s", 
+                    level = logging.INFO,
+                    format = "[%(levelname)s][%(asctime)s]: %(message)s [%(filename)s, %(funcName)s]", 
                     filemode= "w", 
                     datefmt="%m/%d/%Y %H:%M:%S",
                     encoding="utf-8")
@@ -172,30 +172,36 @@ class RandomizerWindow(MainGui):
             self.update_app()
     
     def game_path_changed(self, e: ControlEvent) -> None:
-        self.update_path_status()
+        ic(e.data)
+        self.update_path_status(e.data)
 
-    def update_path_status(self) -> None:
-        if not self.game_path_tf.value:
+    def update_path_status(self, cur_value: str = None) -> None:
+        if cur_value is None: cur_value = self.game_path_tf.value
+        if cur_value == "":
             self.game_path_status_t.value=""
+            self.game_path_status_t.opacity = 0
             return
 
         game_path = Path(self.game_path_tf.value)
 
         try:
-            validation, info = self.validate.game_dir(game_path)
+            validation = self.validate.game_dir(game_path)
         except (RootNotFoundError, ExeMissingError, GameNotFoundError, VersionError):
             validation = False
-            info = ""
+        except GDPFoundError:
+            validation = False
+            self.game_path_status_t.color="red"
+            self.game_path_status_t.opacity = 100
+            self.game_path_status_t.value = self.locale.tr("gdp_found")
 
         if validation:
             self.game_path_status_t.value = self.locale.tr("valid_path")
+            self.game_path_status_t.opacity = 100
             self.game_path_status_t.color="green"
         else:
             self.game_path_status_t.color="red"
-            if info == "gdp":
-                self.game_path_status_t.value = self.locale.tr("gdp_found")
-            else:
-                self.game_path_status_t.value = self.locale.tr("invalid_path")
+            self.game_path_status_t.opacity = 100
+            self.game_path_status_t.value = self.locale.tr("invalid_path")
         self.update_app()
     
     def select_or_deselect(self, e: ControlEvent):
@@ -267,6 +273,16 @@ class RandomizerWindow(MainGui):
                 False,
                 self.locale.tr("error"),
                 f"{self.locale.tr('not_game_dir')}\n{no_game}"
+            )
+            self.page.dialog = dlg
+            dlg.open = True
+            self.update_app()
+            return
+        except GDPFoundError as gdp_found:
+            dlg = self.create_dialog(
+                False,
+                self.locale.tr("error"),
+                f"{self.locale.tr('gdp_found')}\n{gdp_found}"
             )
             self.page.dialog = dlg
             dlg.open = True

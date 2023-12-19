@@ -1,7 +1,7 @@
 from pathlib import Path
 from data import REQUIRED_GAME_FILES, POSSIBLE_EXE_PATHS, VERSIONS_INFO
 from config import Config
-from errors import ManifestMissingError, RootNotFoundError, ExeMissingError, VersionError, GameNotFoundError
+from errors import ManifestMissingError, RootNotFoundError, ExeMissingError, VersionError, GameNotFoundError, GDPFoundError
 
 import logging
 from icecream import ic
@@ -39,21 +39,24 @@ class Validation():
         for game_dir in REQUIRED_GAME_FILES:
             full_path = path_to_dir / game_dir
             if not full_path.exists():
-                if self.look_for_gdp_archives(path_to_dir):
+                gdp_archives = self.look_for_gdp_archives(path_to_dir)
+                if gdp_archives:
                     if not silent: 
                         logger.error(f"Unable to validate game path. {full_path} is missing.")
-                        logger.info(f"GDP archives found in {path_to_dir / 'data'}.")
-                    return False, "gdp"
+                        gdp_paths_str = ", ".join([str(gdp.resolve()) for gdp in gdp_archives])
+                        logger.info(f"GDP archives found: {gdp_paths_str}")
+                    raise GDPFoundError(gdp_archives)
                 if not silent: logger.error(f"Unable to validate game path. {full_path} is missing.")
                 raise GameNotFoundError(full_path)
-        return True, ""
+        return True
     
     @staticmethod
-    def look_for_gdp_archives(game_dir: Path) -> bool:
+    def look_for_gdp_archives(game_dir: Path) -> bool | list[Path]:
         data_path = game_dir / "data"
-        if list(data_path.glob("*.gdp")):
-            return True
-        return False
+        gdps = list(data_path.glob("*.gdp"))
+        if not gdps:
+            return False
+        return gdps
 
     @staticmethod
     def get_exe_name(game_dir: Path) -> Path | None:
@@ -64,6 +67,8 @@ class Validation():
     
     def game_version(self, game_version: str, exe: str) -> tuple[bool, Path | str]:
         version_info = VERSIONS_INFO.get(game_version)
+        if not version_info: raise VersionError(game_version)
+
         exe_info: dict = version_info.get("exe")
         for version in exe_info:
             detected_version = self.get_exe_version(
@@ -94,7 +99,8 @@ class Validation():
     def settings(self, settings: Config):
         logger.info("Validating randomization settings.")
 
-        path_valid, _ = self.game_dir(Path(settings.game_path), silent=False)
+        if not settings.game_path: raise RootNotFoundError(False)
+        path_valid = self.game_dir(Path(settings.game_path), silent=False)
         if not path_valid:
             return False
         
