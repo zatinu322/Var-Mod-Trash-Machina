@@ -15,6 +15,7 @@ class Randomizer():
         manifest = YamlConfig(config.manifest)
         self.options = {}
         self.errors = 0
+        self.logger = logger
         if manifest.yaml:
             self.manifest = manifest.yaml
         else:

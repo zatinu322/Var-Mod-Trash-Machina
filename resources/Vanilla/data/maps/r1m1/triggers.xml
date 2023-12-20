@@ -23,7 +23,7 @@
 			end
 
 			if RAND_GUNS then
-				giveguns()
+				giveguns_random()
 			end
 
 			local Plf = GetPlayerVehicle()

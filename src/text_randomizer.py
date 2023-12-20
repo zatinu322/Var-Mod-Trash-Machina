@@ -6,9 +6,6 @@ from icecream import ic
 from pathlib import Path
 
 import xml.etree.ElementTree as ET
-import logging
-
-logger = logging.getLogger("pavlik")
 
 class TextRandomizer(Randomizer):
     def __init__(self, config: Config) -> None:
@@ -101,6 +98,9 @@ class TextRandomizer(Randomizer):
 
     def start_randomization(self) -> None:
         working_set = self.configure_randomization()
+        if not working_set:
+            self.logger.info("Nothing to randomize.")
+            return
         for group in working_set:
             self.randomize(group)
         

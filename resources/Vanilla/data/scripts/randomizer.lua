@@ -6,7 +6,7 @@ local function _CreateNewObject( prototypeName, objName, parentId, belong )
 	return g_ObjCont:CreateNewObject( prototypeId, objName, parentId, belong )
 end
 
-function giveguns (Name)
+function giveguns_random (Name)
     if Name == nil then
         veh=GetPlayerVehicle()
     else
@@ -123,7 +123,7 @@ function CreateTeam(Name, Belong, CreatePos, ListOfVehicle, WalkPos, IsWares, Ro
                 CreatePos.z=CreatePos.z+vh_length
                 
                 if RAND_GUNS then
-                    giveguns(vehicle)
+                    giveguns_random(vehicle)
                 end
             end
             i = i + 1
@@ -167,7 +167,7 @@ function CreateVehicleEx( PrototypeName, Name, pos, belong )
 	vehicle:SetGamePositionOnGround( pos )
 
 	if RAND_GUNS then
-		giveguns(Name)
+		giveguns_random(Name)
 	end
 
 	return vehicle

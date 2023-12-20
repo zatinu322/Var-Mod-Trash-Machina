@@ -172,7 +172,6 @@ class RandomizerWindow(MainGui):
             self.update_app()
     
     def game_path_changed(self, e: ControlEvent) -> None:
-        ic(e.data)
         self.update_path_status(e.data)
 
     def update_path_status(self, cur_value: str = None) -> None:

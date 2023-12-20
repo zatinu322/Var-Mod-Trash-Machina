@@ -66,8 +66,11 @@ class ModelsRandomizer(TextRandomizer):
 
             self.write_xml(root, xml_path)
     
-    def start_randomization(self):
+    def start_randomization(self) -> None:
         working_set = self.configure_randomization()
+        if not working_set:
+            self.logger.info("Nothing to randomize.")
+            return
         if self.game_version == "steam":
             self.clear_animmodels()
         for group in working_set:

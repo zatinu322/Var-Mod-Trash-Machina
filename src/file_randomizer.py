@@ -2,15 +2,11 @@ from randomizer import Randomizer
 from config import Config
 from pathlib import Path
 
-import logging
-
 from random import shuffle
 from icecream import ic
 
 import shutil
 import os
-
-logger = logging.getLogger("pavlik")
 
 class FileRandomizer(Randomizer):
     def __init__(self, config: Config) -> None:
@@ -91,7 +87,10 @@ class FileRandomizer(Randomizer):
         
         return True
 
-    def start_randomization(self):
+    def start_randomization(self) -> None:
         working_set = self.configure_randomization()
+        if not working_set:
+            self.logger.info("Nothing to randomize.")
+            return
         for groups in working_set:
             self.randomize(groups)
