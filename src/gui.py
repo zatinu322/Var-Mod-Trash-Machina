@@ -1,4 +1,5 @@
 from flet import *
+from data import NAME, VERSION, BUILD
 
 class MainGui(UserControl):
     def __init__(
@@ -7,11 +8,14 @@ class MainGui(UserControl):
 
         self.main_width = main_width
         self.working_width = working_width
+        self.button_style = ButtonStyle(shape=RoundedRectangleBorder(radius=10))
         self.btn_rus,  self.btn_eng = self.create_lang_buttons()
         self.options_gui = self.create_options()
-        self.expandable_options = ExpandableContainer(self.working_width, 600, 64, content=self.options_gui)
-        self.game_settings_gui = self.create_game_settings()
+        self.expandable_options = ExpandableContainer(self.working_width, 760, 64, content=self.options_gui)
+        self.game_path_setting_gui = self.create_game_path_setting()
         self.start_randomization_btn = self.create_randomization_btn()
+        self.create_game_version_setting()
+        self.info_cont = self.create_info_container()
 
     def create_lang_buttons(self):
         return [
@@ -43,8 +47,8 @@ class MainGui(UserControl):
         self.create_opt_chkbxs()
 
         self.dd_preset = Dropdown()
-        self.btn_select_all = ElevatedButton()
-        self.btn_deselect_all = ElevatedButton()
+        self.btn_select_all = ElevatedButton(style=self.button_style, width=150, height=58)
+        self.btn_deselect_all = ElevatedButton(style=self.button_style, width=150, height=58)
 
         self.t_icons = Text(value="t_icons", size=20, weight=FontWeight.BOLD)
         self.t_icons_row = Row(
@@ -55,7 +59,7 @@ class MainGui(UserControl):
             alignment="center"
         )
 
-        self.t_text = Text(value="t_text")
+        self.t_text = Text(value="t_text", size=20, weight=FontWeight.BOLD)
         self.t_text_row = Row(
             controls=[
                 self.t_text
@@ -64,7 +68,7 @@ class MainGui(UserControl):
             alignment="center"
         )
 
-        self.t_sounds = Text(value="t_sounds")
+        self.t_sounds = Text(value="t_sounds", size=20, weight=FontWeight.BOLD)
         self.t_sounds_row = Row(
             controls=[
                 self.t_sounds
@@ -73,7 +77,7 @@ class MainGui(UserControl):
             alignment="center"
         )
 
-        self.t_models = Text(value="t_models")
+        self.t_models = Text(value="t_models", size=20, weight=FontWeight.BOLD)
         self.t_models_row = Row(
             controls=[
                 self.t_models
@@ -82,7 +86,7 @@ class MainGui(UserControl):
             alignment="center"
         )
 
-        self.t_textures = Text(value="t_textures")
+        self.t_textures = Text(value="t_textures", size=20, weight=FontWeight.BOLD)
         self.t_textures_row = Row(
             controls=[
                 self.t_textures
@@ -91,7 +95,7 @@ class MainGui(UserControl):
             alignment="center"
         )
 
-        self.t_other = Text(value="t_other")
+        self.t_other = Text(value="t_other", size=20, weight=FontWeight.BOLD)
         self.t_other_row = Row(
             controls=[
                 self.t_other   
@@ -100,7 +104,7 @@ class MainGui(UserControl):
             alignment="center"
         )
 
-        self.t_executable = Text(value="t_exe")
+        self.t_executable = Text(value="t_exe", size=20, weight=FontWeight.BOLD)
         self.t_executable_row = Row(
             controls=[
                 self.t_executable
@@ -124,7 +128,8 @@ class MainGui(UserControl):
                         self.cb_goods_guns,
                         self.cb_cab_cargo,
                         self.cb_aim
-                    ]
+                    ],
+                    spacing=0
                 )
             ],
             width=160
@@ -143,7 +148,8 @@ class MainGui(UserControl):
                         self.cb_gui_text,
                         self.cb_books_history,
                         self.cb_descriptions
-                    ]
+                    ],
+                    spacing=0
                 )
             ],
             width=160
@@ -164,7 +170,8 @@ class MainGui(UserControl):
                         self.cb_hits,
                         self.cb_shooting,
                         self.cb_other_sounds
-                    ]
+                    ],
+                    spacing=0
                 )
             ],
             width=110
@@ -183,7 +190,8 @@ class MainGui(UserControl):
                         self.cb_wheels,
                         self.cb_humans,
                         self.cb_dwellers
-                    ]
+                    ],
+                    spacing=0
                 )
             ],
             width=190
@@ -200,7 +208,8 @@ class MainGui(UserControl):
                         self.cb_lightmaps,
                         self.cb_skybox,
                         self.cb_tiles
-                    ]
+                    ],
+                    spacing=0
                 )
             ],
             width=125
@@ -216,7 +225,8 @@ class MainGui(UserControl):
                         self.cb_ai_vehs,
                         self.cb_pl_veh,
                         self.cb_guns_lua
-                    ]
+                    ],
+                    spacing=0
                 )
             ],
             width=135
@@ -231,7 +241,8 @@ class MainGui(UserControl):
                         self.cb_gravity,
                         self.cb_fov,
                         self.cb_armor
-                    ]
+                    ],
+                    spacing=0
                 )
             ],
             width=185
@@ -250,36 +261,57 @@ class MainGui(UserControl):
                     ),
                     Row(
                         width=self.working_width,
-                        height=460,
+                        height=365,
                         alignment=MainAxisAlignment.CENTER,
                         controls=[
                             Container(
                                 content=self.opt_icons,
-                                border=border.all(1, "white")
+                                border=border.all(1, "black"),
+                                border_radius=10,
+                                bgcolor="white10"
                             ),
                             Container(
                                 content=self.opt_text,
-                                border=border.all(1, "white")
+                                border=border.all(1, "black"),
+                                border_radius=10,
+                                bgcolor="white10"
                             ),
                             Container(
                                 content=self.opt_sounds,
-                                border=border.all(1, "white")
+                                border=border.all(1, "black"),
+                                border_radius=10,
+                                bgcolor="white10"
                             ),
                             Container(
                                 content=self.opt_models,
-                                border=border.all(1, "white")
-                            ),
+                                border=border.all(1, "black"),
+                                border_radius=10,
+                                bgcolor="white10"
+                            )
+                        ]
+                    ),
+                    Row(
+                        width=self.working_width,
+                        height=235,
+                        alignment=MainAxisAlignment.CENTER,
+                        controls=[
                             Container(
                                 content=self.opt_textures,
-                                border=border.all(1, "white")
+                                border=border.all(1, "black"),
+                                border_radius=10,
+                                bgcolor="white10"
                             ),
                             Container(
                                 content=self.opt_other,
-                                border=border.all(1, "white")
+                                border=border.all(1, "black"),
+                                border_radius=10,
+                                bgcolor="white10"
                             ),
                             Container(
                                 content=self.opt_exe,
-                                border=border.all(1, "white")
+                                border=border.all(1, "black"),
+                                border_radius=10,
+                                bgcolor="white10"
                             )
                         ]
                     )
@@ -394,50 +426,95 @@ class MainGui(UserControl):
             self.cb_wheels: "cb_wheels",
         }
 
-    def create_game_settings(self):
+    def create_game_path_setting(self):
         self.game_path_tf = TextField(width=600)
-        self.browse_btn = ElevatedButton()
+        self.browse_btn = ElevatedButton(
+            bgcolor="white10",
+            style=self.button_style)
         self.game_path_status_t = Text()
-        self.game_version_dd = Dropdown(width=600)
         
-        return [
-                Column(
+        return Column(
+            controls=[
+                Row(
                     controls=[
-                        Row(
-                            controls=[
-                            self.game_path_tf
-                            ]
-                        ),
-                        Row(
-                            controls=[
-                            self.browse_btn,
-                            self.game_path_status_t
-                            ]
-                        )
+                    self.game_path_tf
                     ]
                 ),
-                Column(
+                Row(
                     controls=[
-                        Row(
-                            controls=[
-                            self.game_version_dd
-                            ]
-                        )
+                    self.browse_btn,
+                    self.game_path_status_t
                     ]
                 )
             ]
+        )
+    
+    def create_game_version_setting(self):
+        self.game_version_dd = Dropdown(width=600)
 
     def create_randomization_btn(self):
         return ElevatedButton(
             width=300,
-            height=70
+            height=70,
+            style=self.button_style
+        )
+    
+    def create_info_container_widgets(self):
+        self.progress_bar = ProgressBar(width=590, height=20, value=0)
+        self.status_text = Text()
+        self.info_cont_heading = Text(size=16, weight=FontWeight.BOLD)
+        self.info_cont_btn = ElevatedButton(text="OK", width=150, height=50)
+        self.log_container = Column(
+            controls=[],
+            spacing=1,
+            width=600,
+            scroll=True
+        )
+
+    def create_info_container(self):
+        self.create_info_container_widgets()
+        self.log_container.controls.clear() # clear previous log
+        return Container(
+            content=Column(
+                controls=[
+                    Row(
+                        controls=[
+                            Container(self.info_cont_heading, padding=padding.only(top=5))
+                        ],
+                        alignment=MainAxisAlignment.CENTER
+                    ),
+                    Row([
+                        Container(
+                            width=600,
+                            opacity=0.7,
+                            height=450,
+                            alignment=alignment.top_left,
+                            padding=10,
+                            bgcolor="black",
+                            border_radius=10,
+                            content=self.log_container
+                        ),],
+                        alignment=MainAxisAlignment.CENTER
+                    ),
+                    Row([
+                        self.progress_bar
+                    ], alignment=MainAxisAlignment.CENTER),
+                    Row([self.info_cont_btn], alignment=MainAxisAlignment.CENTER)
+                ]
+            ),
+            alignment=alignment.center,
+            bgcolor="#3d5a68",
+            opacity=80,
+            border_radius=20,
+            margin=100
         )
 
     def build(self):
         return Container(
             width=self.main_width,
-            height=800,
+            height=810,
             # bgcolor="black",
+            # bgcolor="#3d5a68",
             padding=10,
             content=Column(
                 scroll="hidden",
@@ -474,12 +551,19 @@ class MainGui(UserControl):
                     ),
                     Row(
                         controls=[
-                            *self.game_settings_gui
+                            self.game_path_setting_gui
                         ],
                         width=self.main_width,
                         height=100,
                         alignment=MainAxisAlignment.SPACE_AROUND
                         # spacing=50
+                    ),
+                    Row(
+                        controls=[
+                            self.game_version_dd,
+                        ],
+                        width=self.main_width,
+                        alignment=MainAxisAlignment.SPACE_AROUND
                     ),
                     Row(
                         width=self.main_width,
@@ -493,9 +577,22 @@ class MainGui(UserControl):
                         alignment="center",
                         controls=[
                             Container(
-                                width=300,
+                                width=260,
                                 height=150,
-                                content=Text(),
+                                content=Row([
+                                    Image(
+                                            src="src/assets/rpg_logo.png",
+                                            width=130
+                                        ),
+                                    Container(Column([
+                                        Text(NAME, size=12,weight=FontWeight.BOLD, width=120, max_lines=2, text_align=TextAlign.CENTER),
+                                        Text(VERSION, size=12, width=120, text_align=TextAlign.CENTER), 
+                                        Text(BUILD, size=12, width=120, text_align=TextAlign.CENTER),
+                                        Text(""),
+                                        Text("Powered by\npavlikrpg", size=12, width=120, text_align=TextAlign.CENTER)
+                                    ], spacing=2, height=150, alignment=MainAxisAlignment.CENTER), alignment=alignment.center)
+                                        
+                                ], alignment=MainAxisAlignment.CENTER, vertical_alignment=CrossAxisAlignment.CENTER, spacing=0),
                                 bgcolor="white24",
                                 border_radius=20
                             )
@@ -521,11 +618,17 @@ class ExpandableContainer(UserControl):
         self.name = name
         self.content = content
 
+        self.format_name()
+
         self.expand_icon = IconButton(
             icon=icons.KEYBOARD_ARROW_DOWN,
             icon_size=30,
             on_click=lambda e: self.expand_container(e)
         )
+    
+    def format_name(self) -> None:
+        self.name.size=16
+        self.name.weight=FontWeight.BOLD
     
     def expand_container(self, e):
         if self.controls[0].height != self.full_height:

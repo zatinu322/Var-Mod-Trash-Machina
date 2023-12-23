@@ -20,34 +20,37 @@ class ExecutableRandomizer(Randomizer):
             self.options.pop(param)
 
     def generate_offsets(self) -> dict:
-        # we should not overwrite global var
+        # we should not overwrite global const
         offsets_exe = OFFSETS_EXE.copy()
         offsets = generate_offsets()
 
         if "Render" in self.options.values():
             offsets_exe.update(offsets.get("render"))
         if "Gravity" in self.options.values():
-            offsets_exe.update(offsets["gravity"])
+            offsets_exe.update(offsets.get("gravity"))
         if "FOV" in self.options.values():
-            offsets_exe.update(offsets["fov"])
+            offsets_exe.update(offsets.get("fov"))
         if "Armor" in self.options.values():
-            offsets_exe.update(offsets["armor"])
+            offsets_exe.update(offsets.get("armor"))
 
         return offsets_exe
 
     def collect_info(self, config: dict):
-        info = {
-            "new_models_render": config.get(0x30808B),
-            "new_gravity": config[0x202D25],
-            "new_fov": round(config[0x5E5A74], 3)
-        }
+        info = {}
+        if "Render" in self.options.values():
+            info.update({"new_models_render": config.get(0x30808B)})
+        if "Gravity" in self.options.values():
+            info.update({"new_gravity": config.get(0x202D25)})
+        if "FOV" in self.options.values():
+            info.update({"new_fov": round(config.get(0x5E5A74), 3)})
 
         return info
 
-    def randomize(self) -> None:
+    def randomize(self) -> dict:
         file_path = self.game_path / self.options.get("File")
         offsets_exe = self.generate_offsets()
 
+        # code by Aleksandr "Seel" Parfenenkov
         with open(file_path, "rb+") as exe:
             for offset in offsets_exe:
                 exe.seek(offset)
@@ -58,13 +61,15 @@ class ExecutableRandomizer(Randomizer):
                 elif type(offsets_exe[offset]) == float:
                     exe.write(struct.pack("f", offsets_exe[offset]))
         
-        ic(self.collect_info(offsets_exe))
-
+        return offsets_exe
+        
+        
     def start_randomization(self) -> None:
         self.configure_randomization()
         if len(self.options) <= 1:
             self.logger.info("Nothing to randomize.")
             return
         
-        self.randomize()
-        
+        offsets_exe = self.randomize()
+
+        ic(self.collect_info(offsets_exe))

@@ -1,7 +1,8 @@
 import flet as ft
 from flet import *
 import logging
-import main_randomizer
+
+import main_randomizer as mr
 
 from icecream import ic
 from pathlib import Path
@@ -10,9 +11,8 @@ from gui import MainGui
 from config import Config
 from localisation import Localisation
 from validation import Validation
-from yaml_operations import YamlConfig
 from errors import LocalisationMissingError, RootNotFoundError, ExeMissingError, GameNotFoundError, VersionError, ManifestMissingError, GDPFoundError
-from data import NAME, MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, SUPPORTED_VERSIONS, PRESETS
+from data import FULL_NAME, MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, SUPPORTED_VERSIONS, PRESETS
 
 logging.basicConfig(filename = "randomizer.log",
                     level = logging.INFO,
@@ -37,6 +37,18 @@ class RandomizerWindow(MainGui):
         self.page = page
         self.config = config
         self.locale = locale
+
+        self.bg_cont = ft.Container(
+            Row(
+                controls=[
+                    Column(
+                        controls=[], alignment=ft.MainAxisAlignment.CENTER,
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                    )
+                ]
+            ),
+                bgcolor=ft.colors.BLACK87
+        )
 
         self.opt_column_widths = {
             (self.opt_icons, self.t_icons_row): {"rus": 160, "eng": 180},
@@ -72,6 +84,7 @@ class RandomizerWindow(MainGui):
         self.btn_deselect_all.on_click = self.select_or_deselect
         self.dd_preset.on_change = self.update_checkboxes
         self.start_randomization_btn.on_click = self.start_randomization
+        self.info_cont_btn.on_click = self.close_info_cont
 
         for chkbx in self.chkbxs_dict:
             chkbx.on_change = self.set_custom_preset
@@ -132,6 +145,7 @@ class RandomizerWindow(MainGui):
         self.game_version_dd.label = self.locale.tr("game_version_l")
         self.game_version_dd.hint_text = self.locale.tr("game_version_h")
         self.start_randomization_btn.text = self.locale.tr("randomization_btn")
+        self.info_cont_heading.value = self.locale.tr("rand_info")
 
         for k,v in self.chkbxs_dict.items():
             k.label = self.locale.tr(v)
@@ -216,7 +230,43 @@ class RandomizerWindow(MainGui):
         
         self.update_app()
     
-    def update_checkboxes(self, e: ControlEvent):
+    def show_info_cont(self) -> None:
+        self.page.overlay.append(self.bg_cont)
+        self.page.overlay.append(self.info_cont)
+        self.log_container.controls.clear()
+        self.progress_bar.value = 0
+        self.info_cont_btn.disabled = True
+        self.retranslate_ui()
+    
+    def info_cont_write(self, message: str, color: str | int = "white") -> None:
+        self.log_container.controls.append(
+            Text(
+                value=message,
+                color=color
+            )
+        )
+        self.update_app()
+    
+    def info_cont_abort(self):
+        self.info_cont_write(self.locale.tr("randomization_aborted"), "red")
+        self.info_cont_write(self.locale.tr("rand_OK"))
+        self.info_cont_btn.disabled = False
+        self.progress_bar.value = 0
+        self.update_app()
+    
+    def info_cont_success(self):
+        self. info_cont_write(self.locale.tr("rand_done"), "green")
+        self.info_cont_write(self.locale.tr("rand_OK"))
+        self.info_cont_btn.disabled = False
+        self.progress_bar.value = 1
+        self.update_app()
+
+    def close_info_cont(self, e: ControlEvent) -> None:
+        self.page.overlay.remove(self.info_cont)
+        self.page.overlay.remove(self.bg_cont)
+        self.update_app()
+    
+    def update_checkboxes(self, e: ControlEvent) -> None:
         chkbxs_config = PRESETS.get(e.data, {})
         for k,v in self.chkbxs_dict.items():
             new_value = chkbxs_config.get(v, None)
@@ -238,89 +288,91 @@ class RandomizerWindow(MainGui):
         self.config.chkbxs.update(chkbxs)
         self.config.update_config()
         
-    def set_custom_preset(self, e: ControlEvent = None):
+    def set_custom_preset(self, e: ControlEvent = None) -> None:
         self.dd_preset.value = "p_custom"
         self.update_app()
     
-    def start_randomization(self, e: ControlEvent = None):
+    def start_randomization(self, e: ControlEvent = None) -> None:
         self.update_config()
+        self.show_info_cont()
+        self.info_cont_write(self.locale.tr("rand_start"))
 
+        self.info_cont_write(self.locale.tr("rand_validation"))
         try:
             validation = self.validate.settings(self.config)
         except RootNotFoundError as no_root:
-            dlg = self.create_dialog(
-                False,
-                self.locale.tr("error"),
-                f"{self.locale.tr('game_path_missing')}\n{no_root}"
-            )
-            self.page.dialog = dlg
-            dlg.open = True
-            self.update_app()
+            self.info_cont_write(f"{self.locale.tr('game_path_missing')}\n{no_root}", color="red")
+            self.info_cont_abort()
             return
         except ExeMissingError as no_exe:
-            dlg = self.create_dialog(
-                False,
-                self.locale.tr("error"),
-                f"{self.locale.tr('exe_not found')}\n{no_exe}"
-            )
-            self.page.dialog = dlg
-            dlg.open = True
-            self.update_app()
+            self.info_cont_write(f"{self.locale.tr('exe_not found')}\n{no_exe}", color="red")
+            self.info_cont_abort()
             return
         except GameNotFoundError as no_game:
-            dlg = self.create_dialog(
-                False,
-                self.locale.tr("error"),
-                f"{self.locale.tr('not_game_dir')}\n{no_game}"
-            )
-            self.page.dialog = dlg
-            dlg.open = True
-            self.update_app()
+            self.info_cont_write(f"{self.locale.tr('not_game_dir')}\n{no_game}", color="red")
+            self.info_cont_abort()
             return
         except GDPFoundError as gdp_found:
-            dlg = self.create_dialog(
-                False,
-                self.locale.tr("error"),
-                f"{self.locale.tr('gdp_found')}\n{gdp_found}"
-            )
-            self.page.dialog = dlg
-            dlg.open = True
-            self.update_app()
+            self.info_cont_write(f"{self.locale.tr('gdp_found')}\n{gdp_found}", color="red")
+            self.info_cont_abort()
             return
         except VersionError as bad_version:
-            dlg = self.create_dialog(
-                False,
-                self.locale.tr("error"),
-                f"{self.locale.tr('incorrect_version')}"
-            )
-            self.page.dialog = dlg
-            dlg.open = True
-            self.update_app()
+            self.info_cont_write(f"{self.locale.tr('incorrect_version')}", color="red")
+            self.info_cont_abort()
             return
         except ManifestMissingError as no_manifest:
-            dlg = self.create_dialog(
-                False,
-                self.locale.tr("error"),
-                f"{self.locale.tr('manifest_missing')}\n{no_manifest}"
-            )
-            self.page.dialog = dlg
-            dlg.open = True
-            self.update_app()
+            self.info_cont_write(f"{self.locale.tr('manifest_missing')}\n{no_manifest}", color="red")
+            self.info_cont_abort()
             return
+        
+        self.progress_bar.value += 0.11
 
         if validation:
             try:
-                main_randomizer.main(self.config)
+                
+                self.info_cont_write(self.locale.tr("rand_copy"))
+                mr.copy_files(self.config)
+                self.progress_bar.value += 0.11
+
+                self.info_cont_write(self.locale.tr("rand_files"))
+                mr.randomize_files(self.config)
+                self.progress_bar.value += 0.11
+
+                self.info_cont_write(self.locale.tr("rand_text"))
+                mr.randomize_text(self.config)
+                self.progress_bar.value += 0.11
+
+                self.info_cont_write(self.locale.tr("rand_models"))
+                mr.randomize_models(self.config)
+                self.progress_bar.value += 0.11
+
+                self.info_cont_write(self.locale.tr("rand_barnpcs"))
+                mr.randomize_barnpcs(self.config)
+                self.progress_bar.value += 0.11
+
+                self.info_cont_write(self.locale.tr("rand_landscape"))
+                mr.randomize_landscape(self.config)
+                self.progress_bar.value += 0.11
+
+                self.info_cont_write(self.locale.tr("rand_executable"))
+                mr.randomize_executable(self.config)
+                self.progress_bar.value += 0.11
+
+                self.info_cont_write(self.locale.tr("rand_lua"))
+                mr.randomize_lua(self.config)
+                self.progress_bar.value += 0.11
+
+                self.info_cont_success()
+
             except ManifestMissingError as bad_manifest:
-                dlg = self.create_dialog(
-                False,
-                self.locale.tr("error"),
-                f"{self.locale.tr('bad_manifest')}"
-                )
-                self.page.dialog = dlg
-                dlg.open = True
-                self.update_app()
+                self.info_cont_write(f"{self.locale.tr('bad_manifest')}\n{bad_manifest}", "red")
+                self.info_cont_abort()
                 return
+            except Exception as exc:
+                self.info_cont_write(exc)
+                self.info_cont_abort()
+            finally:
+                self.info_cont_btn.disabled = False
 
 
 def main(page: Page) -> None:
@@ -351,15 +403,16 @@ def main(page: Page) -> None:
             border_radius=20
         )
     
-    logger.info(f"Running {NAME} in {MAIN_PATH}")
+    logger.info(f"Running {FULL_NAME} in {MAIN_PATH}")
 
-    page.title = NAME
+    page.title = FULL_NAME
     page.vertical_alignment = MainAxisAlignment.CENTER
     page.horizontal_alignment = MainAxisAlignment.CENTER
-    page.window_width = 1340
-    page.window_height = 850
+    page.window_width = 880
+    page.window_height = 870
 
     page.window_resizable = False
+    page.window_maximizable = False
 
     page.theme_mode = ThemeMode.DARK
 
@@ -368,8 +421,8 @@ def main(page: Page) -> None:
         page = page,
         config = Config(SETTINGS_PATH),
         locale = Localisation(LOCALIZATION_PATH),
-        main_width = 1300,
-        working_width = 1280
+        main_width = 850,
+        working_width = 800
         )
     except LocalisationMissingError as loc_missing:
         logger.critical(loc_missing)

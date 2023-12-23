@@ -1,5 +1,5 @@
 from pathlib import Path
-from data import REQUIRED_GAME_FILES, POSSIBLE_EXE_PATHS, VERSIONS_INFO
+from data import REQUIRED_GAME_FILES, POSSIBLE_EXE_PATHS, VERSIONS_INFO, NO_EXE_ALLOWED
 from config import Config
 from errors import ManifestMissingError, RootNotFoundError, ExeMissingError, VersionError, GameNotFoundError, GDPFoundError
 
@@ -30,8 +30,8 @@ class Validation():
         # validate exe
         exe = self.get_exe_name(path_to_dir)
         if not exe:
-            if not silent: logger.error(f"Unable to validate game path. Executable is missing.")
-            raise ExeMissingError(path_to_dir)
+            if not silent: logger.warning(f"Can't find executable in {path_to_dir}")
+            # raise ExeMissingError(path_to_dir)
         else:
             if not silent: logger.info(f"Executable is determined as {exe}.")
 
@@ -65,25 +65,43 @@ class Validation():
             if exe_path.exists(): return exe_path
         return None
     
-    def game_version(self, game_version: str, exe: str) -> tuple[bool, Path | str]:
-        version_info = VERSIONS_INFO.get(game_version)
-        if not version_info: raise VersionError(game_version)
+    def steam_version(self, game_version: str, version_info: dict, exe: str) -> tuple[bool, str]:
+        if not exe:
+            if game_version in NO_EXE_ALLOWED:
+                return (True, "no_exe")
+            else:
+                return (False, "no_exe")
 
         exe_info: dict = version_info.get("exe")
+
         for version in exe_info:
             detected_version = self.get_exe_version(
                 exe,
                 version.get("offset"),
                 version.get("length")
             )
-            
-            if not detected_version == version.get("version"):
-                logger.error(f"Unable to validate game version. \"{version.get('version')}\" expected, got \"{detected_version}\"")
-                raise VersionError(game_version)
-            
-            # TODO: Add different mods validation through yaml or existing files
 
-            return True, Path(version_info.get("manifest"))
+            if detected_version == version.get("version"):
+                return True, "exe"
+            else: 
+                logger.info(f"{version.get('version')} expected, got {detected_version}")
+        
+        raise VersionError(game_version)
+
+    
+    def game_version(self, game_version: str, exe: str) -> tuple[bool, str, Path | str]:
+        version_info = VERSIONS_INFO.get(game_version)
+        if not version_info: raise VersionError(game_version)
+
+        match game_version:
+            case "steam" | "isl1053":
+                valid, exe_status = self.steam_version(game_version, version_info, exe)
+            case "cp114" | "cr114" | "isl12cp" | "isl12cr":
+                raise VersionError(game_version)
+        
+        # TODO: Add different mods validation through yaml or existing files
+
+        return valid, exe_status, Path(version_info.get("manifest"))
                 
 
     @staticmethod
@@ -107,9 +125,17 @@ class Validation():
         logger.info("Game path validated.")
         
         exe = self.get_exe_name(settings.game_path)
-        version_valid, manifest = self.game_version(settings.game_version, exe)
+        version_valid, exe_status, manifest = self.game_version(settings.game_version, exe)
         if not version_valid:
             return False
+        
+        match exe_status:
+            case "no_exe":
+                ic('no exe')
+            case "exe":
+                ic("exe")
+            case "no_fov":
+                ic('no_fov')
         
         logger.info("Game version validated.")
 

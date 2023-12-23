@@ -3,8 +3,10 @@ import math
 
 from pathlib import Path
 
-VERSION = "0.9 beta"
-NAME = f"Ex Machina Randomizer v{VERSION}"
+NAME = "Ex Machina Randomizer"
+VERSION = "v1.0 alpha"
+BUILD = "build 231222a"
+FULL_NAME = f"{NAME} {VERSION} {BUILD}"
 
 MAIN_PATH = Path().resolve()
 RESOURCES_PATH = MAIN_PATH / "resources"
@@ -41,6 +43,9 @@ SUPPORTED_VERSIONS = {
     "isl12cr": "Improved Storyline v1.2 (ComRemaster)",
     "isl1053": "Improved Storyline v1.0.5.3"
 }
+
+NO_EXE_ALLOWED = ["steam", "isl1053"]
+FOV_ALLOWED = ["steam", "isl1053"]
 
 VERSIONS_INFO = {
     "steam": {

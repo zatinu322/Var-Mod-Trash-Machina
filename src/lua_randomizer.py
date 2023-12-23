@@ -36,13 +36,16 @@ class LuaRandomizer(Randomizer):
         var: str = lua_info.get("Variable")
         prototypes: dict = lua_info.get("Prototypes")
 
+        # setting variable status
+        # .lower because of lua syntax
         if var: content = f"{var} = {str(self.var_statuses.get(var)).lower()}\n\n"
+        # setting prototypes lists
         if prototypes:
             for num, group in enumerate(prototypes.values()):
                 # this is terrible and horrific code
                 # maybe one day I'll refactor it
-                content = f"{content}{var}_{num+1} = "
-                arr = "{\"" + "\", \"".join(group) + "\"}"
+                content = f"{content}{var}_{num+1} = " # var name
+                arr = "{\"" + "\", \"".join(group) + "\"}" # prototypes list
                 content = f"{content}{arr}\n\n"
         
         with open(self.vars_path, "a", encoding="windows-1251") as stream:

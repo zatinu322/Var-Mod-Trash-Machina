@@ -89,10 +89,26 @@ rus:
   new_models_render: "Рендер моделей"
   new_gravity: "Гравитация"
   new_fov: "Коэффициент FOV"
-  # messages
+  # path messages
   valid_path: Путь к игре корректен.
   invalid_path: Не найдена установленная игра.
   gdp_found: Найдены GDP архивы. Возможно, требуется распаковка.
+  # randomization messages
+  rand_info: Журнал рандомизации
+  rand_start: Начало рандомизации...
+  rand_validation: Валидация параметров рандомизации...
+  rand_copy: Копирование необходимых файлов...
+  rand_files: Рандомизация файлов...
+  rand_text: Рандомизация текста...
+  rand_models: Рандомизация моделей...
+  rand_barnpcs: Рандомизация моделей NPC...
+  rand_landscape: Рандомизация ландшафта...
+  rand_no_landscape: Повторая рандомизация ландшафта запрещена в
+  rand_executable: Рандомизация движка игры...
+  rand_lua: Рандомизация lua скриптов...
+  rand_done: Рандомизация успешно завершена.
+  rand_OK: Нажмите ОК, чтобы закрыть окно.
+
   # errors
   error: "Ошибка"
   warning: "Предупреждение"
@@ -103,7 +119,7 @@ rus:
   is_continued: "Опции, связанные с рандомизацией движка будут принудительно отключены. Вы желаете продолжить?"
   compatch_no_fov: "Опция рандомизации FOV недоступна для Community Patch/Remaster и будет принудительно отключена."
   manifest_missing: "Манифест не найден:"
-  bad_manifest: "Некорректный манифест!"
+  bad_manifest: "Невозможно прочитать манифест в"
   randomization_aborted: "Рандомизация прервана."
 
 eng:
@@ -197,10 +213,25 @@ eng:
   new_models_render: "Models render"
   new_gravity: "Gravity"
   new_fov: "FOV coeff"
-  # messages
+  # path messages
   valid_path: Game path is correct.
   invalid_path: Installed game not found.
   gdp_found: Found GDP archives. Unpacking may be required.
+  # randomization messages
+  rand_info: Randomization log
+  rand_start: Starting randomization...
+  rand_validation: Validating settings...
+  rand_copy: Copying necessary files...
+  rand_files: File randomization...
+  rand_text: Text randomization...
+  rand_models: Models randomization...
+  rand_barnpcs: NPC in bars randomization...
+  rand_landscape:  Landscape randomization...
+  rand_no_landscape: Re-randomization of the landscape is prohibited in
+  rand_executable: Executable randomization...
+  rand_lua: Lua scripts randomization...
+  rand_done: Randomization successfully completed.
+  rand_OK: Press OK to close this window.
   # errors
   error: "Error"
   warning: "Warning"
@@ -211,5 +242,5 @@ eng:
   is_continued: "Options related to engine randomization will be forcibly disabled. Do you wish to continue?"
   compatch_no_fov: "The FOV randomization option is not available for Community Patch/Remaster and will be forcibly disabled."
   manifest_missing: "Manifest not found:"
-  bad_manifest: "Bad manifest!"
+  bad_manifest: "Unable to parse manifest in"
   randomization_aborted: "Randomization aborted."

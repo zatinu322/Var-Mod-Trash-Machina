@@ -14,63 +14,66 @@ import logging
 
 logger = logging.getLogger("pavlik")
 
-def main(config: Config) -> None:
-    total_errors = 0
-
+def copy_files(config: Config):
     logger.info("Copying necessary files.")
-    ic("Copying necessary files.")
 
     file_copier = FileCopier(config)
     file_copier.transfer_files()
-    total_errors += file_copier.errors
 
+    return file_copier.errors
+
+def randomize_files(config: Config):
     logger.info("Randomizing files.")
-    ic("Randomizing files.")
 
     file_randomizer = FileRandomizer(config)
     file_randomizer.start_randomization()
-    total_errors += file_randomizer.errors
+    
+    return file_randomizer.errors
 
+def randomize_text(config: Config):
     logger.info("Randomizing text.")
-    ic("Randomizing text.")
 
     text_randomizer = TextRandomizer(config)
     text_randomizer.start_randomization()
-    total_errors += text_randomizer.errors
 
+    return text_randomizer.errors
+
+def randomize_models(config: Config):
     logger.info("Randomizing models.")
-    ic("Randomizing models.")
 
     models_randomizer = ModelsRandomizer(config)
     models_randomizer.start_randomization()
-    total_errors += models_randomizer.errors
+    
+    return models_randomizer.errors
 
+def randomize_barnpcs(config: Config):
     logger.info("Randomizing NPC in bars.")
-    ic("Randomizing NPC in bars.")
 
     barnpc_randomizer = BarNpcRandomizer(config)
     barnpc_randomizer.start_randomization()
-    total_errors += barnpc_randomizer.errors
+    
+    return barnpc_randomizer.errors
 
+def randomize_landscape(config: Config):
     logger.info("Randomizing landscape.")
-    ic("Randomizing landscape.")
 
     landscape_randomizer = LandscapeRandomizer(config)
     landscape_randomizer.start_randomization()
-    total_errors += landscape_randomizer.errors
+    
+    return landscape_randomizer.errors
 
+def randomize_executable(config: Config):
     logger.info("Randomizing executable.")
-    ic("Randomizing executable.")
 
     executable_randomizer = ExecutableRandomizer(config)
     executable_randomizer.start_randomization()
-    total_errors += executable_randomizer.errors
 
+    return executable_randomizer.errors
+
+def randomize_lua(config: Config):
     logger.info("Activating randomizing via lua.")
-    ic("Activating randomizing via lua.")
 
     lua_randomizer = LuaRandomizer(config)
     lua_randomizer.start_randomization()
-    total_errors += lua_randomizer.errors
-
-    ic("Done!")
+    
+    return lua_randomizer.errors

@@ -45,7 +45,7 @@ class LandscapeRandomizer(Randomizer):
                 with open(state_file_path, "w") as current_state:
                     current_state.write(str(file_path.resolve()))
                 
-                # code by ThePlain
+                # code by Aleksandr "ThePlain" Fateev
                 with open(file_path, "rb") as stream:
                     raw = stream.read()
                 
