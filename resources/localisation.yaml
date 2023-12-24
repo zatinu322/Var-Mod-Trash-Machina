@@ -106,8 +106,10 @@ rus:
   rand_no_landscape: Повторая рандомизация ландшафта запрещена в
   rand_executable: Рандомизация движка игры...
   rand_lua: Рандомизация lua скриптов...
-  rand_done: Рандомизация успешно завершена.
+  rand_done_full: Рандомизация успешно завершена.
   rand_OK: Нажмите ОК, чтобы закрыть окно.
+  rand_done: Завершено.
+  rand_nothing: Нечего рандомизировать.
 
   # errors
   error: "Ошибка"
@@ -116,7 +118,7 @@ rus:
   not_game_dir: "Директория не найдена:"
   exe_not found: "Исполняемый файл отсутствует в"
   incorrect_version: "Указанная версия игры не соответствует содержимому папки с игрой."
-  is_continued: "Опции, связанные с рандомизацией движка будут принудительно отключены. Вы желаете продолжить?"
+  is_continued: "Не найден исполяемый файл. Опции, связанные с рандомизацией движка будут принудительно отключены."
   compatch_no_fov: "Опция рандомизации FOV недоступна для Community Patch/Remaster и будет принудительно отключена."
   manifest_missing: "Манифест не найден:"
   bad_manifest: "Невозможно прочитать манифест в"
@@ -230,8 +232,11 @@ eng:
   rand_no_landscape: Re-randomization of the landscape is prohibited in
   rand_executable: Executable randomization...
   rand_lua: Lua scripts randomization...
-  rand_done: Randomization successfully completed.
+  rand_done_full: Randomization successfully completed.
   rand_OK: Press OK to close this window.
+  rand_done: Done.
+  rand_nothing: Nothing to randomize.
+
   # errors
   error: "Error"
   warning: "Warning"
@@ -239,7 +244,7 @@ eng:
   not_game_dir: "Directory not found:"
   exe_not found: "Executable not found in"
   incorrect_version: "The specified game version does not match the contents in the game folder."
-  is_continued: "Options related to engine randomization will be forcibly disabled. Do you wish to continue?"
+  is_continued: "Executable not found. Options related to game engine randomization will be forcibly disabled."
   compatch_no_fov: "The FOV randomization option is not available for Community Patch/Remaster and will be forcibly disabled."
   manifest_missing: "Manifest not found:"
   bad_manifest: "Unable to parse manifest in"

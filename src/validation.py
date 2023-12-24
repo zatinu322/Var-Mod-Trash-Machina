@@ -129,14 +129,6 @@ class Validation():
         if not version_valid:
             return False
         
-        match exe_status:
-            case "no_exe":
-                ic('no exe')
-            case "exe":
-                ic("exe")
-            case "no_fov":
-                ic('no_fov')
-        
         logger.info("Game version validated.")
 
         if manifest.exists():
@@ -148,7 +140,7 @@ class Validation():
 
         logger.info("Randomization settings validated.")
         
-        return True
+        return True, exe_status
 
     
     def path_list(self, paths_list: list[str] | str):

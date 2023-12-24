@@ -255,7 +255,7 @@ class RandomizerWindow(MainGui):
         self.update_app()
     
     def info_cont_success(self):
-        self. info_cont_write(self.locale.tr("rand_done"), "green")
+        self. info_cont_write(self.locale.tr("rand_done_full"), "green")
         self.info_cont_write(self.locale.tr("rand_OK"))
         self.info_cont_btn.disabled = False
         self.progress_bar.value = 1
@@ -291,6 +291,11 @@ class RandomizerWindow(MainGui):
     def set_custom_preset(self, e: ControlEvent = None) -> None:
         self.dd_preset.value = "p_custom"
         self.update_app()
+
+    def disable_chkbxs(self, *chkbxs):
+        for chkbx in chkbxs:
+            chkbx.value = False
+        self.update_config()
     
     def start_randomization(self, e: ControlEvent = None) -> None:
         self.update_config()
@@ -299,7 +304,7 @@ class RandomizerWindow(MainGui):
 
         self.info_cont_write(self.locale.tr("rand_validation"))
         try:
-            validation = self.validate.settings(self.config)
+            validation, exe_status = self.validate.settings(self.config)
         except RootNotFoundError as no_root:
             self.info_cont_write(f"{self.locale.tr('game_path_missing')}\n{no_root}", color="red")
             self.info_cont_abort()
@@ -325,6 +330,23 @@ class RandomizerWindow(MainGui):
             self.info_cont_abort()
             return
         
+        match exe_status:
+            case "no_exe":
+                ic('no exe')
+                logger.warning("Randomization options related to executable randomizer will be forcibly disabled.")
+                self.info_cont_write(f"{self.locale.tr("is_continued")}", color="yellow")
+                self.disable_chkbxs(
+                    self.cb_render, 
+                    self.cb_armor, 
+                    self.cb_fov, 
+                    self.cb_gravity
+                )
+            case "no_fov":
+                ic('no_fov')
+                self.info_cont_write(f"{self.locale.tr("is_continued")}", color="yellow")
+
+                self.disable_chkbxs(self.cb_fov)
+        
         self.progress_bar.value += 0.11
 
         if validation:
@@ -335,7 +357,11 @@ class RandomizerWindow(MainGui):
                 self.progress_bar.value += 0.11
 
                 self.info_cont_write(self.locale.tr("rand_files"))
-                mr.randomize_files(self.config)
+                errors, status = mr.randomize_files(self.config)
+                if not status:
+                    self.info_cont_write(f"{self.locale.tr("rand_nothing")}")
+                else:
+                    self.info_cont_write(f"{self.locale.tr("rand_done")}")
                 self.progress_bar.value += 0.11
 
                 self.info_cont_write(self.locale.tr("rand_text"))
@@ -409,9 +435,13 @@ def main(page: Page) -> None:
     page.vertical_alignment = MainAxisAlignment.CENTER
     page.horizontal_alignment = MainAxisAlignment.CENTER
     page.window_width = 880
-    page.window_height = 870
+    page.window_height = 700
 
     page.window_resizable = False
+    page.window_max_width = 880
+    page.window_min_width = 880
+    page.window_max_height = 870
+    page.window_min_height = 800
     page.window_maximizable = False
 
     page.theme_mode = ThemeMode.DARK

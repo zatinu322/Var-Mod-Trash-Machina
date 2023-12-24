@@ -87,10 +87,11 @@ class FileRandomizer(Randomizer):
         
         return True
 
-    def start_randomization(self) -> None:
+    def start_randomization(self) -> bool:
         working_set = self.configure_randomization()
         if not working_set:
             self.logger.info("Nothing to randomize.")
-            return
+            return False
         for groups in working_set:
             self.randomize(groups)
+        return True

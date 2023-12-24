@@ -26,9 +26,9 @@ def randomize_files(config: Config):
     logger.info("Randomizing files.")
 
     file_randomizer = FileRandomizer(config)
-    file_randomizer.start_randomization()
+    status = file_randomizer.start_randomization()
     
-    return file_randomizer.errors
+    return file_randomizer.errors, status
 
 def randomize_text(config: Config):
     logger.info("Randomizing text.")

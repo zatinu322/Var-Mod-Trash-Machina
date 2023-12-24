@@ -487,7 +487,7 @@ class MainGui(UserControl):
                         Container(
                             width=600,
                             opacity=0.7,
-                            height=450,
+                            height=425,
                             alignment=alignment.top_left,
                             padding=10,
                             bgcolor="black",
@@ -572,32 +572,32 @@ class MainGui(UserControl):
                             self.start_randomization_btn
                         ]
                     ),
-                    Row(
-                        width=self.main_width,
-                        alignment="center",
-                        controls=[
-                            Container(
-                                width=260,
-                                height=150,
-                                content=Row([
-                                    Image(
-                                            src="src/assets/rpg_logo.png",
-                                            width=130
-                                        ),
-                                    Container(Column([
-                                        Text(NAME, size=12,weight=FontWeight.BOLD, width=120, max_lines=2, text_align=TextAlign.CENTER),
-                                        Text(VERSION, size=12, width=120, text_align=TextAlign.CENTER), 
-                                        Text(BUILD, size=12, width=120, text_align=TextAlign.CENTER),
-                                        Text(""),
-                                        Text("Powered by\npavlikrpg", size=12, width=120, text_align=TextAlign.CENTER)
-                                    ], spacing=2, height=150, alignment=MainAxisAlignment.CENTER), alignment=alignment.center)
+                    # Row(
+                    #     width=self.main_width,
+                    #     alignment="center",
+                    #     controls=[
+                    #         Container(
+                    #             width=260,
+                    #             height=150,
+                    #             content=Row([
+                    #                 Image(
+                    #                         src="src/assets/rpg_logo.png",
+                    #                         width=130
+                    #                     ),
+                    #                 Container(Column([
+                    #                     Text(NAME, size=12,weight=FontWeight.BOLD, width=120, max_lines=2, text_align=TextAlign.CENTER),
+                    #                     Text(VERSION, size=12, width=120, text_align=TextAlign.CENTER), 
+                    #                     Text(BUILD, size=12, width=120, text_align=TextAlign.CENTER),
+                    #                     Text(""),
+                    #                     Text("Powered by\npavlikrpg", size=12, width=120, text_align=TextAlign.CENTER)
+                    #                 ], spacing=2, height=150, alignment=MainAxisAlignment.CENTER), alignment=alignment.center)
                                         
-                                ], alignment=MainAxisAlignment.CENTER, vertical_alignment=CrossAxisAlignment.CENTER, spacing=0),
-                                bgcolor="white24",
-                                border_radius=20
-                            )
-                        ]
-                    )
+                    #             ], alignment=MainAxisAlignment.CENTER, vertical_alignment=CrossAxisAlignment.CENTER, spacing=0),
+                    #             bgcolor="white24",
+                    #             border_radius=20
+                    #         )
+                    #     ]
+                    # )
                 ]
             )
         )
