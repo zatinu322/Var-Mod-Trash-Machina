@@ -9,7 +9,7 @@ class MainGui(UserControl):
         self.main_width = main_width
         self.working_width = working_width
         self.button_style = ButtonStyle(shape=RoundedRectangleBorder(radius=10))
-        self.btn_rus,  self.btn_eng = self.create_lang_buttons()
+        self.btn_rus, self.btn_eng = self.create_lang_buttons()
         self.options_gui = self.create_options()
         self.expandable_options = ExpandableContainer(self.working_width, 760, 64, content=self.options_gui)
         self.game_path_setting_gui = self.create_game_path_setting()
@@ -512,9 +512,10 @@ class MainGui(UserControl):
     def build(self):
         return Container(
             width=self.main_width,
-            height=810,
+            height=650,
             # bgcolor="black",
             # bgcolor="#3d5a68",
+            # alignment=alignment.center,
             padding=10,
             content=Column(
                 scroll="hidden",

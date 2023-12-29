@@ -85,6 +85,7 @@ class RandomizerWindow(MainGui):
         self.dd_preset.on_change = self.update_checkboxes
         self.start_randomization_btn.on_click = self.start_randomization
         self.info_cont_btn.on_click = self.close_info_cont
+        self.game_version_dd.on_change = self.adjust_cb_state
 
         for chkbx in self.chkbxs_dict:
             chkbx.on_change = self.set_custom_preset
@@ -121,9 +122,12 @@ class RandomizerWindow(MainGui):
 
         self.dd_preset.value = self.config.preset
         for k,v in self.chkbxs_dict.items():
-            k.value = self.config.chkbxs.get(v, False)
+            if not k.disabled:
+                k.value = self.config.chkbxs.get(v, False)
         
         self.game_version_dd.value = self.config.game_version
+
+        self.adjust_cb_state()
         
         self.update_app()
 
@@ -198,19 +202,34 @@ class RandomizerWindow(MainGui):
         game_path = Path(self.game_path_tf.value)
 
         try:
-            validation = self.validate.game_dir(game_path)
+            validation, exe = self.validate.game_dir(game_path)
         except (RootNotFoundError, ExeMissingError, GameNotFoundError, VersionError):
-            validation = False
+            validation, exe = False, None
         except GDPFoundError:
-            validation = False
+            validation, exe = False, None
             self.game_path_status_t.color="red"
             self.game_path_status_t.opacity = 100
             self.game_path_status_t.value = self.locale.tr("gdp_found")
 
         if validation:
-            self.game_path_status_t.value = self.locale.tr("valid_path")
-            self.game_path_status_t.opacity = 100
-            self.game_path_status_t.color="green"
+            if exe:
+                self.game_path_status_t.value = self.locale.tr("valid_path")
+                self.game_path_status_t.opacity = 100
+                self.game_path_status_t.color="green"
+
+                self.adjust_cb_state()
+            else:
+                self.game_path_status_t.value = self.locale.tr("valid_path_no_exe")
+                self.game_path_status_t.opacity = 100
+                self.game_path_status_t.color="yellow"
+
+                self.enable_or_disable_cb(
+                    True,
+                    self.cb_render,
+                    self.cb_fov,
+                    self.cb_gravity,
+                    self.cb_armor
+                )
         else:
             self.game_path_status_t.color="red"
             self.game_path_status_t.opacity = 100
@@ -225,7 +244,7 @@ class RandomizerWindow(MainGui):
                 checked = False
         
         for chkbx in self.chkbxs_dict:
-            chkbx.value = checked
+            if not chkbx.disabled: chkbx.value = checked
         self.set_custom_preset()
         
         self.update_app()
@@ -270,11 +289,29 @@ class RandomizerWindow(MainGui):
         chkbxs_config = PRESETS.get(e.data, {})
         for k,v in self.chkbxs_dict.items():
             new_value = chkbxs_config.get(v, None)
-            if new_value == None: continue
-            else: k.value = new_value
+            if new_value == None:
+                continue
+            elif not k.disabled:
+                k.value = new_value
+            else:
+                k.value = False
 
         self.update_app()
     
+    def adjust_cb_state(self, e: ControlEvent = None) -> None:
+        match self.game_version_dd.value:
+            case "cp114" | "cr114" | "isl12cp" | "isl12cr":
+                self.uncheck_chkbxs(self.cb_fov)
+                self.enable_or_disable_cb(True, self.cb_fov)
+            case "steam":
+                self.enable_or_disable_cb(
+                    False, 
+                    self.cb_render, 
+                    self.cb_gravity, 
+                    self.cb_fov, 
+                    self.cb_armor
+                )
+
     def collect_chkbxs_values(self) -> dict:
         return {v:k.value for (k,v) in self.chkbxs_dict.items()}
     
@@ -292,10 +329,17 @@ class RandomizerWindow(MainGui):
         self.dd_preset.value = "p_custom"
         self.update_app()
 
-    def disable_chkbxs(self, *chkbxs):
+    def uncheck_chkbxs(self, *chkbxs):
         for chkbx in chkbxs:
             chkbx.value = False
         self.update_config()
+        self.update_app()
+    
+    def enable_or_disable_cb(self, is_disabled: bool, *chkbxs) -> None:
+        for chkbx in chkbxs:
+            chkbx.disabled = is_disabled
+        self.update_config()
+        self.update_app()
     
     def start_randomization(self, e: ControlEvent = None) -> None:
         self.update_config()
@@ -335,7 +379,7 @@ class RandomizerWindow(MainGui):
                 ic('no exe')
                 logger.warning("Randomization options related to executable randomizer will be forcibly disabled.")
                 self.info_cont_write(f"{self.locale.tr("is_continued")}", color="yellow")
-                self.disable_chkbxs(
+                self.uncheck_chkbxs(
                     self.cb_render, 
                     self.cb_armor, 
                     self.cb_fov, 
@@ -345,7 +389,7 @@ class RandomizerWindow(MainGui):
                 ic('no_fov')
                 self.info_cont_write(f"{self.locale.tr("is_continued")}", color="yellow")
 
-                self.disable_chkbxs(self.cb_fov)
+                self.uncheck_chkbxs(self.cb_fov)
         
         self.progress_bar.value += 0.11
 
@@ -438,10 +482,6 @@ def main(page: Page) -> None:
     page.window_height = 700
 
     page.window_resizable = False
-    page.window_max_width = 880
-    page.window_min_width = 880
-    page.window_max_height = 870
-    page.window_min_height = 800
     page.window_maximizable = False
 
     page.theme_mode = ThemeMode.DARK

@@ -47,7 +47,6 @@ SUPPORTED_VERSIONS = {
 NO_EXE_ALLOWED = ["steam", "isl1053"]
 FOV_ALLOWED = ["steam", "isl1053"]
 
-
 VERSIONS_INFO = {
     "steam": {
         "exe": [

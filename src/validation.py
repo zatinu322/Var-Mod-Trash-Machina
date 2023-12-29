@@ -21,7 +21,7 @@ class Validation():
         
         return path_to_file.exists()
     
-    def game_dir(self, path_to_dir: Path, silent: bool = True) -> tuple[bool, str]:
+    def game_dir(self, path_to_dir: Path, silent: bool = True) -> tuple[bool, None | Path]:
         # validate main dir
         if not path_to_dir.exists():
             if not silent: logger.error(f"Unable to validate game path. {path_to_dir} does not exists.")
@@ -48,7 +48,7 @@ class Validation():
                     raise GDPFoundError(gdp_archives)
                 if not silent: logger.error(f"Unable to validate game path. {full_path} is missing.")
                 raise GameNotFoundError(full_path)
-        return True
+        return True, exe
     
     @staticmethod
     def look_for_gdp_archives(game_dir: Path) -> bool | list[Path]:
@@ -65,7 +65,7 @@ class Validation():
             if exe_path.exists(): return exe_path
         return None
     
-    def steam_version(self, game_version: str, version_info: dict, exe: str) -> tuple[bool, str]:
+    def steam_version(self, game_version: str, version_info: dict, exe: Path) -> tuple[bool, str]:
         if not exe:
             if game_version in NO_EXE_ALLOWED:
                 return (True, "no_exe")
@@ -118,13 +118,12 @@ class Validation():
         logger.info("Validating randomization settings.")
 
         if not settings.game_path: raise RootNotFoundError(False)
-        path_valid = self.game_dir(Path(settings.game_path), silent=False)
+        path_valid, exe = self.game_dir(Path(settings.game_path), silent=False)
         if not path_valid:
             return False
         
         logger.info("Game path validated.")
         
-        exe = self.get_exe_name(settings.game_path)
         version_valid, exe_status, manifest = self.game_version(settings.game_version, exe)
         if not version_valid:
             return False

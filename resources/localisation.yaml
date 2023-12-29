@@ -93,6 +93,7 @@ rus:
   valid_path: Путь к игре корректен.
   invalid_path: Не найдена установленная игра.
   gdp_found: Найдены GDP архивы. Возможно, требуется распаковка.
+  valid_path_no_exe: Не найден исполняемый файл.
   # randomization messages
   rand_info: Журнал рандомизации
   rand_start: Начало рандомизации...
@@ -219,6 +220,7 @@ eng:
   valid_path: Game path is correct.
   invalid_path: Installed game not found.
   gdp_found: Found GDP archives. Unpacking may be required.
+  valid_path_no_exe: Executable not found.
   # randomization messages
   rand_info: Randomization log
   rand_start: Starting randomization...
