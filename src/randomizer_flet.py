@@ -29,10 +29,9 @@ class RandomizerWindow(MainGui):
         page: Page, 
         config: Config, 
         locale: Localisation,
-        main_width: int, 
         working_width: int
     ) -> None:
-        super().__init__(main_width, working_width)
+        super().__init__(page, working_width)
 
         self.page = page
         self.config = config
@@ -113,6 +112,11 @@ class RandomizerWindow(MainGui):
     def apply_config(self):
         self.page.window_left = self.config.pos_x
         self.page.window_top = self.config.pos_y
+        if self.config.is_maximized:
+            self.page.window_maximized = True
+        elif self.config.width and self.config.height:
+            self.page.window_width = self.config.width
+            self.page.window_height = self.config.height
 
         self.locale.update_lang(self.config.lang)
         self.retranslate_ui()
@@ -318,6 +322,12 @@ class RandomizerWindow(MainGui):
     def update_config(self) -> None:
         self.config.pos_x = self.page.window_left
         self.config.pos_y = self.page.window_top
+        if self.page.window_maximized:
+            self.config.is_maximized = True
+        else:
+            self.config.is_maximized = False
+        self.config.width = self.page.window_width
+        self.config.height = self.page.window_height
         self.config.preset = self.dd_preset.value
         self.config.game_path = self.game_path_tf.value
         self.config.game_version = self.game_version_dd.value
@@ -446,6 +456,20 @@ class RandomizerWindow(MainGui):
 
 
 def main(page: Page) -> None:
+    def window_resized(e: ControlEvent) -> None:
+        ic(page.width)
+        ic(page.window_width)
+        app.main_column.width = page.width
+        app.main_column.height = page.height-3
+        try:
+            app.info_cont.width = page.width
+            app.info_cont.height = page.height-3
+            app.info_cont.update()
+        # error occurs because this widget is not always on app main screen
+        except AssertionError:
+            pass
+        app.update()
+    
     def save_config(e: ControlEvent) -> None:
         if e.data == "close":
             try:
@@ -457,42 +481,50 @@ def main(page: Page) -> None:
             page.window_destroy()
     
     def create_error_container(message: str) -> None:
-        return Container(
-            Row(
-                controls=[
+        page.window_maximizable = False
+
+        return Row(
+            controls=[
+                Container(
                     Text(
-                    value=message,
-                    size=18
-                    )
-                ],
-                alignment=MainAxisAlignment.CENTER
-            ),
-            width=1320,
-            height=100,
-            bgcolor="#610606",
-            border_radius=20
+                        value=message,
+                        size=18,
+                        text_align="center"
+                    ),
+                    bgcolor="#610606",
+                    width=850,
+                    height=50,
+                    alignment=alignment.center,
+                    border_radius=20
+                )
+            ],
+            width=page.width,
+            height=page.height,
+            alignment=MainAxisAlignment.CENTER
         )
     
     logger.info(f"Running {FULL_NAME} in {MAIN_PATH}")
 
     page.title = FULL_NAME
-    page.vertical_alignment = MainAxisAlignment.CENTER
+    page.vertical_alignment = MainAxisAlignment.START
     page.horizontal_alignment = MainAxisAlignment.CENTER
     page.window_width = 880
-    page.window_height = 700
+    page.window_min_width = 832
+    page.window_height = 706
+    page.bgcolor="#3d5a68"
 
-    page.window_resizable = False
-    page.window_maximizable = False
+    # page.window_resizable = False
+    # page.window_maximizable = False
 
     page.theme_mode = ThemeMode.DARK
+    page.padding = padding.all(0)
 
     try:
         app = RandomizerWindow(
-        page = page,
-        config = Config(SETTINGS_PATH),
-        locale = Localisation(LOCALIZATION_PATH),
-        main_width = 850,
-        working_width = 800
+            page = page,
+            config = Config(SETTINGS_PATH),
+            locale = Localisation(LOCALIZATION_PATH),
+            working_width = 800
         )
     except LocalisationMissingError as loc_missing:
         logger.critical(loc_missing)
@@ -506,6 +538,7 @@ def main(page: Page) -> None:
     page.window_prevent_close = True
 
     page.on_window_event = save_config
+    page.on_resize = window_resized
 
     page.add(app)
     page.update()

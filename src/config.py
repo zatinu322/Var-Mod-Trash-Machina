@@ -10,6 +10,9 @@ class Config(YamlConfig):
         
         self.pos_x: int = 0
         self.pos_y: int = 0
+        self.width: float | None = None
+        self.height: float | None = None
+        self.is_maximized: bool = False
         self.lang: str = "eng"
         self.game_path: str = ""
         self.game_version: str = ""
@@ -80,6 +83,9 @@ class Config(YamlConfig):
 
         self.pos_x = self.yaml.get("pos_x", 0)
         self.pos_y = self.yaml.get("pos_y", 0)
+        self.width = self.yaml.get("width", None)
+        self.height = self.yaml.get("height", None)
+        self.is_maximized = self.yaml.get("is_maximized", False)
         self.lang = self.yaml.get("language", "eng")
         self.game_path = self.yaml.get("game_path", "")
         self.game_version = self.yaml.get("version", "")
@@ -95,6 +101,9 @@ class Config(YamlConfig):
                 "game_path": self.game_path,
                 "pos_x": self.pos_x,
                 "pos_y": self.pos_y,
+                "width": self.width,
+                "height": self.height,
+                "is_maximized": self.is_maximized,
                 "preset": self.preset,
                 "version": self.game_version,
                 **self.chkbxs

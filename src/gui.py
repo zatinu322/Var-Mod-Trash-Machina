@@ -1,48 +1,44 @@
 from flet import *
-from data import NAME, VERSION, BUILD
+from pathlib import Path
 
 class MainGui(UserControl):
-    def __init__(
-            self, main_width: int, working_width: int) -> None:
+    def __init__(self, page: Page, width: int) -> None:
         super().__init__()
 
-        self.main_width = main_width
-        self.working_width = working_width
+        self.page = page
+        self.main_width = width
         self.button_style = ButtonStyle(shape=RoundedRectangleBorder(radius=10))
         self.btn_rus, self.btn_eng = self.create_lang_buttons()
         self.options_gui = self.create_options()
-        self.expandable_options = ExpandableContainer(self.working_width, 760, 64, content=self.options_gui)
+        self.expandable_options = ExpandableContainer(self.main_width, 760, 64, content=self.options_gui)
         self.game_path_setting_gui = self.create_game_path_setting()
         self.start_randomization_btn = self.create_randomization_btn()
-        self.create_game_version_setting()
+        self.game_version_dd = self.create_game_version_setting()
         self.info_cont = self.create_info_container()
 
-    def create_lang_buttons(self):
-        return [
+    # lang buttons
+    def create_lang_buttons(self) -> None:
+        """
+        Creates buttons with flag icons for changing language.
+        """
+        return (
             Container(
-                Text(
-                    value="rus",
-                    opacity=0
-                ),
                 width=80,
                 height=40,
                 ink=True,
-                image_src="src/assets/rus.png",
+                image_src=Path("src\\assets\\rus.png").resolve(),
                 image_fit="fill"
             ),
             Container(
-                Text(
-                    value="eng",
-                    opacity=0
-                ),
                 width=80,
                 height=40,
                 ink=True,
-                image_src="src/assets/eng.png",
+                image_src=Path("src\\assets\\eng.png").resolve(),
                 image_fit="fill"
             )
-        ]
+        )
     
+    # options
     def create_options(self) -> list:
         self.create_opt_chkbxs()
 
@@ -260,7 +256,7 @@ class MainGui(UserControl):
                         alignment=MainAxisAlignment.CENTER
                     ),
                     Row(
-                        width=self.working_width,
+                        width=self.main_width,
                         height=365,
                         alignment=MainAxisAlignment.CENTER,
                         controls=[
@@ -291,7 +287,7 @@ class MainGui(UserControl):
                         ]
                     ),
                     Row(
-                        width=self.working_width,
+                        width=self.main_width,
                         height=235,
                         alignment=MainAxisAlignment.CENTER,
                         controls=[
@@ -318,8 +314,12 @@ class MainGui(UserControl):
                 ]
             )
         ]
-
-    def create_opt_chkbxs(self):
+    
+    def create_opt_chkbxs(self) -> None:
+        """
+        Creates checkboxes for options container
+        and instance variable with dict[Checkbox, str].
+        """
         self.cb_ai_vehs = Checkbox(label="cb_ai_vehs")
         self.cb_aim = Checkbox(label="cb_aim")
         self.cb_armor = Checkbox(label="cb_armor")
@@ -425,7 +425,8 @@ class MainGui(UserControl):
             self.cb_weather: "cb_weather",
             self.cb_wheels: "cb_wheels",
         }
-
+    
+    # game path
     def create_game_path_setting(self):
         self.game_path_tf = TextField(width=600)
         self.browse_btn = ElevatedButton(
@@ -449,14 +450,72 @@ class MainGui(UserControl):
             ]
         )
     
+    # game version
     def create_game_version_setting(self):
-        self.game_version_dd = Dropdown(width=600)
-
+        return Dropdown(width=600)
+    
+    # randomization button
     def create_randomization_btn(self):
         return ElevatedButton(
             width=300,
             height=70,
             style=self.button_style
+        )
+    
+    # info container
+    def create_info_container(self) -> Row:
+        self.create_info_container_widgets()
+        self.log_container.controls.clear() # clear previous log
+        return Row(
+            [
+                Container(
+                    Column(
+                        [
+                            Row(
+                                [
+                                    Container(self.info_cont_heading, padding=padding.only(top=5))
+                                ],
+                                alignment=MainAxisAlignment.CENTER
+                            ),
+                            Row(
+                                [
+                                    Container(
+                                        width=600,
+                                        opacity=0.7,
+                                        height=330,
+                                        alignment=alignment.top_left,
+                                        padding=10,
+                                        bgcolor="black",
+                                        border_radius=10,
+                                        content=self.log_container
+                                    )
+                                ],
+                                alignment=MainAxisAlignment.CENTER
+                            ),
+                            Row(
+                                [
+                                    self.progress_bar
+                                ],
+                                alignment=MainAxisAlignment.CENTER
+                            ),
+                            Row(
+                                [
+                                    self.info_cont_btn
+                                ],
+                                alignment=MainAxisAlignment.CENTER
+                            )
+                        ]
+                    ),
+                    alignment=alignment.top_center,
+                    bgcolor="#3d5a68",
+                    opacity=80,
+                    border_radius=20,
+                    width=700,
+                    height=470
+                )
+            ],
+            width=800,
+            alignment=MainAxisAlignment.CENTER
         )
     
     def create_info_container_widgets(self):
@@ -470,147 +529,90 @@ class MainGui(UserControl):
             width=600,
             scroll=True
         )
-
-    def create_info_container(self):
-        self.create_info_container_widgets()
-        self.log_container.controls.clear() # clear previous log
-        return Container(
-            content=Column(
-                controls=[
-                    Row(
-                        controls=[
-                            Container(self.info_cont_heading, padding=padding.only(top=5))
-                        ],
-                        alignment=MainAxisAlignment.CENTER
-                    ),
-                    Row([
+    
+    def build(self) -> Container:
+        self.main_column = Column(
+            [
+                # extra row, because padding and margin breaks scrolling
+                Row(
+                    height=1
+                ),
+                # language buttons
+                Row(
+                    [
+                        self.btn_rus,
+                        self.btn_eng
+                    ],
+                    width=200,
+                    alignment=MainAxisAlignment.CENTER,
+                    spacing=30
+                ),
+                # logo
+                Row(
+                    [
                         Container(
-                            width=600,
-                            opacity=0.7,
-                            height=425,
-                            alignment=alignment.top_left,
-                            padding=10,
-                            bgcolor="black",
-                            border_radius=10,
-                            content=self.log_container
-                        ),],
-                        alignment=MainAxisAlignment.CENTER
-                    ),
-                    Row([
-                        self.progress_bar
-                    ], alignment=MainAxisAlignment.CENTER),
-                    Row([self.info_cont_btn], alignment=MainAxisAlignment.CENTER)
-                ]
-            ),
-            alignment=alignment.center,
-            bgcolor="#3d5a68",
-            opacity=80,
-            border_radius=20,
-            margin=100
+                            Image(src=Path("src\\assets\\logo.png").resolve()),
+                            width=self.main_width
+                        ),
+                    ],
+                    alignment=MainAxisAlignment.CENTER
+                ),
+                # settings
+                Row(
+                    [
+                        self.expandable_options
+                    ],
+                    alignment=MainAxisAlignment.CENTER
+                ),
+                # game path selection
+                Row(
+                    [
+                        self.game_path_setting_gui
+                    ],
+                    width=self.main_width,
+                    height=100,
+                    alignment=MainAxisAlignment.SPACE_AROUND
+                ),
+                # game version selection
+                Row(
+                    [
+                        self.game_version_dd
+                    ],
+                    width=self.main_width,
+                    alignment=MainAxisAlignment.SPACE_AROUND
+                ),
+                Row(
+                    [
+                        self.start_randomization_btn
+                    ],
+                    width=self.main_width,
+                    alignment=MainAxisAlignment.CENTER
+                ),
+                # extra row, because padding and margin breaks scrolling
+                Row(
+                    height=1
+                ),
+            ],
+            width=self.page.width-(self.page.padding.left*2),
+            horizontal_alignment=CrossAxisAlignment.CENTER,
+            alignment=MainAxisAlignment.START,
+            scroll="hidden",
+            spacing=30
         )
-
-    def build(self):
-        return Container(
-            width=self.main_width,
-            height=650,
-            # bgcolor="black",
-            # bgcolor="#3d5a68",
-            # alignment=alignment.center,
-            padding=10,
-            content=Column(
-                scroll="hidden",
-                spacing=30,
-                alignment=MainAxisAlignment.CENTER,
-                controls=[
-                    Row(
-                        controls=[
-                            self.btn_rus,
-                            self.btn_eng
-                        ],
-                        width=self.main_width,
-                        alignment="center",
-                        spacing=30
-                    ),
-                    Row(
-                        controls=[
-                            Container(
-                                Image(
-                                    src="src/assets/logo.png"
-                                ),
-                                width=self.working_width
-                            )
-                        ],
-                        width = self.main_width,
-                        alignment="center"
-                    ),
-                    Row(
-                        controls=[
-                            self.expandable_options
-                        ],
-                        width=self.main_width,
-                        alignment="center"
-                    ),
-                    Row(
-                        controls=[
-                            self.game_path_setting_gui
-                        ],
-                        width=self.main_width,
-                        height=100,
-                        alignment=MainAxisAlignment.SPACE_AROUND
-                        # spacing=50
-                    ),
-                    Row(
-                        controls=[
-                            self.game_version_dd,
-                        ],
-                        width=self.main_width,
-                        alignment=MainAxisAlignment.SPACE_AROUND
-                    ),
-                    Row(
-                        width=self.main_width,
-                        alignment="center",
-                        controls=[
-                            self.start_randomization_btn
-                        ]
-                    ),
-                    # Row(
-                    #     width=self.main_width,
-                    #     alignment="center",
-                    #     controls=[
-                    #         Container(
-                    #             width=260,
-                    #             height=150,
-                    #             content=Row([
-                    #                 Image(
-                    #                         src="src/assets/rpg_logo.png",
-                    #                         width=130
-                    #                     ),
-                    #                 Container(Column([
-                    #                     Text(NAME, size=12,weight=FontWeight.BOLD, width=120, max_lines=2, text_align=TextAlign.CENTER),
-                    #                     Text(VERSION, size=12, width=120, text_align=TextAlign.CENTER), 
-                    #                     Text(BUILD, size=12, width=120, text_align=TextAlign.CENTER),
-                    #                     Text(""),
-                    #                     Text("Powered by\npavlikrpg", size=12, width=120, text_align=TextAlign.CENTER)
-                    #                 ], spacing=2, height=150, alignment=MainAxisAlignment.CENTER), alignment=alignment.center)
-                                        
-                    #             ], alignment=MainAxisAlignment.CENTER, vertical_alignment=CrossAxisAlignment.CENTER, spacing=0),
-                    #             bgcolor="white24",
-                    #             border_radius=20
-                    #         )
-                    #     ]
-                    # )
-                ]
-            )
+        self.main_cont = Container(
+            self.main_column,
+            border=border.all("1", "red")
         )
+        return self.main_cont
 
 class ExpandableContainer(UserControl):
     def __init__(self,
-        width: int,
-        full_height: int,
-        hidden_height: int,
-        name: Text = Text(),
-        content: list = None
-        ):
+                 width: int,
+                 full_height: int,
+                 hidden_height: int,
+                 name: Text = Text(),
+                 content: list = []) -> None:
+        
         super().__init__()
 
         self.width = width
@@ -628,10 +630,10 @@ class ExpandableContainer(UserControl):
         )
     
     def format_name(self) -> None:
-        self.name.size=16
+        self.name.size = 16
         self.name.weight=FontWeight.BOLD
     
-    def expand_container(self, e):
+    def expand_container(self, e: ControlEvent) -> None:
         if self.controls[0].height != self.full_height:
             self.controls[0].height = self.full_height
             self.expand_icon.icon = icons.KEYBOARD_ARROW_UP
@@ -640,27 +642,28 @@ class ExpandableContainer(UserControl):
             self.controls[0].height = self.hidden_height
             self.expand_icon.icon = icons.KEYBOARD_ARROW_DOWN
             self.controls[0].update()
-
-    def build(self):
+    
+    def build(self) -> Container:
         return Container(
+            Column(
+                [
+                    Row(
+                        [
+                            Icon(icons.SETTINGS),
+                            self.name,
+                            self.expand_icon
+                        ],
+                        spacing=10
+                    ),
+                    *self.content
+                ],
+                spacing=12
+            ),
             width=self.width,
             height=self.hidden_height,
             bgcolor="white10",
             border_radius=11,
             animate=animation.Animation(400, "decelerate"),
-            padding=padding.only(left=10, right=10, top=10),
-            content=Column(
-                spacing=12,
-                controls=[
-                    Row(
-                        spacing=10,
-                        controls=[
-                            Icon(name=icons.SETTINGS),
-                            self.name,
-                            self.expand_icon
-                        ]
-                    ),
-                    *self.content
-                ]
-            )
+            padding=padding.only(left=10, right=10, top=10)
         )
+

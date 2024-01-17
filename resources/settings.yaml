@@ -50,8 +50,11 @@ cb_veh_skins: false
 cb_weather: false
 cb_wheels: false
 game_path: ""
+height: 706.0
+is_maximized: false
 language: eng
 pos_x: 0.0
 pos_y: 0.0
 preset: ""
 version: ""
+width: 880.0
