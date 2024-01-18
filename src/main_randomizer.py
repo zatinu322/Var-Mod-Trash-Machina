@@ -14,10 +14,10 @@ import logging
 
 logger = logging.getLogger("pavlik")
 
-def copy_files(config: Config):
+def copy_files(config: Config, need_validation: bool = False):
     logger.info("Copying necessary files.")
 
-    file_copier = FileCopier(config)
+    file_copier = FileCopier(config, need_validation)
     file_copier.transfer_files()
 
     return file_copier.errors

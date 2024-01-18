@@ -7,6 +7,21 @@ class ManifestMissingError(Exception):
     def __str__(self) -> str:
         return str(self.path.resolve())
 
+class ResourcesMissingError(Exception):
+    def __init__(self, path: Path) -> None:
+        self.path = path
+    
+    def __str__(self) -> str:
+        return str(self.path.resolve())
+    
+class ManifestKeyError(Exception):
+    def __init__(self, key_name: str, key_type: type) -> None:
+        self.key_type = key_type
+        self.key_name = key_name
+
+    def __str__(self) -> str:
+        return f"{self.key_name}: {str(self.key_type)}"
+
 class LocalisationMissingError(Exception):
     def __init__(self, path: str, lang: str) -> None:
         self.path = path

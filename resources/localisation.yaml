@@ -123,6 +123,8 @@ rus:
   compatch_no_fov: "Опция рандомизации FOV недоступна для Community Patch/Remaster и будет принудительно отключена."
   manifest_missing: "Манифест не найден:"
   bad_manifest: "Невозможно прочитать манифест в"
+  file_missing: "Отсутствует необходимый файл:"
+  wrong_key_type: "Неверный тип данных для ключа"
   randomization_aborted: "Рандомизация прервана."
 
 eng:
@@ -250,4 +252,6 @@ eng:
   compatch_no_fov: "The FOV randomization option is not available for Community Patch/Remaster and will be forcibly disabled."
   manifest_missing: "Manifest not found:"
   bad_manifest: "Unable to parse manifest in"
+  file_missing: "A required file is missing:"
+  wrong_key_type: "Incorrect key type for"
   randomization_aborted: "Randomization aborted."

@@ -2,20 +2,17 @@ from randomizer import Randomizer
 from pathlib import Path
 from config import Config
 
-import logging
 import shutil
 
-logger = logging.getLogger("pavlik")
-
 class FileCopier(Randomizer):
-    def __init__(self, config: Config) -> None:
-        super().__init__(config)
+    def __init__(self, config: Config, need_validation: bool = False) -> None:
+        super().__init__(config, need_validation)
     
     def copy_files(self, dir: Path) -> None:
         dir_path = dir / "data"
         game_dir_path = Path(self.game_path) / "data"
     
-        logger.debug(f"FileCopier: copy {dir_path} to {game_dir_path}.")
+        self.logger.debug(f"FileCopier: copy {dir_path} to {game_dir_path}.")
         shutil.copytree(dir_path, game_dir_path, dirs_exist_ok = True)
     
     def edit_lua(self, lua_path: str):

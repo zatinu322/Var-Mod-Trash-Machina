@@ -1,11 +1,28 @@
 # Validation
-Necessary_files:
-  - Vanilla/data/maps
-  - Vanilla/data/profiles
-  - Vanilla/data/scripts
+# version validation could be False, str with mod_manifest.yaml path or list with file paths
+version_validation:
+  - data/scripts/server.lua
+# should be always list with file paths!
+resources_validation:
+  - Vanilla/data/maps/mainmenu/servers.xml
+  - Vanilla/data/maps/r1m1/cinematriggers.xml
+  - Vanilla/data/maps/r1m1/servers.xml
+  - Vanilla/data/maps/r1m1/triggers.xml
+  - Vanilla/data/maps/r1m2/servers.xml
+  - Vanilla/data/maps/r1m3/servers.xml
+  - Vanilla/data/maps/r1m4/servers.xml
+  - Vanilla/data/maps/r2m1/servers.xml
+  - Vanilla/data/maps/r2m2/servers.xml
+  - Vanilla/data/maps/r3m1/servers.xml
+  - Vanilla/data/maps/r3m2/servers.xml
+  - Vanilla/data/maps/r4m1/servers.xml
+  - Vanilla/data/maps/r4m2/servers.xml
+  - Vanilla/data/profiles/1/profile.xml
+  - Vanilla/data/scripts/randomizer.lua
+  - Vanilla/data/scripts/randomizer_vars.lua
 # FileCopier class
 FolderToCopy: resources/Vanilla
-LuaToEdit: data/scripts/server.lua
+LuaToEdit: [data/scripts/server.lua]
 # FileRandomizer class
 Files:
   # Icons

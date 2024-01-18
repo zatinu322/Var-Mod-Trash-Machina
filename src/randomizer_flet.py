@@ -11,7 +11,7 @@ from gui import MainGui
 from config import Config
 from localisation import Localisation
 from validation import Validation
-from errors import LocalisationMissingError, RootNotFoundError, ExeMissingError, GameNotFoundError, VersionError, ManifestMissingError, GDPFoundError
+from errors import LocalisationMissingError, RootNotFoundError, ExeMissingError, GameNotFoundError, VersionError, ManifestMissingError, GDPFoundError, ResourcesMissingError, ManifestKeyError
 from data import FULL_NAME, MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, SUPPORTED_VERSIONS, PRESETS
 
 logging.basicConfig(filename = "randomizer.log",
@@ -405,9 +405,8 @@ class RandomizerWindow(MainGui):
 
         if validation:
             try:
-                
                 self.info_cont_write(self.locale.tr("rand_copy"))
-                mr.copy_files(self.config)
+                mr.copy_files(self.config, True)
                 self.progress_bar.value += 0.11
 
                 self.info_cont_write(self.locale.tr("rand_files"))
@@ -448,8 +447,14 @@ class RandomizerWindow(MainGui):
                 self.info_cont_write(f"{self.locale.tr('bad_manifest')}\n{bad_manifest}", "red")
                 self.info_cont_abort()
                 return
+            except ResourcesMissingError as res_missing:
+                self.info_cont_write(f"{self.locale.tr("file_missing")}\n{res_missing}", "red")
+                self.info_cont_abort()
+            except ManifestKeyError as wrong_key_type:
+                self.info_cont_write(f"{self.locale.tr("wrong_key_type")} {wrong_key_type}", "red")
+                self.info_cont_abort()
             except Exception as exc:
-                self.info_cont_write(exc)
+                self.info_cont_write(exc, "red")
                 self.info_cont_abort()
             finally:
                 self.info_cont_btn.disabled = False
@@ -466,8 +471,8 @@ def main(page: Page) -> None:
             app.info_cont.height = page.height-3
             app.info_cont.update()
         # error occurs because this widget is not always on app main screen
-        except AssertionError:
-            pass
+        except AssertionError: pass
+        
         app.update()
     
     def save_config(e: ControlEvent) -> None:
