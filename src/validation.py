@@ -107,7 +107,7 @@ class Validation():
     @staticmethod
     def get_exe_version(exe_path: Path, offset: int, length: int) -> str | None:
         try:
-            with open(exe_path) as exe:
+            with open(exe_path, "r", encoding="windows-1251") as exe:
                 exe.seek(offset)
                 version = exe.read(length)
             return version

@@ -388,7 +388,7 @@ class RandomizerWindow(MainGui):
             case "no_exe":
                 ic('no exe')
                 logger.warning("Randomization options related to executable randomizer will be forcibly disabled.")
-                self.info_cont_write(f"{self.locale.tr("is_continued")}", color="yellow")
+                self.info_cont_write(f"{self.locale.tr('is_continued')}", color="yellow")
                 self.uncheck_chkbxs(
                     self.cb_render, 
                     self.cb_armor, 
@@ -397,7 +397,7 @@ class RandomizerWindow(MainGui):
                 )
             case "no_fov":
                 ic('no_fov')
-                self.info_cont_write(f"{self.locale.tr("is_continued")}", color="yellow")
+                self.info_cont_write(f"{self.locale.tr('is_continued')}", color="yellow")
 
                 self.uncheck_chkbxs(self.cb_fov)
         
@@ -412,9 +412,9 @@ class RandomizerWindow(MainGui):
                 self.info_cont_write(self.locale.tr("rand_files"))
                 errors, status = mr.randomize_files(self.config)
                 if not status:
-                    self.info_cont_write(f"{self.locale.tr("rand_nothing")}")
+                    self.info_cont_write(f"{self.locale.tr('rand_nothing')}")
                 else:
-                    self.info_cont_write(f"{self.locale.tr("rand_done")}")
+                    self.info_cont_write(f"{self.locale.tr('rand_done')}")
                 self.progress_bar.value += 0.11
 
                 self.info_cont_write(self.locale.tr("rand_text"))
@@ -448,10 +448,10 @@ class RandomizerWindow(MainGui):
                 self.info_cont_abort()
                 return
             except ResourcesMissingError as res_missing:
-                self.info_cont_write(f"{self.locale.tr("file_missing")}\n{res_missing}", "red")
+                self.info_cont_write(f"{self.locale.tr('file_missing')}\n{res_missing}", "red")
                 self.info_cont_abort()
             except ManifestKeyError as wrong_key_type:
-                self.info_cont_write(f"{self.locale.tr("wrong_key_type")} {wrong_key_type}", "red")
+                self.info_cont_write(f"{self.locale.tr('wrong_key_type')} {wrong_key_type}", "red")
                 self.info_cont_abort()
             except Exception as exc:
                 self.info_cont_write(exc, "red")

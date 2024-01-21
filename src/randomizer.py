@@ -73,12 +73,12 @@ class Randomizer():
         else:
             self.logger.error(f"Incorrect data type for \"triggers_to_change\" key: list or dict expected, got {type(server_paths)}")
             ManifestKeyError("triggers_to_change", type(server_paths))
-        
+
         for file_path in xml_validation:
             full_path = self.game_path / file_path
             if not full_path.exists():
                 self.logger.error(f"File is missing: {full_path.resolve()}")
-            raise ResourcesMissingError(full_path)
+                raise ResourcesMissingError(full_path)
 
         game_validation = self.manifest.get("version_validation", False)
         if not game_validation:
