@@ -30,6 +30,7 @@ class Randomizer():
         """Validates files and key types from resources_validation,
         version_validation and LuaToEdit keys from manifest. 
         Returns True if all is valid, else None."""
+
         self.logger.info("Validating manifest.")
 
         res_validation = self.manifest.get("resources_validation", False)
@@ -48,9 +49,35 @@ class Randomizer():
             self.logger.error(f"Incorrect data type for \"LuaToEdit\" key: str expected, got {type(res_validation)}")
             raise ManifestKeyError("LuaToEdit", type(lua_validation))
         
-        full_path = RESOURCES_PATH / lua_validation
+        full_path = self.game_path / lua_validation
         if not full_path.exists():
             self.logger.error(f"File is missing: {full_path.resolve()}")
+            raise ResourcesMissingError(full_path)
+        
+        xml_validation = []
+        server_paths = self.manifest.get("server_paths", [])
+        if isinstance(server_paths, (list, str)):
+            xml_validation.extend(server_paths)
+        else:
+            self.logger.error(f"Incorrect data type for \"servers_paths\" key: list or str expected, got {type(server_paths)}")
+            ManifestKeyError("server_paths", type(server_paths))
+
+        triggers_info = self.manifest.get("triggers_to_change")
+        if isinstance(triggers_info, (dict)):
+            for k in triggers_info:
+                xml_validation.append(k)
+        elif isinstance(triggers_info, list):
+            for file_info in triggers_info:
+                for path in file_info:
+                    xml_validation.append(path)
+        else:
+            self.logger.error(f"Incorrect data type for \"triggers_to_change\" key: list or dict expected, got {type(server_paths)}")
+            ManifestKeyError("triggers_to_change", type(server_paths))
+        
+        for file_path in xml_validation:
+            full_path = self.game_path / file_path
+            if not full_path.exists():
+                self.logger.error(f"File is missing: {full_path.resolve()}")
             raise ResourcesMissingError(full_path)
 
         game_validation = self.manifest.get("version_validation", False)

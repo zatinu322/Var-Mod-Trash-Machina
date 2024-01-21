@@ -1,28 +1,329 @@
 # Validation
 # version validation could be False, str with mod_manifest.yaml path or list with file paths
-version_validation:
-  - data/scripts/server.lua
-# should be always list with file paths!
+version_validation: False
 resources_validation:
-  - Vanilla/data/maps/mainmenu/servers.xml
-  - Vanilla/data/maps/r1m1/cinematriggers.xml
-  - Vanilla/data/maps/r1m1/servers.xml
-  - Vanilla/data/maps/r1m1/triggers.xml
-  - Vanilla/data/maps/r1m2/servers.xml
-  - Vanilla/data/maps/r1m3/servers.xml
-  - Vanilla/data/maps/r1m4/servers.xml
-  - Vanilla/data/maps/r2m1/servers.xml
-  - Vanilla/data/maps/r2m2/servers.xml
-  - Vanilla/data/maps/r3m1/servers.xml
-  - Vanilla/data/maps/r3m2/servers.xml
-  - Vanilla/data/maps/r4m1/servers.xml
-  - Vanilla/data/maps/r4m2/servers.xml
   - Vanilla/data/profiles/1/profile.xml
   - Vanilla/data/scripts/randomizer.lua
   - Vanilla/data/scripts/randomizer_vars.lua
 # FileCopier class
 FolderToCopy: resources/Vanilla
-LuaToEdit: [data/scripts/server.lua]
+LuaToEdit: data/scripts/server.lua
+# list of all masks, dwellers, cars, guns and other models for servers.xml on each map
+server_paths:
+  - data/maps/mainmenu/servers.xml
+  - data/maps/r1m1/servers.xml
+  - data/maps/r1m2/servers.xml
+  - data/maps/r1m3/servers.xml
+  - data/maps/r1m4/servers.xml
+  - data/maps/r2m1/servers.xml
+  - data/maps/r2m2/servers.xml
+  - data/maps/r3m1/servers.xml
+  - data/maps/r3m2/servers.xml
+  - data/maps/r4m1/servers.xml
+  - data/maps/r4m2/servers.xml
+server_items:
+  # other_models
+  - cub
+  #  dwellers
+  - dweller
+  - dweller2
+  - dweller3
+  - dweller_player
+  - dweller_father
+  - dweller_lisa
+  - dweller_felix
+  - dweller_ben
+  - dweller_axel
+  - dweller_white
+  # masks
+  - boss04dronegun
+  - r1_man
+  - r1_woman
+  - r2_man
+  - r2_woman
+  - r3_man
+  - r4_man
+  - mask_father
+  - mask_hero
+  - mask_lisa
+  - mask_ben
+  - mask_axel
+  - mask_oracul
+  - gadget_12
+  # guns
+  - dragon01
+  - dragon01gun
+  - octopus01
+  - octopus01gun
+  - bumblebee01
+  - bumblebee01gun
+  - big_swingfire01
+  - big_swingfire01gun
+  - kord01
+  - kord01gun
+  - pkt01
+  - pkt01gun
+  - hornet01
+  - hornet01gun
+  - specter01
+  - specter01gun
+  - hunter01gun
+  - mrak01R
+  - mrak01Rgun
+  - mrak01L
+  - mrak01Lgun
+  - rainmetal01
+  - rainmetal01gun
+  - rapier01
+  - rapier01gun
+  - flag01
+  - flag01gun
+  - storm01
+  - storm01gun
+  - cyclops01
+  - cyclops01gun
+  - rocket01
+  - shell_sml_pulemet01
+  - big_elephant01
+  - big_elephant01gun
+  - big_hammer01
+  - big_hammer01gun
+  - rocket_sml01
+  - rocket_long01
+  - rockets
+  - rockets_big01
+  - shell01
+  - shell02
+  - shell_big_gun01
+  - shell_big_gun02
+  - giant_hurricane01
+  - giant_hurricane01gun
+  - hail01L
+  - hail01Lgun
+  - hail01R
+  - hail01Rgun
+  - vector01
+  - vulcan01
+  - vulcan01gun
+  - boss04dronegun
+  - fagot01
+  - vector01gun
+  - fagot01gun
+  - kpvt01
+  - kpvt01gun
+  - omega01
+  - omega01gun
+  - mars01L
+  - mars01Lgun
+  - mars01R
+  - mars01Rgun
+  - zeus01L
+  - zeus01Lgun
+  - zeus01R
+  - zeus01Rgun
+  - odin01
+  - odin01gun
+  - maxim01
+  - maxim01gun
+  - hunter01L
+  - hunter01Lgun
+  - hunter01R
+  - hunter01Rgun
+  - plasma01
+  - laser01
+  - laser02
+  - mine_01
+  - plasma_big01
+  - robotgun01gun
+  - robotgun01
+  - MasloRazliF
+  - Dimzavesa
+  - meXaNizm
+  - minoYkladchiK
+  - Turboakselerator
+  - mine02
+  - MasloRazliFgun
+  - Dimzavesagun
+  - meXaNizmgun
+  - minoYkladchiKgun
+  - Turboakseleratorgun
+  - minoYkladchiK_1
+  - minoYkladchiK_2
+  # vehicle models
+  - tankChassis
+  - tank01
+  - tank01gun
+  - tankWheel01
+  - dozerChassis
+  - dozerCab01
+  - dozerSusp01
+  - dozerSusp02
+  - dozerWheel01
+  - sml1Chassis
+  - sml1Cab01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - sml1Susp01
+  - sml1Susp02
+  - sml1Wheel01
+  - sml1Wheel02
+  - sml2Chassis
+  - sml2Cab01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - sml2Cab01_formula: "skins: 0 1 2 3 4 5 6 7 8;"
+  - sml2Susp01
+  - sml2Susp02
+  - sml2Wheel01
+  - sml2Wheel02
+  - sml3Chassis
+  - sml3Cab01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - sml3Susp01
+  - sml3Susp02
+  - sml3Wheel01
+  - sml4Chassis
+  - sml4Cab01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - sml4Susp01
+  - sml4Susp02
+  - sml4Wheel01
+  - sml4Wheel02
+  - scoutChassis
+  - scoutCab01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - scoutCab02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - scoutCab03: "skins: 0 1 2 3 4 5 6 7 8;"
+  - scoutSusp01
+  - scoutSusp02
+  - scoutWheel01
+  - scoutWheel02
+  - fighterChassis
+  - fighterCab01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - fighterCab02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - fighterSusp01l
+  - fighterSusp01r
+  - fighterSusp02l
+  - fighterSusp02r
+  - fighterWheel01l
+  - fighterWheel01r
+  - fighterWheel02l
+  - fighterWheel02r
+  - hunterChassis
+  - hunterCab01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - hunterCab02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - hunterSusp01
+  - hunterWheel01l
+  - hunterWheel01r
+  - cruiserChassis
+  - cruiserCab01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - cruiserCab02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - cruiserSusp01
+  - cruiserWheel01l
+  - cruiserWheel01r
+  - bugChassis
+  - bugCab01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - bugCab02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - bugCab03: "skins: 0 1 2 3 4 5 6 7 8;"
+  - bugCargo01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - bugCargo02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - bugCargo03: "skins: 0 1 2 3 4 5 6 7 8;"
+  - bugSusp01
+  - bugSusp02
+  - bugWheel01
+  - bugWheel02
+  - uralChassis
+  - uralCab01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - uralCab02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - uralCab03: "skins: 0 1 2 3 4 5 6 7 8;"
+  - uralCab04: "skins: 0 1 2 3 4 5 6 7 8;"
+  - uralCab05: "skins: 0 1 2 3 4 5 6 7 8;"
+  - uralCargo01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - uralCargo02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - uralCargo03: "skins: 0 1 2 3 4 5 6 7 8;"
+  - uralCargo04: "skins: 0 1 2 3 4 5 6 7 8;"
+  - uralCargo05: "skins: 0 1 2 3 4 5 6 7 8;"
+  - uralSusp01
+  - uralSusp02
+  - uralWheel01l
+  - uralWheel01r
+  - uralWheel02l
+  - uralWheel02r
+  - molokovozChassis
+  - molokovozCab01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - molokovozCab02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - molokovozCab03: "skins: 0 1 2 3 4 5 6 7 8;"
+  - molokovozCargo01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - molokovozCargo02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - molokovozCargo03: "skins: 0 1 2 3 4 5 6 7 8;"
+  - molokovozCargo04: "skins: 0 1 2 3 4 5 6 7 8;"
+  - molokovozSusp01l
+  - molokovozSusp01r
+  - molokovozSusp02
+  - molokovozWheel01
+  - molokovozTrailer01Chassis
+  - molokovozTrailer01Basket
+  - belazChassis
+  - belazCab01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - belazCab02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - belazCab03: "skins: 0 1 2 3 4 5 6 7 8;"
+  - belazCab04: "skins: 0 1 2 3 4 5 6 7 8;"
+  - belazCab05: "skins: 0 1 2 3 4 5 6 7 8;"
+  - belazCargo01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - belazCargo02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - belazCargo03: "skins: 0 1 2 3 4 5 6 7 8;"
+  - belazCargo04: "skins: 0 1 2 3 4 5 6 7 8;"
+  - belazCargo05: "skins: 0 1 2 3 4 5 6 7 8;"
+  - belazSusp01
+  - belazWheel01L
+  - belazWheel01R
+  - mirotvorecChassis
+  - mirotvorecSusp01
+  - mirotvorecWheel01
+  - mirotvorecCab01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - mirotvorecCargo01: "skins: 0 1 2 3 4 5 6 7 8;"
+  - mirotvorecCab02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - mirotvorecCargo02: "skins: 0 1 2 3 4 5 6 7 8;"
+  - mirotvorecCab03: "skins: 0 1 2 3 4 5 6 7 8;"
+  - mirotvorecCargo03: "skins: 0 1 2 3 4 5 6 7 8;"
+  - mirotvorecCab04: "skins: 0 1 2 3 4 5 6 7 8;"
+  - mirotvorecCargo04: "skins: 0 1 2 3 4 5 6 7 8;"
+  - mirotvorecCab05: "skins: 0 1 2 3 4 5 6 7 8;"
+  - mirotvorecCargo05: "skins: 0 1 2 3 4 5 6 7 8;"
+  - robotshassis01
+  - robotsuspension01_L
+  - robotsuspension01_R
+  - robotsuspension02_L
+  - robotsuspension02_R
+  - robotsuspension03_L
+  - robotsuspension03_R
+  - robotsuspension04_L
+  - robotsuspension04_R
+  - robotsuspension05_L
+  - robotsuspension05_R
+  - robotcab01
+  - robotwheel_big_left
+  - robotwheel_big_right
+  - robotwheel_sml_left
+  - robotwheel_sml_right
+  - robotcab02
+  - robotshassis02
+  - robot2suspension01_L
+  - robot2suspension01_R
+  - robot2suspension02_L
+  - robot2suspension02_R
+  - robot2suspension03_L
+  - robot2suspension03_R
+  - robot2suspension04_L
+  - robot2suspension04_R
+  - robot2suspension05_L
+  - robot2suspension05_R
+  - robot2suspension06_L
+  - robot2suspension06_R
+  - robot2suspension07_L
+  - robot2suspension07_R
+  - robot2suspension08_L
+  - robot2suspension08_R
+triggers_to_change:
+  - data/maps/r1m1/cinematriggers.xml:
+    - name: Finish00
+    - script: '\n\t\t\tGameFiltersUse()\n\n\t\t\tRestoreAllToleranceStatus()\n\n\t\t\tlocal rrr = GetEntityByName ("hero1Dw")\n\t\t\tif rrr then rrr:Remove() end\n\t\t\t\n\t\t\tlocal rrr = GetEntityByName ("hero2Dw")\n\t\t\tif rrr then rrr:Remove() end\n\n\t\t\tlocal rrr = GetEntityByName ("fatherDw")\n\t\t\tif rrr then rrr:Remove() end\n\n\t\t\tTDeactivate( "ROLIK11" )\n\t\t\tTDeactivate( "ROLIK15" )\n\t\t\tTDeactivate( "ROLIK16" )\n\t\t\tTDeactivate( "ROLIK17" )\n\t\t\tTDeactivate( "ROLIK12" )\n\t\t\tTDeactivate( "ROLIK13" )\n\t\t\tTDeactivate( "ROLIK18" )\n\t\t\tTDeactivate( "ROLIK14" )\n\n\t\t\tlocal Plf = GetPlayerVehicle()\n\t\t\tPlf:SetExternalPathByName("start_rolik_mycar")\n\t\t\tPlf:PlaceToEndOfPath()\n\t\t\tPlf:SetRotation(Quaternion(-0.007, 1.000, -0.010, 0.021))\n\t\t\tPlf:setGodMode(0)\n\n\t\t\tTActivate ("tr_Tutotial_Start")\n\n\t\t\tStopPlayingCustomMusic()\n\n\t\t\tSetCameraBehindPlayerVehicle()\n\n\t\t\ttrigger:Deactivate() \n\t\t'
+  - data/maps/r1m1/cinematriggers.xml:
+    - name: trFirstRolik
+    - script: '\n\t\t\tg_ObjCont:SetGameTime( 10, 0, 10, 9, 2234 )\n\n\t\t\tSetRadarUpgrade(1)\n\n\t\t\tif RAND_PLAYER_VEH then\n\t\t\t\tAddPlayerVehicle(RAND_VEH_3[random(getn(RAND_VEH_3))])\n\t\t\tend\n\n\t\t\tif RAND_GUNS then\n\t\t\t\tgiveguns_random()\n\t\t\tend\n\n\t\t\tlocal Plf = GetPlayerVehicle()\n\t\t\tif Plf then\n\t\t\t\tPlf:setGodMode(1)\n\t\t\t\tPlf:SetGamePositionOnGround(CVector(3355.000, 368.500, 3308.000))\n\t\t\t\tPlf:SetRotation(Quaternion(-0.007, 1.000, -0.010, 0.021))\n\t\t\tend\n\n\t\t\tFly("start_game", CINEMATIC_NO_AIM, 0, 68, 1, 1 )\n\t\t\tStartCinematic()\n\t\t\tUpdateCinematic( 1 )\n\n\t\t\tAddCinematicMessage( 77771, 0.1)\n\n\t\t\tTActivate("trFirstRolikMusic")\n\t\t\tTActivate("StartGame")\n\n\t\t\ttrigger:Deactivate()\n\t\t'
 # FileRandomizer class
 Files:
   # Icons

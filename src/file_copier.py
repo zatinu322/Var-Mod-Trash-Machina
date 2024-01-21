@@ -26,6 +26,12 @@ class FileCopier(Randomizer):
             if not line_to_add in file:
                 lua.write("\n")
                 lua.write(line_to_add)
+    
+    def edit_xml_servers(self):
+        pass
+
+    def edit_xml_triggers(self):
+        pass
         
     def transfer_files(self):
         dir_path = Path(self.manifest.get("FolderToCopy"))
