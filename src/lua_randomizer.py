@@ -1,7 +1,6 @@
 from config import Config
 from randomizer import Randomizer
 
-from icecream import ic
 
 class LuaRandomizer(Randomizer):
     def __init__(self, config: Config) -> None:
@@ -10,7 +9,7 @@ class LuaRandomizer(Randomizer):
         self.options: dict = self.manifest.get("Lua")
         self.vars_path = self.game_path / "data/scripts/randomizer_vars.lua"
         self.var_statuses = {}
-    
+
     def configure_randomization(self):
         working_set = []
         var_statuses = {}
@@ -23,7 +22,7 @@ class LuaRandomizer(Randomizer):
             self.var_statuses = var_statuses
 
             working_set.append(group)
-        
+
         return working_set
 
     def create_var_file(self) -> None:
@@ -38,33 +37,37 @@ class LuaRandomizer(Randomizer):
 
         # setting variable status
         # .lower because of lua syntax
-        if var: content = f"{var} = {str(self.var_statuses.get(var)).lower()}\n\n"
+        if var:
+            content = f"{var} = {str(self.var_statuses.get(var)).lower()}\n\n"
         # setting prototypes lists
         if prototypes:
             for num, group in enumerate(prototypes.values()):
                 # this is terrible and horrific code
                 # maybe one day I'll refactor it
-                content = f"{content}{var}_{num+1} = " # var name
-                arr = "{\"" + "\", \"".join(group) + "\"}" # prototypes list
+                content = f"{content}{var}_{num+1} = "  # var name
+                arr = "{\"" + "\", \"".join(group) + "\"}"  # prototypes list
                 content = f"{content}{arr}\n\n"
-        
+
         with open(self.vars_path, "a", encoding="windows-1251") as stream:
             stream.write(content)
 
     def set_ending_to_file(self):
         with open(self.vars_path, "a", encoding="windows-1251") as stream:
-            stream.write(f"LOG(\"Randomizer globals set.\")\n\nEXECUTE_SCRIPT \"data/scripts/randomizer.lua\"")
-    
+            stream.write(
+                "LOG(\"Randomizer globals set.\")\n\n\
+                EXECUTE_SCRIPT \"data/scripts/randomizer.lua\""
+            )
+
     def start_randomization(self) -> None:
         working_set = self.configure_randomization()
 
         if not any(self.var_statuses.values()):
             self.logger.info("Nothing to randomize.")
             return
-    
+
         self.create_var_file()
 
         for group in working_set:
             self.enable_var(group)
-    
+
         self.set_ending_to_file()

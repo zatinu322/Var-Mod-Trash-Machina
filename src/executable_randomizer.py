@@ -1,10 +1,11 @@
+import struct
+
+from icecream import ic
+
 from config import Config
 from randomizer import Randomizer
 from data import OFFSETS_EXE, generate_offsets
 
-import struct
-
-from icecream import ic
 
 class ExecutableRandomizer(Randomizer):
     def __init__(self, config: Config) -> None:
@@ -14,9 +15,11 @@ class ExecutableRandomizer(Randomizer):
 
     def configure_randomization(self) -> None:
         for param, status in self.params.items():
-            if not param in self.options: continue 
-            if status: continue
-            
+            if param not in self.options:
+                continue
+            if status:
+                continue
+
             self.options.pop(param)
 
     def generate_offsets(self) -> dict:
@@ -50,26 +53,27 @@ class ExecutableRandomizer(Randomizer):
         file_path = self.game_path / self.options.get("File")
         offsets_exe = self.generate_offsets()
 
-        # code by Aleksandr "Seel" Parfenenkov
+        # logic by Aleksandr "Seel" Parfenenkov
         with open(file_path, "rb+") as exe:
             for offset in offsets_exe:
                 exe.seek(offset)
-                if type(offsets_exe[offset]) == int:
+                if isinstance(offsets_exe[offset], int):
                     exe.write(struct.pack("i", offsets_exe[offset]))
-                elif type(offsets_exe[offset]) == str: # hex address
-                    exe.write(struct.pack("<L", int(offsets_exe[offset], base=16)))
-                elif type(offsets_exe[offset]) == float:
+                elif isinstance(offsets_exe[offset], str):  # hex address
+                    exe.write(
+                        struct.pack("<L", int(offsets_exe[offset], base=16))
+                    )
+                elif isinstance(offsets_exe[offset], float):
                     exe.write(struct.pack("f", offsets_exe[offset]))
-        
+
         return offsets_exe
-        
-        
+
     def start_randomization(self) -> None:
         self.configure_randomization()
         if len(self.options) <= 1:
             self.logger.info("Nothing to randomize.")
             return
-        
+
         offsets_exe = self.randomize()
 
         ic(self.collect_info(offsets_exe))

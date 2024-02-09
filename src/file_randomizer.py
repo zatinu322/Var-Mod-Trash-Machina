@@ -1,12 +1,11 @@
-from randomizer import Randomizer
-from config import Config
-from pathlib import Path
-
-from random import shuffle
-from icecream import ic
-
 import shutil
 import os
+from random import shuffle
+from pathlib import Path
+
+from randomizer import Randomizer
+from config import Config
+
 
 class FileRandomizer(Randomizer):
     def __init__(self, config: Config) -> None:
@@ -15,20 +14,27 @@ class FileRandomizer(Randomizer):
         self.temp_dir = self.game_path / "temp_random"
         self.options = self.manifest.get("Files")
 
-    def copy_files(self, groups: list[dict], repeated_files: list = None, dest = "temp") -> list[bool]:
+    def copy_files(self,
+                   groups: list[dict],
+                   repeated_files: list = None,
+                   dest="temp") -> list[bool]:
         repeatitions = 0
-        if not repeated_files: repeated_files = []
+        if not repeated_files:
+            repeated_files = []
 
         for group in groups:
-            for k,v in group.items():
+            for k, v in group.items():
                 for file in v:
                     data_path = Path(self.game_path) / k / file
                     temp_path = Path(self.temp_dir) / file
                     try:
                         if dest == "temp":
                             if temp_path.exists():
-                                new_temp_path = self.temp_dir / f"{file}_{str(repeatitions)}"
-                                repeated_files.append((data_path, new_temp_path))
+                                new_temp_path = self.temp_dir / f"{file}\
+                                _{str(repeatitions)}"
+                                repeated_files.append(
+                                    (data_path, new_temp_path)
+                                )
                                 repeatitions += 1
                                 temp_path = new_temp_path
                             shutil.copyfile(data_path, temp_path)
@@ -46,7 +52,7 @@ class FileRandomizer(Randomizer):
                         self.report_error(e)
         return [True, repeated_files]
 
-    def rename_files(self, files_list: list, bckw = False) -> bool:
+    def rename_files(self, files_list: list, bckw=False) -> bool:
         filename = 0
         for file in files_list:
             old_file_path = self.temp_dir / file
@@ -60,11 +66,11 @@ class FileRandomizer(Randomizer):
                 self.report_error(exc)
             except FileExistsError as exc:
                 self.report_error(exc)
-            
+
             filename += 1
-        
+
         return True
-    
+
     def randomize(self, groups: list) -> bool:
         if not self.temp_dir.exists():
             os.mkdir(self.temp_dir)
@@ -84,7 +90,7 @@ class FileRandomizer(Randomizer):
             self.copy_files(groups, dest="data")
 
         os.rmdir(self.temp_dir)
-        
+
         return True
 
     def start_randomization(self) -> bool:

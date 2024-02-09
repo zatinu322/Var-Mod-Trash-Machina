@@ -1,8 +1,8 @@
+from random import shuffle
+
 from config import Config
 from models_randomizer import ModelsRandomizer
 
-from random import shuffle
-from icecream import ic
 
 class BarNpcRandomizer(ModelsRandomizer):
     def __init__(self, config: Config) -> None:
@@ -20,19 +20,21 @@ class BarNpcRandomizer(ModelsRandomizer):
                 if not xml_info.get("name") in tag.attrib:
                     continue
                 if "prototype" in xml_info:
-                    if not tag.attrib.get(xml_info.get("name")) == xml_info.get("prototype"):
+                    if not tag.attrib.get(
+                        xml_info.get("name")
+                    ) == xml_info.get("prototype"):
                         continue
-            
+
                 outfit = {}
 
                 for option in xml_info.get("config"):
                     if option in tag.attrib:
                         outfit.update({option: tag.attrib.get(option)})
-                
+
                 npcs_outfit.append(outfit)
-        
+
         return npcs_outfit
-    
+
     def set_data_to_xml(self, xml_info: dict, content: list[dict]) -> None:
         li = 0
         for level in xml_info.get("Maps"):
@@ -43,22 +45,25 @@ class BarNpcRandomizer(ModelsRandomizer):
                 if not xml_info.get("name") in tag.attrib:
                     continue
                 if "prototype" in xml_info:
-                    if not tag.attrib.get(xml_info.get("name")) == xml_info.get("prototype"):
+                    if not tag.attrib.get(
+                        xml_info.get("name")
+                    ) == xml_info.get("prototype"):
                         continue
-                
+
                 for option in xml_info.get("config"):
-                    # removing modelAutosized tag because it breaks normal mask models
+                    # removing modelAutosized tag
+                    # because it breaks normal mask models
                     if "modelAutosized" in tag.attrib:
                         tag.attrib.pop("modelAutosized")
-                    if not option in content[li]:
+                    if option not in content[li]:
                         continue
 
                     tag.set(option, content[li].get(option))
-                
+
                 li += 1
-            
+
             self.write_xml(root, xml_path)
-    
+
     def randomize(self, group: dict) -> None:
         npcs_outfit = self.collect_data_from_xml(group)
 

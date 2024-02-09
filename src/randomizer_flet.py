@@ -1,33 +1,40 @@
-import flet as ft
-from flet import *
 import logging
-
-import main_randomizer as mr
-
-from icecream import ic
 from pathlib import Path
 
+from icecream import ic
+from flet import Page, Row, Column, FilePicker, dropdown, ContainerTapEvent, \
+    TextButton, AlertDialog, Text, FilePickerResultEvent, \
+    ControlEvent, Container, alignment, MainAxisAlignment, \
+    ThemeMode, padding, app, colors, CrossAxisAlignment
+
+import main_randomizer as mr
 from gui import MainGui
 from config import Config
 from localisation import Localisation
 from validation import Validation
-from errors import LocalisationMissingError, RootNotFoundError, ExeMissingError, GameNotFoundError, VersionError, ManifestMissingError, GDPFoundError, ResourcesMissingError, ManifestKeyError
-from data import FULL_NAME, MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, SUPPORTED_VERSIONS, PRESETS
+from errors import LocalisationMissingError, RootNotFoundError, \
+    ExeMissingError, GameNotFoundError, VersionError, \
+    ManifestMissingError, GDPFoundError, ResourcesMissingError, \
+    ManifestKeyError
+from data import FULL_NAME, MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, \
+    SUPPORTED_VERSIONS, PRESETS
 
-logging.basicConfig(filename = "randomizer.log",
-                    level = logging.INFO,
-                    format = "[%(levelname)s][%(asctime)s]: %(message)s [%(filename)s, %(funcName)s]", 
-                    filemode= "w", 
+logging.basicConfig(filename="randomizer.log",
+                    level=logging.INFO,
+                    format="[%(levelname)s][%(asctime)s]: %(message)s \
+                            [%(filename)s, %(funcName)s]",
+                    filemode="w",
                     datefmt="%m/%d/%Y %H:%M:%S",
                     encoding="utf-8")
 
 logger = logging.getLogger("pavlik")
 
+
 class RandomizerWindow(MainGui):
     def __init__(
         self,
-        page: Page, 
-        config: Config, 
+        page: Page,
+        config: Config,
         locale: Localisation,
         working_width: int
     ) -> None:
@@ -37,16 +44,16 @@ class RandomizerWindow(MainGui):
         self.config = config
         self.locale = locale
 
-        self.bg_cont = ft.Container(
+        self.bg_cont = Container(
             Row(
                 controls=[
                     Column(
-                        controls=[], alignment=ft.MainAxisAlignment.CENTER,
-                        horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                        controls=[], alignment=MainAxisAlignment.CENTER,
+                        horizontal_alignment=CrossAxisAlignment.CENTER
                     )
                 ]
             ),
-                bgcolor=ft.colors.BLACK87
+            bgcolor=colors.BLACK87
         )
 
         self.opt_column_widths = {
@@ -64,20 +71,26 @@ class RandomizerWindow(MainGui):
         # Add FilePicker to page overlay
         self.get_dir_dialog = FilePicker(on_result=self.get_dir_result)
         page.overlay.extend([self.get_dir_dialog])
-    
+
     def fill_versions_dd(self, versions: dict) -> None:
-        for key,text in versions.items():
-            self.game_version_dd.options.append(dropdown.Option(text=text, key=key))
+        for key, text in versions.items():
+            self.game_version_dd.options.append(
+                dropdown.Option(text=text, key=key)
+            )
         self.update_app()
-    
+
     def fill_presets_dd(self, presets: dict) -> None:
         for preset in presets:
-            self.dd_preset.options.append(dropdown.Option(text=preset, key=preset))
+            self.dd_preset.options.append(
+                dropdown.Option(text=preset, key=preset)
+            )
 
     def set_widget_connections(self) -> None:
         self.btn_rus.on_click = self.switch_lang
         self.btn_eng.on_click = self.switch_lang
-        self.browse_btn.on_click = lambda _: self.get_dir_dialog.get_directory_path()
+        self.browse_btn.on_click = (
+            lambda _: self.get_dir_dialog.get_directory_path()
+        )
         self.game_path_tf.on_change = self.game_path_changed
         self.btn_select_all.on_click = self.select_or_deselect
         self.btn_deselect_all.on_click = self.select_or_deselect
@@ -89,7 +102,7 @@ class RandomizerWindow(MainGui):
         for chkbx in self.chkbxs_dict:
             chkbx.on_change = self.set_custom_preset
         self.update_app()
-    
+
     def switch_lang(self, e: ContainerTapEvent):
         match e.control:
             case self.btn_rus:
@@ -99,16 +112,16 @@ class RandomizerWindow(MainGui):
                 self.locale.update_lang("eng")
                 self.config.lang = "eng"
         self.retranslate_ui()
-    
+
     def adjust_width(self) -> None:
         """Adjusts widgets width when changing localisation."""
 
-        for (k,k1), v in self.opt_column_widths.items():
+        for (k, k1), v in self.opt_column_widths.items():
             k.width = v.get(self.locale.lang)
             k1.width = v.get(self.locale.lang)
-        
+
         self.update_app()
-    
+
     def apply_config(self):
         self.page.window_left = self.config.pos_x
         self.page.window_top = self.config.pos_y
@@ -125,14 +138,14 @@ class RandomizerWindow(MainGui):
         self.update_path_status()
 
         self.dd_preset.value = self.config.preset
-        for k,v in self.chkbxs_dict.items():
+        for k, v in self.chkbxs_dict.items():
             if not k.disabled:
                 k.value = self.config.chkbxs.get(v, False)
-        
+
         self.game_version_dd.value = self.config.game_version
 
         self.adjust_cb_state()
-        
+
         self.update_app()
 
     def retranslate_ui(self) -> None:
@@ -155,15 +168,14 @@ class RandomizerWindow(MainGui):
         self.start_randomization_btn.text = self.locale.tr("randomization_btn")
         self.info_cont_heading.value = self.locale.tr("rand_info")
 
-        for k,v in self.chkbxs_dict.items():
+        for k, v in self.chkbxs_dict.items():
             k.label = self.locale.tr(v)
-        
+
         for option in self.dd_preset.options:
             option.text = self.locale.tr(option.key)
 
-        
         self.update_path_status()
-        
+
         self.adjust_width()
 
         self.update_app()
@@ -172,7 +184,7 @@ class RandomizerWindow(MainGui):
         self.update()
         self.page.update()
         self.expandable_options.update()
-    
+
     def create_dialog(
         self,
         modal: bool = False,
@@ -181,25 +193,26 @@ class RandomizerWindow(MainGui):
         actions: list[TextButton, None] = []
     ) -> AlertDialog:
         return AlertDialog(
-            modal = modal,
-            title = Text(title),
-            content = Text(content),
-            actions = actions,
+            modal=modal,
+            title=Text(title),
+            content=Text(content),
+            actions=actions,
         )
-    
+
     def get_dir_result(self, e: FilePickerResultEvent) -> None:
         if e.path:
             self.game_path_tf.value = e.path
             self.update_path_status()
             self.update_app()
-    
+
     def game_path_changed(self, e: ControlEvent) -> None:
         self.update_path_status(e.data)
 
     def update_path_status(self, cur_value: str = None) -> None:
-        if cur_value is None: cur_value = self.game_path_tf.value
+        if cur_value is None:
+            cur_value = self.game_path_tf.value
         if cur_value == "":
-            self.game_path_status_t.value=""
+            self.game_path_status_t.value = ""
             self.game_path_status_t.opacity = 0
             return
 
@@ -207,11 +220,12 @@ class RandomizerWindow(MainGui):
 
         try:
             validation, exe = self.validate.game_dir(game_path)
-        except (RootNotFoundError, ExeMissingError, GameNotFoundError, VersionError):
+        except (RootNotFoundError, ExeMissingError,
+                GameNotFoundError, VersionError):
             validation, exe = False, None
         except GDPFoundError:
             validation, exe = False, None
-            self.game_path_status_t.color="red"
+            self.game_path_status_t.color = "red"
             self.game_path_status_t.opacity = 100
             self.game_path_status_t.value = self.locale.tr("gdp_found")
 
@@ -219,13 +233,15 @@ class RandomizerWindow(MainGui):
             if exe:
                 self.game_path_status_t.value = self.locale.tr("valid_path")
                 self.game_path_status_t.opacity = 100
-                self.game_path_status_t.color="green"
+                self.game_path_status_t.color = "green"
 
                 self.adjust_cb_state()
             else:
-                self.game_path_status_t.value = self.locale.tr("valid_path_no_exe")
+                self.game_path_status_t.value = self.locale.tr(
+                    "valid_path_no_exe"
+                )
                 self.game_path_status_t.opacity = 100
-                self.game_path_status_t.color="yellow"
+                self.game_path_status_t.color = "yellow"
 
                 self.enable_or_disable_cb(
                     True,
@@ -235,24 +251,25 @@ class RandomizerWindow(MainGui):
                     self.cb_armor
                 )
         else:
-            self.game_path_status_t.color="red"
+            self.game_path_status_t.color = "red"
             self.game_path_status_t.opacity = 100
             self.game_path_status_t.value = self.locale.tr("invalid_path")
         self.update_app()
-    
+
     def select_or_deselect(self, e: ControlEvent):
         match e.control:
             case self.btn_select_all:
                 checked = True
             case self.btn_deselect_all:
                 checked = False
-        
+
         for chkbx in self.chkbxs_dict:
-            if not chkbx.disabled: chkbx.value = checked
+            if not chkbx.disabled:
+                chkbx.value = checked
         self.set_custom_preset()
-        
+
         self.update_app()
-    
+
     def show_info_cont(self) -> None:
         self.page.overlay.append(self.bg_cont)
         self.page.overlay.append(self.info_cont)
@@ -260,8 +277,12 @@ class RandomizerWindow(MainGui):
         self.progress_bar.value = 0
         self.info_cont_btn.disabled = True
         self.retranslate_ui()
-    
-    def info_cont_write(self, message: str, color: str | int = "white") -> None:
+
+    def info_cont_write(
+        self,
+        message: str,
+        color: str | int = "white"
+    ) -> None:
         self.log_container.controls.append(
             Text(
                 value=message,
@@ -269,14 +290,14 @@ class RandomizerWindow(MainGui):
             )
         )
         self.update_app()
-    
+
     def info_cont_abort(self):
         self.info_cont_write(self.locale.tr("randomization_aborted"), "red")
         self.info_cont_write(self.locale.tr("rand_OK"))
         self.info_cont_btn.disabled = False
         self.progress_bar.value = 0
         self.update_app()
-    
+
     def info_cont_success(self):
         self. info_cont_write(self.locale.tr("rand_done_full"), "green")
         self.info_cont_write(self.locale.tr("rand_OK"))
@@ -288,12 +309,12 @@ class RandomizerWindow(MainGui):
         self.page.overlay.remove(self.info_cont)
         self.page.overlay.remove(self.bg_cont)
         self.update_app()
-    
+
     def update_checkboxes(self, e: ControlEvent) -> None:
         chkbxs_config = PRESETS.get(e.data, {})
-        for k,v in self.chkbxs_dict.items():
+        for k, v in self.chkbxs_dict.items():
             new_value = chkbxs_config.get(v, None)
-            if new_value == None:
+            if new_value is None:
                 continue
             elif not k.disabled:
                 k.value = new_value
@@ -301,7 +322,7 @@ class RandomizerWindow(MainGui):
                 k.value = False
 
         self.update_app()
-    
+
     def adjust_cb_state(self, e: ControlEvent = None) -> None:
         match self.game_version_dd.value:
             case "cp114" | "cr114" | "isl12cp" | "isl12cr":
@@ -309,16 +330,16 @@ class RandomizerWindow(MainGui):
                 self.enable_or_disable_cb(True, self.cb_fov)
             case "steam":
                 self.enable_or_disable_cb(
-                    False, 
-                    self.cb_render, 
-                    self.cb_gravity, 
-                    self.cb_fov, 
+                    False,
+                    self.cb_render,
+                    self.cb_gravity,
+                    self.cb_fov,
                     self.cb_armor
                 )
 
     def collect_chkbxs_values(self) -> dict:
-        return {v:k.value for (k,v) in self.chkbxs_dict.items()}
-    
+        return {v: k.value for (k, v) in self.chkbxs_dict.items()}
+
     def update_config(self) -> None:
         self.config.pos_x = self.page.window_left
         self.config.pos_y = self.page.window_top
@@ -334,7 +355,7 @@ class RandomizerWindow(MainGui):
         chkbxs = self.collect_chkbxs_values()
         self.config.chkbxs.update(chkbxs)
         self.config.update_config()
-        
+
     def set_custom_preset(self, e: ControlEvent = None) -> None:
         self.dd_preset.value = "p_custom"
         self.update_app()
@@ -344,13 +365,13 @@ class RandomizerWindow(MainGui):
             chkbx.value = False
         self.update_config()
         self.update_app()
-    
+
     def enable_or_disable_cb(self, is_disabled: bool, *chkbxs) -> None:
         for chkbx in chkbxs:
             chkbx.disabled = is_disabled
         self.update_config()
         self.update_app()
-    
+
     def start_randomization(self, e: ControlEvent = None) -> None:
         self.update_config()
         self.show_info_cont()
@@ -360,47 +381,73 @@ class RandomizerWindow(MainGui):
         try:
             validation, exe_status = self.validate.settings(self.config)
         except RootNotFoundError as no_root:
-            self.info_cont_write(f"{self.locale.tr('game_path_missing')}\n{no_root}", color="red")
+            self.info_cont_write(
+                f"{self.locale.tr('game_path_missing')}\n{no_root}",
+                color="red"
+            )
             self.info_cont_abort()
             return
         except ExeMissingError as no_exe:
-            self.info_cont_write(f"{self.locale.tr('exe_not found')}\n{no_exe}", color="red")
+            self.info_cont_write(
+                f"{self.locale.tr('exe_not found')}\n{no_exe}",
+                color="red"
+            )
             self.info_cont_abort()
             return
         except GameNotFoundError as no_game:
-            self.info_cont_write(f"{self.locale.tr('not_game_dir')}\n{no_game}", color="red")
+            self.info_cont_write(
+                f"{self.locale.tr('not_game_dir')}\n{no_game}",
+                color="red"
+            )
             self.info_cont_abort()
             return
         except GDPFoundError as gdp_found:
-            self.info_cont_write(f"{self.locale.tr('gdp_found')}\n{gdp_found}", color="red")
+            self.info_cont_write(
+                f"{self.locale.tr('gdp_found')}\n{gdp_found}",
+                color="red"
+            )
             self.info_cont_abort()
             return
         except VersionError as bad_version:
-            self.info_cont_write(f"{self.locale.tr('incorrect_version')}", color="red")
+            self.info_cont_write(
+                f"{self.locale.tr('incorrect_version')}",
+                color="red"
+            )
             self.info_cont_abort()
+            ic(bad_version)
             return
         except ManifestMissingError as no_manifest:
-            self.info_cont_write(f"{self.locale.tr('manifest_missing')}\n{no_manifest}", color="red")
+            self.info_cont_write(
+                f"{self.locale.tr('manifest_missing')}\n{no_manifest}",
+                color="red"
+            )
             self.info_cont_abort()
             return
-        
+
         match exe_status:
             case "no_exe":
                 ic('no exe')
-                logger.warning("Randomization options related to executable randomizer will be forcibly disabled.")
-                self.info_cont_write(f"{self.locale.tr('is_continued')}", color="yellow")
+                logger.warning("Randomization options related to executable \
+                               randomizing will be forcibly disabled.")
+                self.info_cont_write(
+                    f"{self.locale.tr('is_continued')}",
+                    color="yellow"
+                )
                 self.uncheck_chkbxs(
-                    self.cb_render, 
-                    self.cb_armor, 
-                    self.cb_fov, 
+                    self.cb_render,
+                    self.cb_armor,
+                    self.cb_fov,
                     self.cb_gravity
                 )
             case "no_fov":
                 ic('no_fov')
-                self.info_cont_write(f"{self.locale.tr('is_continued')}", color="yellow")
+                self.info_cont_write(
+                    f"{self.locale.tr('is_continued')}",
+                    color="yellow"
+                )
 
                 self.uncheck_chkbxs(self.cb_fov)
-        
+
         self.progress_bar.value += 0.11
 
         if validation:
@@ -444,14 +491,23 @@ class RandomizerWindow(MainGui):
                 self.info_cont_success()
 
             except ManifestMissingError as bad_manifest:
-                self.info_cont_write(f"{self.locale.tr('bad_manifest')}\n{bad_manifest}", "red")
+                self.info_cont_write(
+                    f"{self.locale.tr('bad_manifest')}\n{bad_manifest}",
+                    "red"
+                )
                 self.info_cont_abort()
                 return
             except ResourcesMissingError as res_missing:
-                self.info_cont_write(f"{self.locale.tr('file_missing')}\n{res_missing}", "red")
+                self.info_cont_write(
+                    f"{self.locale.tr('file_missing')}\n{res_missing}",
+                    "red"
+                )
                 self.info_cont_abort()
             except ManifestKeyError as wrong_key_type:
-                self.info_cont_write(f"{self.locale.tr('wrong_key_type')} {wrong_key_type}", "red")
+                self.info_cont_write(
+                    f"{self.locale.tr('wrong_key_type')} {wrong_key_type}",
+                    "red"
+                )
                 self.info_cont_abort()
             except Exception as exc:
                 self.info_cont_write(exc, "red")
@@ -464,27 +520,28 @@ def main(page: Page) -> None:
     def window_resized(e: ControlEvent) -> None:
         ic(page.width)
         ic(page.window_width)
-        app.main_column.width = page.width
-        app.main_column.height = page.height-3
+        main_app.main_column.width = page.width
+        main_app.main_column.height = page.height-3
         try:
-            app.info_cont.width = page.width
-            app.info_cont.height = page.height-3
-            app.info_cont.update()
+            main_app.info_cont.width = page.width
+            main_app.info_cont.height = page.height-3
+            main_app.info_cont.update()
         # error occurs because this widget is not always on app main screen
-        except AssertionError: pass
-        
-        app.update()
-    
+        except AssertionError:
+            pass
+
+        main_app.update()
+
     def save_config(e: ControlEvent) -> None:
         if e.data == "close":
             try:
-                app.update_config()
-                app.config.save_config()
+                main_app.update_config()
+                main_app.config.save_config()
             except Exception as exc:
                 logger.error(exc)
-            
+
             page.window_destroy()
-    
+
     def create_error_container(message: str) -> None:
         page.window_maximizable = False
 
@@ -507,7 +564,7 @@ def main(page: Page) -> None:
             height=page.height,
             alignment=MainAxisAlignment.CENTER
         )
-    
+
     logger.info(f"Running {FULL_NAME} in {MAIN_PATH}")
 
     page.title = FULL_NAME
@@ -516,7 +573,7 @@ def main(page: Page) -> None:
     page.window_width = 880
     page.window_min_width = 832
     page.window_height = 706
-    page.bgcolor="#3d5a68"
+    page.bgcolor = "#3d5a68"
 
     # page.window_resizable = False
     # page.window_maximizable = False
@@ -525,11 +582,11 @@ def main(page: Page) -> None:
     page.padding = padding.all(0)
 
     try:
-        app = RandomizerWindow(
-            page = page,
-            config = Config(SETTINGS_PATH),
-            locale = Localisation(LOCALIZATION_PATH),
-            working_width = 800
+        main_app = RandomizerWindow(
+            page=page,
+            config=Config(SETTINGS_PATH),
+            locale=Localisation(LOCALIZATION_PATH),
+            working_width=800
         )
     except LocalisationMissingError as loc_missing:
         logger.critical(loc_missing)
@@ -539,19 +596,20 @@ def main(page: Page) -> None:
     except Exception as exc:
         page.add(exc)
         return
-    
+
     page.window_prevent_close = True
 
     page.on_window_event = save_config
     page.on_resize = window_resized
 
-    page.add(app)
+    page.add(main_app)
     page.update()
 
-    app.set_widget_connections()
-    app.fill_versions_dd(SUPPORTED_VERSIONS)
-    app.fill_presets_dd(PRESETS)
-    app.apply_config()
+    main_app.set_widget_connections()
+    main_app.fill_versions_dd(SUPPORTED_VERSIONS)
+    main_app.fill_presets_dd(PRESETS)
+    main_app.apply_config()
+
 
 def start():
-    ft.app(target=main)
+    app(target=main)

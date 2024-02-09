@@ -1,5 +1,11 @@
-from flet import *
 from pathlib import Path
+
+from flet import UserControl, Page, ButtonStyle, RoundedRectangleBorder, \
+    Container, Dropdown, ElevatedButton, FontWeight, Text, Row, \
+    Column, MainAxisAlignment, border, Checkbox, TextField, \
+    padding, alignment, ProgressBar, Image, CrossAxisAlignment, \
+    ControlEvent, Icon, icons, animation, IconButton
+
 
 class MainGui(UserControl):
     def __init__(self, page: Page, width: int) -> None:
@@ -7,10 +13,14 @@ class MainGui(UserControl):
 
         self.page = page
         self.main_width = width
-        self.button_style = ButtonStyle(shape=RoundedRectangleBorder(radius=10))
+        self.button_style = ButtonStyle(
+            shape=RoundedRectangleBorder(radius=10)
+        )
         self.btn_rus, self.btn_eng = self.create_lang_buttons()
         self.options_gui = self.create_options()
-        self.expandable_options = ExpandableContainer(self.main_width, 760, 64, content=self.options_gui)
+        self.expandable_options = ExpandableContainer(
+            self.main_width, 760, 64, content=self.options_gui
+        )
         self.game_path_setting_gui = self.create_game_path_setting()
         self.start_randomization_btn = self.create_randomization_btn()
         self.game_version_dd = self.create_game_version_setting()
@@ -37,14 +47,18 @@ class MainGui(UserControl):
                 image_fit="fill"
             )
         )
-    
+
     # options
     def create_options(self) -> list:
         self.create_opt_chkbxs()
 
         self.dd_preset = Dropdown()
-        self.btn_select_all = ElevatedButton(style=self.button_style, width=150, height=58)
-        self.btn_deselect_all = ElevatedButton(style=self.button_style, width=150, height=58)
+        self.btn_select_all = ElevatedButton(
+            style=self.button_style, width=150, height=58
+        )
+        self.btn_deselect_all = ElevatedButton(
+            style=self.button_style, width=150, height=58
+        )
 
         self.t_icons = Text(value="t_icons", size=20, weight=FontWeight.BOLD)
         self.t_icons_row = Row(
@@ -82,7 +96,9 @@ class MainGui(UserControl):
             alignment="center"
         )
 
-        self.t_textures = Text(value="t_textures", size=20, weight=FontWeight.BOLD)
+        self.t_textures = Text(
+            value="t_textures", size=20, weight=FontWeight.BOLD
+        )
         self.t_textures_row = Row(
             controls=[
                 self.t_textures
@@ -94,13 +110,15 @@ class MainGui(UserControl):
         self.t_other = Text(value="t_other", size=20, weight=FontWeight.BOLD)
         self.t_other_row = Row(
             controls=[
-                self.t_other   
+                self.t_other
             ],
             width=150,
             alignment="center"
         )
 
-        self.t_executable = Text(value="t_exe", size=20, weight=FontWeight.BOLD)
+        self.t_executable = Text(
+            value="t_exe", size=20, weight=FontWeight.BOLD
+        )
         self.t_executable_row = Row(
             controls=[
                 self.t_executable
@@ -130,7 +148,7 @@ class MainGui(UserControl):
             ],
             width=160
         )
-        
+
         self.opt_text = Column(
             controls=[
                 self.t_text_row,
@@ -314,7 +332,7 @@ class MainGui(UserControl):
                 ]
             )
         ]
-    
+
     def create_opt_chkbxs(self) -> None:
         """
         Creates checkboxes for options container
@@ -425,7 +443,7 @@ class MainGui(UserControl):
             self.cb_weather: "cb_weather",
             self.cb_wheels: "cb_wheels",
         }
-    
+
     # game path
     def create_game_path_setting(self):
         self.game_path_tf = TextField(width=600)
@@ -433,27 +451,27 @@ class MainGui(UserControl):
             bgcolor="white10",
             style=self.button_style)
         self.game_path_status_t = Text()
-        
+
         return Column(
             controls=[
                 Row(
                     controls=[
-                    self.game_path_tf
+                        self.game_path_tf
                     ]
                 ),
                 Row(
                     controls=[
-                    self.browse_btn,
-                    self.game_path_status_t
+                        self.browse_btn,
+                        self.game_path_status_t
                     ]
                 )
             ]
         )
-    
+
     # game version
     def create_game_version_setting(self):
         return Dropdown(width=600)
-    
+
     # randomization button
     def create_randomization_btn(self):
         return ElevatedButton(
@@ -461,11 +479,11 @@ class MainGui(UserControl):
             height=70,
             style=self.button_style
         )
-    
+
     # info container
     def create_info_container(self) -> Row:
         self.create_info_container_widgets()
-        self.log_container.controls.clear() # clear previous log
+        self.log_container.controls.clear()  # clear previous log
         return Row(
             [
                 Container(
@@ -473,7 +491,10 @@ class MainGui(UserControl):
                         [
                             Row(
                                 [
-                                    Container(self.info_cont_heading, padding=padding.only(top=5))
+                                    Container(
+                                        self.info_cont_heading,
+                                        padding=padding.only(top=5)
+                                    )
                                 ],
                                 alignment=MainAxisAlignment.CENTER
                             ),
@@ -517,7 +538,7 @@ class MainGui(UserControl):
             width=800,
             alignment=MainAxisAlignment.CENTER
         )
-    
+
     def create_info_container_widgets(self):
         self.progress_bar = ProgressBar(width=590, height=20, value=0)
         self.status_text = Text()
@@ -529,7 +550,7 @@ class MainGui(UserControl):
             width=600,
             scroll=True
         )
-    
+
     def build(self) -> Container:
         self.main_column = Column(
             [
@@ -605,6 +626,7 @@ class MainGui(UserControl):
         )
         return self.main_cont
 
+
 class ExpandableContainer(UserControl):
     def __init__(self,
                  width: int,
@@ -612,7 +634,7 @@ class ExpandableContainer(UserControl):
                  hidden_height: int,
                  name: Text = Text(),
                  content: list = []) -> None:
-        
+
         super().__init__()
 
         self.width = width
@@ -628,11 +650,11 @@ class ExpandableContainer(UserControl):
             icon_size=30,
             on_click=lambda e: self.expand_container(e)
         )
-    
+
     def format_name(self) -> None:
         self.name.size = 16
-        self.name.weight=FontWeight.BOLD
-    
+        self.name.weight = FontWeight.BOLD
+
     def expand_container(self, e: ControlEvent) -> None:
         if self.controls[0].height != self.full_height:
             self.controls[0].height = self.full_height
@@ -642,7 +664,7 @@ class ExpandableContainer(UserControl):
             self.controls[0].height = self.hidden_height
             self.expand_icon.icon = icons.KEYBOARD_ARROW_DOWN
             self.controls[0].update()
-    
+
     def build(self) -> Container:
         return Container(
             Column(
@@ -666,4 +688,3 @@ class ExpandableContainer(UserControl):
             animate=animation.Animation(400, "decelerate"),
             padding=padding.only(left=10, right=10, top=10)
         )
-
