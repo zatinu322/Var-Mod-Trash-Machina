@@ -6,7 +6,7 @@ class LuaRandomizer(Randomizer):
     def __init__(self, config: Config) -> None:
         super().__init__(config)
 
-        self.options: dict = self.manifest.get("Lua")
+        self.options: dict = self.manifest.get("lua")
         self.vars_path = self.game_path / "data/scripts/randomizer_vars.lua"
         self.var_statuses = {}
 
@@ -18,7 +18,7 @@ class LuaRandomizer(Randomizer):
                 status = False
             else:
                 status = True
-            var_statuses.update({group.get("Variable"): status})
+            var_statuses.update({group.get("variable"): status})
             self.var_statuses = var_statuses
 
             working_set.append(group)
@@ -32,8 +32,8 @@ class LuaRandomizer(Randomizer):
     def enable_var(self, lua_info: dict) -> None:
         content = ""
 
-        var: str = lua_info.get("Variable")
-        prototypes: dict = lua_info.get("Prototypes")
+        var: str = lua_info.get("variable")
+        prototypes: dict = lua_info.get("prototypes")
 
         # setting variable status
         # .lower because of lua syntax

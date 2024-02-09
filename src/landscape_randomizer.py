@@ -10,7 +10,7 @@ class LandscapeRandomizer(Randomizer):
     def __init__(self, config: Config) -> None:
         super().__init__(config)
 
-        self.options = self.manifest.get("Landscape")
+        self.options = self.manifest.get("landscape")
 
     def check_distortion(
         self,
@@ -36,18 +36,18 @@ class LandscapeRandomizer(Randomizer):
             return False
 
     def distort_landscape(self, xml_info: dict) -> None:
-        for level in xml_info.get("Maps"):
+        for level in xml_info.get("maps"):
             folder_path = self.game_path / level
-            state_file = xml_info.get("State")
+            state_file = xml_info.get("state")
 
-            multiple_allowed = xml_info.get("Multiple")
+            multiple_allowed = xml_info.get("multiple")
 
             is_allowed = self.check_distortion(
                 folder_path, state_file, multiple_allowed
             )
 
             if is_allowed:
-                file_path = folder_path / xml_info.get("File")
+                file_path = folder_path / xml_info.get("file")
                 state_file_path = folder_path / state_file
 
                 # create file to register landscape state

@@ -11,7 +11,7 @@ class ExecutableRandomizer(Randomizer):
     def __init__(self, config: Config) -> None:
         super().__init__(config)
 
-        self.options: dict = self.manifest.get("Executable")
+        self.options: dict = self.manifest.get("executable")
 
     def configure_randomization(self) -> None:
         for param, status in self.params.items():
@@ -50,7 +50,7 @@ class ExecutableRandomizer(Randomizer):
         return info
 
     def randomize(self) -> dict:
-        file_path = self.game_path / self.options.get("File")
+        file_path = self.game_path / self.options.get("file")
         offsets_exe = self.generate_offsets()
 
         # logic by Aleksandr "Seel" Parfenenkov

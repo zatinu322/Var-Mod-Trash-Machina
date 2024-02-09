@@ -10,7 +10,7 @@ class TextRandomizer(Randomizer):
     def __init__(self, config: Config) -> None:
         super().__init__(config)
 
-        self.options = self.manifest.get("Text")
+        self.options = self.manifest.get("text")
 
     def parse_xml(self, xml_path: Path) -> ET.ElementTree | None:
         try:

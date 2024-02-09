@@ -6,8 +6,8 @@ resources_validation:
   - Vanilla/data/scripts/randomizer.lua
   - Vanilla/data/scripts/randomizer_vars.lua
 # FileCopier class
-FolderToCopy: resources/Vanilla
-LuaToEdit: data/scripts/server.lua
+folder_to_copy: resources/Vanilla
+lua_to_edit: data/scripts/server.lua
 # list of all masks, dwellers, cars, guns and other models for servers.xml on each map
 server_paths:
   - data/maps/mainmenu/servers.xml
@@ -318,17 +318,17 @@ server_items:
   - robot2suspension08_L
   - robot2suspension08_R
 triggers_to_change:
-  - data/maps/r1m1/cinematriggers.xml:
-    - name: Finish00
-    - script: '\n\t\t\tGameFiltersUse()\n\n\t\t\tRestoreAllToleranceStatus()\n\n\t\t\tlocal rrr = GetEntityByName ("hero1Dw")\n\t\t\tif rrr then rrr:Remove() end\n\t\t\t\n\t\t\tlocal rrr = GetEntityByName ("hero2Dw")\n\t\t\tif rrr then rrr:Remove() end\n\n\t\t\tlocal rrr = GetEntityByName ("fatherDw")\n\t\t\tif rrr then rrr:Remove() end\n\n\t\t\tTDeactivate( "ROLIK11" )\n\t\t\tTDeactivate( "ROLIK15" )\n\t\t\tTDeactivate( "ROLIK16" )\n\t\t\tTDeactivate( "ROLIK17" )\n\t\t\tTDeactivate( "ROLIK12" )\n\t\t\tTDeactivate( "ROLIK13" )\n\t\t\tTDeactivate( "ROLIK18" )\n\t\t\tTDeactivate( "ROLIK14" )\n\n\t\t\tlocal Plf = GetPlayerVehicle()\n\t\t\tPlf:SetExternalPathByName("start_rolik_mycar")\n\t\t\tPlf:PlaceToEndOfPath()\n\t\t\tPlf:SetRotation(Quaternion(-0.007, 1.000, -0.010, 0.021))\n\t\t\tPlf:setGodMode(0)\n\n\t\t\tTActivate ("tr_Tutotial_Start")\n\n\t\t\tStopPlayingCustomMusic()\n\n\t\t\tSetCameraBehindPlayerVehicle()\n\n\t\t\ttrigger:Deactivate() \n\t\t'
-  - data/maps/r1m1/cinematriggers.xml:
-    - name: trFirstRolik
-    - script: '\n\t\t\tg_ObjCont:SetGameTime( 10, 0, 10, 9, 2234 )\n\n\t\t\tSetRadarUpgrade(1)\n\n\t\t\tif RAND_PLAYER_VEH then\n\t\t\t\tAddPlayerVehicle(RAND_VEH_3[random(getn(RAND_VEH_3))])\n\t\t\tend\n\n\t\t\tif RAND_GUNS then\n\t\t\t\tgiveguns_random()\n\t\t\tend\n\n\t\t\tlocal Plf = GetPlayerVehicle()\n\t\t\tif Plf then\n\t\t\t\tPlf:setGodMode(1)\n\t\t\t\tPlf:SetGamePositionOnGround(CVector(3355.000, 368.500, 3308.000))\n\t\t\t\tPlf:SetRotation(Quaternion(-0.007, 1.000, -0.010, 0.021))\n\t\t\tend\n\n\t\t\tFly("start_game", CINEMATIC_NO_AIM, 0, 68, 1, 1 )\n\t\t\tStartCinematic()\n\t\t\tUpdateCinematic( 1 )\n\n\t\t\tAddCinematicMessage( 77771, 0.1)\n\n\t\t\tTActivate("trFirstRolikMusic")\n\t\t\tTActivate("StartGame")\n\n\t\t\ttrigger:Deactivate()\n\t\t'
+  data/maps/r1m1/cinematriggers.xml:
+    name: Finish00
+    script: '\n\t\t\tGameFiltersUse()\n\n\t\t\tRestoreAllToleranceStatus()\n\n\t\t\tlocal rrr = GetEntityByName ("hero1Dw")\n\t\t\tif rrr then rrr:Remove() end\n\t\t\t\n\t\t\tlocal rrr = GetEntityByName ("hero2Dw")\n\t\t\tif rrr then rrr:Remove() end\n\n\t\t\tlocal rrr = GetEntityByName ("fatherDw")\n\t\t\tif rrr then rrr:Remove() end\n\n\t\t\tTDeactivate( "ROLIK11" )\n\t\t\tTDeactivate( "ROLIK15" )\n\t\t\tTDeactivate( "ROLIK16" )\n\t\t\tTDeactivate( "ROLIK17" )\n\t\t\tTDeactivate( "ROLIK12" )\n\t\t\tTDeactivate( "ROLIK13" )\n\t\t\tTDeactivate( "ROLIK18" )\n\t\t\tTDeactivate( "ROLIK14" )\n\n\t\t\tlocal Plf = GetPlayerVehicle()\n\t\t\tPlf:SetExternalPathByName("start_rolik_mycar")\n\t\t\tPlf:PlaceToEndOfPath()\n\t\t\tPlf:SetRotation(Quaternion(-0.007, 1.000, -0.010, 0.021))\n\t\t\tPlf:setGodMode(0)\n\n\t\t\tTActivate ("tr_Tutotial_Start")\n\n\t\t\tStopPlayingCustomMusic()\n\n\t\t\tSetCameraBehindPlayerVehicle()\n\n\t\t\ttrigger:Deactivate() \n\t\t'
+  data/maps/r1m1/triggers.xml:
+    name: trFirstRolik
+    script: '\n\t\t\tg_ObjCont:SetGameTime( 10, 0, 10, 9, 2234 )\n\n\t\t\tSetRadarUpgrade(1)\n\n\t\t\tif RAND_PLAYER_VEH then\n\t\t\t\tAddPlayerVehicle(RAND_VEH_3[random(getn(RAND_VEH_3))])\n\t\t\tend\n\n\t\t\tif RAND_GUNS then\n\t\t\t\tgiveguns_random()\n\t\t\tend\n\n\t\t\tlocal Plf = GetPlayerVehicle()\n\t\t\tif Plf then\n\t\t\t\tPlf:setGodMode(1)\n\t\t\t\tPlf:SetGamePositionOnGround(CVector(3355.000, 368.500, 3308.000))\n\t\t\t\tPlf:SetRotation(Quaternion(-0.007, 1.000, -0.010, 0.021))\n\t\t\tend\n\n\t\t\tFly("start_game", CINEMATIC_NO_AIM, 0, 68, 1, 1 )\n\t\t\tStartCinematic()\n\t\t\tUpdateCinematic( 1 )\n\n\t\t\tAddCinematicMessage( 77771, 0.1)\n\n\t\t\tTActivate("trFirstRolikMusic")\n\t\t\tTActivate("StartGame")\n\n\t\t\ttrigger:Deactivate()\n\t\t'
 # FileRandomizer class
-Files:
+files:
   # Icons
   cb_maps:
-    Group0:
+    group0:
       - data/if/map:
         - r1m1.dds
         - r1m2.dds
@@ -341,7 +341,7 @@ Files:
         - r4m1.dds
         - r4m2.dds
   cb_digits:
-    Group0:
+    group0:
       - data/if/ico/digitals/large/:
         - num_large_0.dds
         - num_large_1.dds
@@ -353,7 +353,7 @@ Files:
         - num_large_7.dds
         - num_large_8.dds
         - num_large_9.dds
-    Group1:
+    group1:
       - data/if/ico/digitals/small/:
         - num_small_0.dds
         - num_small_1.dds
@@ -366,7 +366,7 @@ Files:
         - num_small_8.dds
         - num_small_9.dds
   cb_splashes:
-    Group0:
+    group0:
       - data/if/ico/splashes/:
         - arack.dds
         - chel.dds
@@ -384,7 +384,7 @@ Files:
         - plane.dds
         - zavod.dds
   cb_bkgd:
-    Group0:
+    group0:
       - data/if/ico/talkwithnpcdlg/:
         - bardialog1.dds
         - bardialog2.dds
@@ -399,7 +399,7 @@ Files:
         - museumdialog1.dds
         - oracledialog.dds
   cb_clans:
-    Group0:
+    group0:
       - data/if/ico/clans/:
         - adventurers02.dds
         - al_faran02.dds
@@ -426,7 +426,7 @@ Files:
         - technicians02.dds
         - trappers02.dds
         - vagabonds02.dds
-    Group1:
+    group1:
       - data/if/ico/clans/:
         - adventurers03.dds
         - al_faran03.dds
@@ -453,7 +453,7 @@ Files:
         - technicians03.dds
         - trappers03.dds
         - vagabonds03.dds
-    Group2:
+    group2:
       - data/models/logos/:
         - adventurers.dds
         - al_faran.dds
@@ -482,7 +482,7 @@ Files:
         - trappers.dds
         - vagabonds.dds
   cb_gui_icons:
-    Group0:
+    group0:
       - data/if/ico/garagewnd/action panel/:
         - bcb_arrow_d.dds
         - bcb_arrow_e.dds
@@ -627,7 +627,7 @@ Files:
         - main_invent_disactiv.dds
         - tab_bar_e.dds
         - tab_quest_s.dds
-    Group1:
+    group1:
       - data/if/ico/maingameinterfacewnd/:
         - get_drop.dds
         - horn.dds
@@ -635,7 +635,7 @@ Files:
         - boss1.dds
         - boss2.dds
         - boss3.dds
-    Group2:
+    group2:
       - data/if/ico/questlog/:
         - b_mark_e.dds
         - b_mark_p.dds
@@ -689,7 +689,7 @@ Files:
         - map_mark_town_s.dds
         - map_set_navpoint_s.dds
         - map_filter_off1.dds
-    Group3:
+    group3:
       - data/if/ico/globalmap/:
         - gmap_ico_1.dds
         - gmap_ico_2.dds
@@ -704,7 +704,7 @@ Files:
         - r3m2.dds
         - r4m1.dds
         - r4m2.dds
-    Group4:
+    group4:
       - data/if/ico/mainmenu/:
         - btn_mmenu_long_d.dds
         - btn_mmenu_short_d.dds
@@ -714,7 +714,7 @@ Files:
         - mm_button_q1.dds
         - mm_button_q1b.dds
         - mm_button_q2.dds
-    Group5:
+    group5:
       - data/if/ico/weaponinfolist/weapongroupbuttons/:
         - wgdisabled.dds
         - wgenabled.dds
@@ -724,7 +724,7 @@ Files:
         - wgpressed_3.dds
         - wgpressed_4.dds
         - wgpressed_5.dds
-    Group6:
+    group6:
       - data/if/ico/weaponinfolist/weaponslots/:
         - weapon21b.dds
         - weapon21r.dds
@@ -737,19 +737,19 @@ Files:
         - weapon34b.dds
         - weapon34r.dds
         - weaponna.dds
-    Group7:
+    group7:
       - data/if/ico/shop/:
         - btn_listpos_d.dds
         - btn_listpos_e.dds
         - btn_listpos_p.dds
         - btn_listpos_s.dds
-    Group8:
+    group8:
       - data/if/ico/shop/:
           - icn_goods.dds
           - icn_price_buy.dds
           - icn_price_sell.dds
   cb_radar:
-    Group0:
+    group0:
       - data/if/ico/localmap/:
         - icn_exit.dds
         - icn_player.dds
@@ -774,7 +774,7 @@ Files:
         - radar_north.dds
         - radar_south.dds
   cb_goods_guns:
-    Group0:
+    group0:
       - data/if/ico/inventorydlg/goods/:
         - books.dds
         - bottles.dds
@@ -841,7 +841,7 @@ Files:
         - gadgetg_04.dds
         - gadgete_01.dds
   cb_cab_cargo:
-    Group0:
+    group0:
       - data/if/ico/inventorydlg/bug/:
         - bug_body01.dds
         - bug_body02.dds
@@ -891,7 +891,7 @@ Files:
         - belaz_cab02.dds
         - belaz_cab03.dds
   cb_aim:
-    Group0:
+    group0:
       - data/if/ico/smartcursorwnd/:
         - cross.dds
         - cross1.dds
@@ -905,7 +905,7 @@ Files:
         - small_cross.dds
   # Sounds
   cb_music:
-    Group0:
+    group0:
       - data/music/:
         - bar.ogg
         - credits.ogg
@@ -988,7 +988,7 @@ Files:
         - battle9.ogg
         - driving9.ogg
   cb_speech:
-    Group0:
+    group0:
       - data/sounds/speech/r1m1/:
         - r1m1_1111_lisa.ogg
         - r1m1_1112_lisa.ogg
@@ -1367,7 +1367,7 @@ Files:
         - ending2.ogg
         - r1m1_969_narrator.ogg
   cb_radio:
-    Group0:
+    group0:
       - data/sounds/radio/:
         - r_arab_allydead_1.ogg
         - r_arab_attack_1.ogg
@@ -1545,7 +1545,7 @@ Files:
         - r_scholar_shot_1.ogg
         - r_scholar_shot_2.ogg
   cb_crashes:
-    Group0:
+    group0:
       - data/sounds/crash/:
         - colision_with_life01.wav
         - colision_with_life02.wav
@@ -1575,7 +1575,7 @@ Files:
         - landing_car_sparkle.wav
         - roll_one_time.wav
   cb_explosions:
-    Group0:
+    group0:
       - data/sounds/explosion/:
         - explosion01.wav
         - explosion02.wav
@@ -1588,7 +1588,7 @@ Files:
         - explosion09.wav
         - explosion10.wav
   cb_engines:
-    Group0:
+    group0:
       - data/sounds/driving/motors/:
         - beetle1_engine_noise_high.wav
         - beetle2_engine_noise_high.wav
@@ -1619,7 +1619,7 @@ Files:
         - ural4_engine_noise_high.wav
         - ural5_engine_noise_high.wav
   cb_horns:
-    Group0:
+    group0:
       - data/sounds/driving/horns/:
         - horn01.wav
         - horn02.wav
@@ -1630,7 +1630,7 @@ Files:
         - horn07.wav
         - horn08.wav
   cb_hits:
-    Group0:
+    group0:
       - data/sounds/events/:
         - click.wav
       - data/sounds/effects/shells/:
@@ -1660,7 +1660,7 @@ Files:
         - wood_cr_03.wav
         - wood_cr_04.wav
   cb_shooting:
-    Group0:
+    group0:
       - data/sounds/shooting/:
         - tank_shoot.wav
         - robotgun01_shoot.wav
@@ -1702,7 +1702,7 @@ Files:
         - vector_shoot.wav
         - vulcan_shoot.wav
   cb_other_sounds:
-    Group0:
+    group0:
       - data/sounds/ambience/:
         - sales_area1.wav
         - service_station1.wav
@@ -1748,7 +1748,7 @@ Files:
         - oracle.wav
   # Textures
   cb_env_textures:
-    Group0:
+    group0:
       - data/models/textures/acient/:
         - ancient_arc.dds
         - ancient_column.dds
@@ -2330,7 +2330,7 @@ Files:
       - data/models/buildings/region3/:
         - meh_druids_wall.dds
   cb_masks:
-    Group0:
+    group0:
       - data/models/masks/main/:
         - axel01.dds
         - ben01.dds
@@ -2339,7 +2339,7 @@ Files:
         - axel01.dds
         - ben01.dds
         - lisa.dds
-    Group1:
+    group1:
       - data/models/masks/region1/man/:
         - maska01.dds
         - maska02.dds
@@ -2364,7 +2364,7 @@ Files:
         - mask02.dds
         - mask03.dds
   cb_veh_skins:
-    Group0:
+    group0:
       - data/models/vehicles/belaz/:
         - cab01_0.dds
         - cab01_1.dds
@@ -2375,7 +2375,7 @@ Files:
         - cab01_6.dds
         - cab01_7.dds
         - cab01_8.dds
-    Group1:
+    group1:
       - data/models/vehicles/belaz/:
         - cab02_0.dds
         - cab02_1.dds
@@ -2386,7 +2386,7 @@ Files:
         - cab02_6.dds
         - cab02_7.dds
         - cab02_8.dds
-    Group2:
+    group2:
       - data/models/vehicles/belaz/:
         - cab03_0.dds
         - cab03_1.dds
@@ -2397,7 +2397,7 @@ Files:
         - cab03_6.dds
         - cab03_7.dds
         - cab03_8.dds
-    Group3:
+    group3:
       - data/models/vehicles/belaz/:
         - cab04_0.dds
         - cab04_1.dds
@@ -2408,7 +2408,7 @@ Files:
         - cab04_6.dds
         - cab04_7.dds
         - cab04_8.dds
-    Group4:
+    group4:
       - data/models/vehicles/belaz/:
         - cargo01_0.dds
         - cargo01_1.dds
@@ -2419,7 +2419,7 @@ Files:
         - cargo01_6.dds
         - cargo01_7.dds
         - cargo01_8.dds
-    Group5:
+    group5:
       - data/models/vehicles/belaz/:
         - cargo02_0.dds
         - cargo02_1.dds
@@ -2430,7 +2430,7 @@ Files:
         - cargo02_6.dds
         - cargo02_7.dds
         - cargo02_8.dds
-    Group6:
+    group6:
       - data/models/vehicles/belaz/:
         - cargo03_0.dds
         - cargo03_1.dds
@@ -2441,7 +2441,7 @@ Files:
         - cargo03_6.dds
         - cargo03_7.dds
         - cargo03_8.dds
-    Group7:
+    group7:
       - data/models/vehicles/belaz/:
         - cargo04_0.dds
         - cargo04_1.dds
@@ -2452,13 +2452,13 @@ Files:
         - cargo04_6.dds
         - cargo04_7.dds
         - cargo04_8.dds
-    Group8:
+    group8:
       - data/models/vehicles/belaz/:
         - chassis01_0.dds
         - chassis01_1.dds
         - chassis01_3.dds
         - chassis01_8.dds
-    Group9:
+    group9:
       - data/models/vehicles/belaz/:
         - wheel01_0.dds
         - wheel01_1.dds
@@ -2467,7 +2467,7 @@ Files:
         - wheel01_4.dds
         - wheel01_7.dds
         - wheel01_8.dds
-    Group10:
+    group10:
       - data/models/vehicles/bug/:
         - cab_1_0.dds
         - cab_1_1.dds
@@ -2478,7 +2478,7 @@ Files:
         - cab_1_6.dds
         - cab_1_7.dds
         - cab_1_8.dds
-    Group11:
+    group11:
       - data/models/vehicles/bug/:
         - cargo_1_0.dds
         - cargo_1_2.dds
@@ -2487,11 +2487,11 @@ Files:
         - cargo_1_6.dds
         - cargo_1_7.dds
         - cargo_1_8.dds
-    Group12:
+    group12:
       - data/models/vehicles/bug/:
         - cargo_detal_1_0.dds
         - cargo_detal_1_8.dds
-    Group13:
+    group13:
       - data/models/vehicles/cruiser/:
         - cab_00.dds
         - cab_03.dds
@@ -2500,13 +2500,13 @@ Files:
         - cab_06.dds
         - cab_07.dds
         - cab_08.dds
-    Group14:
+    group14:
       - data/models/vehicles/cruiser/:
         - cab_detal_00.dds
         - cab_detal_06.dds
         - cab_detal_08.dds
         - cab01_detal.dds
-    Group15:
+    group15:
       - data/models/vehicles/fighter/:
         - fighter00.dds
         - fighter01.dds
@@ -2516,7 +2516,7 @@ Files:
         - fighter06.dds
         - fighter07.dds
         - fighter08.dds
-    Group16:
+    group16:
       - data/models/vehicles/hunter/:
         - cab02.dds
         - cab03.dds
@@ -2525,7 +2525,7 @@ Files:
         - cab06d.dds
         - cab07.dds
         - cab08.dds
-    Group17:
+    group17:
       - data/models/vehicles/mirotvorec/:
         - cab01_0.dds
         - cab01_1.dds
@@ -2536,7 +2536,7 @@ Files:
         - cab01_6.dds
         - cab01_7.dds
         - cab01_8.dds
-    Group18:
+    group18:
       - data/models/vehicles/mirotvorec/:
         - cab02_0.dds
         - cab02_1.dds
@@ -2547,7 +2547,7 @@ Files:
         - cab02_6.dds
         - cab02_7.dds
         - cab02_8.dds
-    Group19:
+    group19:
       - data/models/vehicles/mirotvorec/:
         - cargo01_0.dds
         - cargo01_1.dds
@@ -2558,7 +2558,7 @@ Files:
         - cargo01_6.dds
         - cargo01_7.dds
         - cargo01_8.dds
-    Group20:
+    group20:
       - data/models/vehicles/mirotvorec/:
         - wheel01_0.dds
         - wheel01_1.dds
@@ -2566,7 +2566,7 @@ Files:
         - wheel01_4.dds
         - wheel01_7.dds
         - wheel01_8.dds
-    Group21:
+    group21:
       - data/models/vehicles/molokovoz/:
         - cab01_0.dds
         - cab01_1.dds
@@ -2577,7 +2577,7 @@ Files:
         - cab01_6.dds
         - cab01_7.dds
         - cab01_8.dds
-    Group22:
+    group22:
       - data/models/vehicles/molokovoz/:
         - cab02_0.dds
         - cab02_1.dds
@@ -2588,7 +2588,7 @@ Files:
         - cab02_6.dds
         - cab02_7.dds
         - cab02_8.dds
-    Group23:
+    group23:
       - data/models/vehicles/molokovoz/:
         - cargo01_0.dds
         - cargo01_1.dds
@@ -2599,7 +2599,7 @@ Files:
         - cargo01_6.dds
         - cargo01_7.dds
         - cargo01_8.dds
-    Group24:
+    group24:
       - data/models/vehicles/molokovoz/:
         - cargo02_0.dds
         - cargo02_1.dds
@@ -2610,7 +2610,7 @@ Files:
         - cargo02_6.dds
         - cargo02_7.dds
         - cargo02_8.dds
-    Group25:
+    group25:
       - data/models/vehicles/molokovoz/:
         - cargo03_0.dds
         - cargo03_1.dds
@@ -2621,14 +2621,14 @@ Files:
         - cargo03_6.dds
         - cargo03_7.dds
         - cargo03_8.dds
-    Group26:
+    group26:
       - data/models/vehicles/molokovoz/:
         - wheel01_1.dds
         - wheel01_2.dds
         - wheel01_4.dds
         - wheel01_5.dds
         - wheel01_8.dds
-    Group27:
+    group27:
       - data/models/vehicles/scout/:
         - scout01_0.dds
         - scout01_1.dds
@@ -2639,7 +2639,7 @@ Files:
         - scout01_6.dds
         - scout01_7.dds
         - scout01_8.dds
-    Group28:
+    group28:
       - data/models/vehicles/small_car/:
         - small_car01_cab01.dds
         - small_car01_cab01_0.dds
@@ -2649,7 +2649,7 @@ Files:
         - small_car01_cab01_6.dds
         - small_car01_cab01_7.dds
         - small_car01_cab01_d.dds
-    Group29:
+    group29:
       - data/models/vehicles/small_car/:
         - small_car01_cab01_alfa.dds
         - small_car01_cab01_alfa_0.dds
@@ -2659,7 +2659,7 @@ Files:
         - small_car01_cab01_alfa_6.dds
         - small_car01_cab01_alfa_7.dds
         - small_car01_cab01_alfa_d.dds
-    Group30:
+    group30:
       - data/models/vehicles/ural/:
         - cab01_0.dds
         - cab01_1.dds
@@ -2670,7 +2670,7 @@ Files:
         - cab01_6.dds
         - cab01_7.dds
         - cab01_8.dds
-    Group31:
+    group31:
       - data/models/vehicles/ural/:
         - cab02_0.dds
         - cab02_1.dds
@@ -2681,7 +2681,7 @@ Files:
         - cab02_6.dds
         - cab02_7.dds
         - cab02_8.dds
-    Group32:
+    group32:
       - data/models/vehicles/ural/:
         - cab03.dds
         - cab04.dds
@@ -2693,7 +2693,7 @@ Files:
         - cab10.dds
         - cab10b.tga
         - cab11.dds
-    Group33:
+    group33:
       - data/models/vehicles/ural/:
         - cargo01_0.dds
         - cargo01_1.dds
@@ -2704,7 +2704,7 @@ Files:
         - cargo01_6.dds
         - cargo01_7.dds
         - cargo01_8.dds
-    Group34:
+    group34:
       - data/models/vehicles/ural/:
         - cargo02_0.dds
         - cargo02_4.dds
@@ -2712,14 +2712,14 @@ Files:
         - cargo02_6.dds
         - cargo02_7.dds
         - cargo02_8.dds
-    Group35:
+    group35:
       - data/models/vehicles/ural/:
         - cargo03_0.dds
         - cargo03_4.dds
         - cargo03_5.dds
         - cargo03_6.dds
         - cargo03_7.dds
-    Group36:
+    group36:
       - data/models/vehicles/ural/:
         - cargo04.dds
         - cargo05.dds
@@ -2737,7 +2737,7 @@ Files:
         - cargo17.dds
         - cargo1d.dds
         - cargo22.dds
-    Group37:
+    group37:
       - data/models/vehicles/ural/:
         - shield01_0.dds
         - shield01_1.dds
@@ -2748,7 +2748,7 @@ Files:
         - shield01_6.dds
         - shield01_7.dds
         - shield01_8.dds
-    Group38:
+    group38:
       - data/models/vehicles/ural/:
         - shield02.dds
         - shield03.dds
@@ -2761,7 +2761,7 @@ Files:
         - shield10.dds
         - shield11.dds
   cb_lightmaps:
-    Group0:
+    group0:
       - data/maps/mainmenu/:
         - lightmap_weather_clear_daytime.dds
         - lightmap_weather_clear_sunrisetime.dds
@@ -2816,7 +2816,7 @@ Files:
         - lightmap_sunrisetime_r4m2.dds
         - lightmap_sunsettime_r4m2.dds
   cb_skybox:
-    Group0:
+    group0:
       - data/weathertexs/:
         - skyashstorm.dds
         - skyblight.dds
@@ -2841,7 +2841,7 @@ Files:
         - tx_sky_stormy.tga
         - tx_sky_thunder.tga
   cb_tiles:
-    Group0:
+    group0:
       - data/tiles/region1/:
         - concrete_covering.dds
         - crag_rock.dds
@@ -2950,13 +2950,13 @@ Files:
         - sandtech5.dds
         - sandtech6.dds
 # TextRandomizer class
-Text:
+text:
   cb_names:
-    Group0:
+    group0:
       data/if/strings/affixesdiz.xml: {tag: "string", name: "id", text: "value", exclude: ["_diz"]}
-    Group1:
+    group1:
       data/if/strings/clansdiz.xml: {tag: "string", name: "id", text: "value", include: ["_abb"]}
-    Group2:
+    group2:
       data/if/strings/clansdiz.xml: {tag: "string", name: "id", text: "value", exclude: ["_abb", "_diz"]}
       data/maps/r1m1/object_names.xml: {tag: "Object", name: "Name", text: "FullName"}
       data/maps/r1m2/object_names.xml: {tag: "Object", name: "Name", text: "FullName"}
@@ -2973,10 +2973,10 @@ Text:
       data/if/strings/uibooks.xml: {tag: "string", name: "id", text: "value", exclude: ["_diz"]}
       data/if/strings/help.xml: {tag: "string", name: "id", text: "value", include: ["_title"]}
   cb_dialogues:
-    Group0:
+    group0:
       data/if/diz/dialogsglobal.xml: {tag: "Reply", name: "name", text: "text"}
       data/if/diz/dynamicdialogsglobal.xml: {tag: "Reply", name: "name", text: "text"}
-    Group1:
+    group1:
       data/maps/r1m1/strings.xml: {tag: "string", name: "id", text: "value"}
       data/maps/r1m2/strings.xml: {tag: "string", name: "id", text: "value"}
       data/maps/r1m3/strings.xml: {tag: "string", name: "id", text: "value"}
@@ -2988,40 +2988,40 @@ Text:
       data/maps/r4m1/strings.xml: {tag: "string", name: "id", text: "value"}
       data/maps/r4m2/strings.xml: {tag: "string", name: "id", text: "value"}
   cb_quests:
-    Group0:
+    group0:
       data/if/diz/questinfoglobal.xml: {tag: "QuestInfo", name: "questName", text: "briefDiz"}
-    Group1:
+    group1:
       data/if/diz/questinfoglobal.xml: {tag: "QuestInfo", name: "questName", text: "fullDiz"}
   cb_controls:
-    Group0:
+    group0:
       data/if/strings/bindnames.xml: {tag: "string", name: "id", text: "value"}
   cb_fadingmsgs:
-    Group0:
+    group0:
       data/if/strings/fadingmsgs.xml: {tag: "string", name: "id", text: "value"}
       data/sounds/radio/radiosamples.xml: {tag: "Sample", name: "id", text: "text"}
   cb_gui_text:
-    Group0:
+    group0:
       data/if/strings/gamestrings.xml: {tag: "string", name: "id", text: "value"}
       data/if/strings/uieditstrings.xml: {tag: "string", name: "id", text: "value"}
       data/if/strings/statistics.xml: {tag: "string", name: "id", text: "value"}
   cb_books_history:
-    Group0:
+    group0:
       data/if/strings/uibooks.xml: {tag: "string", name: "id", text: "value", include: ["_diz"]}
       data/if/strings/uihistory.xml: {tag: "string", name: "id", text: "value"}
   cb_descriptions:
-    Group0:
+    group0:
       data/if/strings/affixesdiz.xml: {tag: "string", name: "id", text: "value", include: ["_diz"]}
       data/if/strings/objectdiz.xml: {tag: "string", name: "id", text: "value"}
       data/if/strings/uidescription.xml: {tag: "string", name: "id", text: "value"}
       data/if/strings/help.xml: {tag: "string", name: "id", text: "value", exclude: ["_title"]}
       data/if/strings/clansdiz.xml: {tag: "string", name: "id", text: "value", include: ["_diz"]}
   cb_weather:
-    Group0:
+    group0:
       data/weather.xml: {tag: "WeatherItem", name: "name", text: "name"}
 # ModelsRandomizer class
-Models:
+models:
   cb_env_models:
-    Group0:
+    group0:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3046,7 +3046,7 @@ Models:
           - road_sign5
           - quest_head1
           - mine02
-    Group1:
+    group1:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3170,7 +3170,7 @@ Models:
           - gadget_05
           - gadget_12
           - gadget_06
-    Group2:
+    group2:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3312,7 +3312,7 @@ Models:
           - quest_cd1
           - quest_cd2
           - artefact2
-    Group3:
+    group3:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3390,7 +3390,7 @@ Models:
           - seedbed
           - electro_stolb3
           - electro_stolb1
-    Group4:
+    group4:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3445,7 +3445,7 @@ Models:
           - tube2
           - ben_house
           - polosaLittle
-    Group5:
+    group5:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3490,7 +3490,7 @@ Models:
           - boss04part01
           - crag_copped_2
           - polosaDuga
-    Group6:
+    group6:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3505,7 +3505,7 @@ Models:
           - crag_boulder4
           - crag_desert_4
           - oracle_house
-    Group7:
+    group7:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3529,7 +3529,7 @@ Models:
           - t_greattree1
           - t_greattree2
           - t_greattree3_
-    Group8:
+    group8:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3548,7 +3548,7 @@ Models:
           - bigTribune2
           - stonehendge
           - nadTrasnizza+
-    Group9:
+    group9:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3559,7 +3559,7 @@ Models:
           - torgovy
           - Paris
           - factory_bridge
-    Group10:
+    group10:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3572,7 +3572,7 @@ Models:
           - heavy_dot2
           - heavy_dot3
           - heavy_dot4
-    Group11:
+    group11:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3603,7 +3603,7 @@ Models:
           - barrel_3_brocken
           - barrel_3_destroy
   cb_towns:
-    Group0:
+    group0:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3626,7 +3626,7 @@ Models:
           - gadad_city
           - kef
           - tunnel
-    Group1:
+    group1:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3643,7 +3643,7 @@ Models:
           - gadad_gate
           - kef_gate
   cb_guns:
-    Group0:
+    group0:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3672,7 +3672,7 @@ Models:
           - specter01
           - vulcan01
           - robotgun01
-    Group1:
+    group1:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3689,7 +3689,7 @@ Models:
           - maxim01gun
           - rapier01gun
           - boss04dronegun
-    Group2:
+    group2:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3703,7 +3703,7 @@ Models:
           - kord01gun
           - pkt01gun
   cb_trees:
-    Group0:
+    group0:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3741,7 +3741,7 @@ Models:
           - desert_tree_1
           - desert_tree_2
           - desert_tree_3
-    Group1:
+    group1:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3768,7 +3768,7 @@ Models:
           - r3_t_bush_flower2
           - r3_t_bush_flower3
   cb_wheels:
-    Group0:
+    group0:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3805,7 +3805,7 @@ Models:
           - uralWheel02l
           - uralWheel02r
   cb_humans:
-    Group0:
+    group0:
       data/models/animmodels.xml:
         tag: "model"
         name: "id"
@@ -3819,14 +3819,14 @@ Models:
           - dweller_ben
           - dweller_white
 # BarNpcRandomizer class
-BarNpcModels:
+bar_npc_models:
   cb_npc_look:
-    Group0:
-      File: dynamicscene.xml
+    group0:
+      file: dynamicscene.xml
       tag: Object
       name: Prototype
       prototype: NPC
-      Maps:
+      maps:
         - data/maps/r1m1
         - data/maps/r1m2
         - data/maps/r1m3
@@ -3841,11 +3841,11 @@ BarNpcModels:
         - ModelName
         - skin
         - cfg
-    Group1:
-      File: strings.xml
+    group1:
+      file: strings.xml
       tag: string
       name: id
-      Maps:
+      maps:
         - data/maps/r1m1
         - data/maps/r1m2
         - data/maps/r1m3
@@ -3862,12 +3862,12 @@ BarNpcModels:
         - modelCfg
         - modelAutosized
 # LandscapeRandomizer class
-Landscape:
+landscape:
   cb_landscape:
-    Group0:
-      File: displace.bin
-      State: .landscape
-      Maps:
+    group0:
+      file: displace.bin
+      state: .landscape
+      maps:
         - data/maps/mainmenu
         - data/maps/r1m1
         - data/maps/r1m2
@@ -3879,20 +3879,20 @@ Landscape:
         - data/maps/r3m2
         - data/maps/r4m1
         - data/maps/r4m2
-      Multiple: False
+      multiple: False
 # ExecutableRandomizer class
-Executable:
-    File: hta.exe
+executable:
+    file: hta.exe
     cb_render: Render
     cb_gravity: Gravity
     cb_fov: FOV
     cb_armor: Armor
 # LuaRandomizer class
-Lua:
+lua:
   cb_guns_lua:
-    Variable: RAND_GUNS
-    Prototypes:
-      Group0:
+    variable: RAND_GUNS
+    prototypes:
+      group0:
         - hornet01
         - specter01
         - pkt01
@@ -3915,15 +3915,15 @@ Lua:
         - hurricane01
         - rocketLauncher
         - big_swingfire01
-      Group1:
+      group1:
         - hailSideGun
         - marsSideGun
         - zeusSideGun
         - hunterSideGun
   cb_ai_vehs:
-    Variable: RAND_VEH
-    Prototypes:
-      Group0:
+    variable: RAND_VEH
+    prototypes:
+      group0:
         - r1m1_scout01
         - r1m1_scout02
         - r1m1_scout03
@@ -4033,7 +4033,7 @@ Lua:
         - r2m1_CaravanGuardianSml401
         - r2m1_CaravanGuardianScout201
         - r2m2_CaravanGuardianScout301
-      Group1:
+      group1:
         - r1m1_scout01
         - r1m1_scout02
         - r1m1_scout03
@@ -4162,7 +4162,7 @@ Lua:
         - r2m2_CaravanUral01
         - r2m2_CaravanUral02
         - UralMenu
-      Group2:
+      group2:
         - Cruiser01
         - Cruiser02
         - Dozer01
@@ -4323,9 +4323,9 @@ Lua:
         - r2m2_CaravanUral02
         - UralMenu
   cb_dwellers:
-    Variable: RAND_DWELLER
-    Prototypes:
-      Group0:
+    variable: RAND_DWELLER
+    prototypes:
+      group0:
         - dweller
         - dweller2
         - dweller3
@@ -4337,4 +4337,4 @@ Lua:
         - dweller_axel
         - dweller_white
   cb_pl_veh:
-    Variable: RAND_PLAYER_VEH
+    variable: RAND_PLAYER_VEH

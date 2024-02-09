@@ -36,7 +36,7 @@ class Randomizer():
         Validates:
             resources_validation,
             version_validation,
-            LuaToEdit
+            lua_to_edit
             keys from manifest.
 
         Returns:
@@ -61,13 +61,13 @@ class Randomizer():
                 self.logger.error(f"File is missing: {full_path.resolve()}")
                 raise ResourcesMissingError(full_path)
 
-        lua_validation = self.manifest.get("LuaToEdit", None)
+        lua_validation = self.manifest.get("lua_to_edit", None)
         if not lua_validation or not isinstance(lua_validation, str):
             self.logger.error(
-                f"Incorrect data type for \"LuaToEdit\" key: \
+                f"Incorrect data type for \"lua_to_edit\" key: \
                     str expected, got {type(res_validation)}"
                 )
-            raise ManifestKeyError("LuaToEdit", type(lua_validation))
+            raise ManifestKeyError("lua_to_edit", type(lua_validation))
 
         full_path = self.game_path / lua_validation
         if not full_path.exists():

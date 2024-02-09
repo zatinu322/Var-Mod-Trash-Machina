@@ -12,7 +12,7 @@ class FileRandomizer(Randomizer):
         super().__init__(config)
 
         self.temp_dir = self.game_path / "temp_random"
-        self.options = self.manifest.get("Files")
+        self.options = self.manifest.get("files")
 
     def copy_files(self,
                    groups: list[dict],

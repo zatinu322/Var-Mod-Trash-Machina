@@ -10,7 +10,7 @@ class ModelsRandomizer(TextRandomizer):
     def __init__(self, config: Config) -> None:
         super().__init__(config)
 
-        self.options = self.manifest.get("Models")
+        self.options = self.manifest.get("models")
 
     def clear_animmodels(self) -> None:
         """

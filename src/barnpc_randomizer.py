@@ -8,12 +8,12 @@ class BarNpcRandomizer(ModelsRandomizer):
     def __init__(self, config: Config) -> None:
         super().__init__(config)
 
-        self.options = self.manifest.get("BarNpcModels")
+        self.options = self.manifest.get("bar_npc_models")
 
     def collect_data_from_xml(self, xml_info: dict) -> list:
         npcs_outfit = []
-        for level in xml_info.get("Maps"):
-            xml_path = self.game_path / level / xml_info.get("File")
+        for level in xml_info.get("maps"):
+            xml_path = self.game_path / level / xml_info.get("file")
             root = self.parse_xml(xml_path)
 
             for tag in root.iter(xml_info.get("tag")):
@@ -37,8 +37,8 @@ class BarNpcRandomizer(ModelsRandomizer):
 
     def set_data_to_xml(self, xml_info: dict, content: list[dict]) -> None:
         li = 0
-        for level in xml_info.get("Maps"):
-            xml_path = self.game_path / level / xml_info.get("File")
+        for level in xml_info.get("maps"):
+            xml_path = self.game_path / level / xml_info.get("file")
             root = self.parse_xml(xml_path)
 
             for tag in root.iter(xml_info.get("tag")):

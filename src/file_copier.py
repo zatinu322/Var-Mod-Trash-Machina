@@ -35,8 +35,8 @@ class FileCopier(Randomizer):
         pass
 
     def transfer_files(self):
-        dir_path = Path(self.manifest.get("FolderToCopy"))
-        lua_path = Path(self.manifest.get("LuaToEdit"))
+        dir_path = Path(self.manifest.get("folder_to_copy"))
+        lua_path = Path(self.manifest.get("lua_to_edit"))
 
         self.copy_files(dir_path)
         self.edit_lua(lua_path)
