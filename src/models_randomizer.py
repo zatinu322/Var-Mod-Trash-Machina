@@ -9,8 +9,6 @@ class ModelsRandomizer(TextRandomizer):
     def __init__(self, working_set) -> None:
         super().__init__(working_set)
 
-        # self.options = self.manifest.get("models")
-
     def clear_animmodels(self) -> None:
         """
         Clears animmodels.xml from duplicates that original game has.

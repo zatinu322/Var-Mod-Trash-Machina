@@ -48,13 +48,11 @@ def randomize_models(working_set: dict):
     models_randomizer.start_randomization()
 
 
-def randomize_barnpcs(config: Config):
+def randomize_barnpcs(working_set: dict):
     logger.info("Randomizing NPC in bars.")
 
-    barnpc_randomizer = BarNpcRandomizer(config)
+    barnpc_randomizer = BarNpcRandomizer(working_set)
     barnpc_randomizer.start_randomization()
-
-    return barnpc_randomizer.errors
 
 
 def randomize_landscape(config: Config):

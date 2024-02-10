@@ -100,7 +100,7 @@ class Randomizer():
                 case "models":
                     models.append(category)
                 case "npc_look":
-                    npc_look.append(category["groups"])
+                    npc_look.extend(category["groups"])
                 case "landscape":
                     landscape = copy.copy(category)
                 case "exe":
