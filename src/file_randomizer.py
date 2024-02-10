@@ -1,9 +1,6 @@
 import shutil
 import os
 from random import shuffle
-from pathlib import Path
-
-from icecream import ic
 
 from working_set_manager import WorkingSetManager
 
@@ -13,7 +10,6 @@ class FileRandomizer(WorkingSetManager):
         super().__init__(working_set)
 
         self.temp_dir = self.game_path / "temp_random"
-        # self.options = self.manifest.get("files")
 
     def copy_files(self,
                    groups: list[dict],
@@ -24,7 +20,6 @@ class FileRandomizer(WorkingSetManager):
             repeated_files = []
 
         for group in groups:
-            ic(group)
             for file_path, files_list in group.items():
                 for file in files_list:
                     data_path = self.game_path / file_path / file

@@ -1,8 +1,6 @@
 import logging
 from pathlib import Path
 
-from icecream import ic
-
 from errors import ManifestMissingError, ResourcesMissingError
 from config import Config
 from yaml_operations import YamlConfig

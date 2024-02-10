@@ -471,11 +471,11 @@ class RandomizerWindow(MainGui):
                 #     self.info_cont_write(f"{self.locale.tr('rand_nothing')}")
                 # else:
                 #     self.info_cont_write(f"{self.locale.tr('rand_done')}")
-                # self.progress_bar.value += 0.11
+                self.progress_bar.value += 0.11
 
-                # self.info_cont_write(self.locale.tr("rand_text"))
-                # mr.randomize_text(self.config)
-                # self.progress_bar.value += 0.11
+                self.info_cont_write(self.locale.tr("rand_text"))
+                mr.randomize_text(working_set)
+                self.progress_bar.value += 0.11
 
                 # self.info_cont_write(self.locale.tr("rand_models"))
                 # mr.randomize_models(self.config)

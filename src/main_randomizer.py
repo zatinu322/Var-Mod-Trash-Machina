@@ -34,13 +34,11 @@ def randomize_files(working_set: dict):
     file_randomizer.start_randomization()
 
 
-def randomize_text(config: Config):
+def randomize_text(working_set: dict):
     logger.info("Randomizing text.")
 
-    text_randomizer = TextRandomizer(config)
+    text_randomizer = TextRandomizer(working_set)
     text_randomizer.start_randomization()
-
-    return text_randomizer.errors
 
 
 def randomize_models(config: Config):
