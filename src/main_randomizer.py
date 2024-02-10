@@ -8,7 +8,6 @@ from barnpc_randomizer import BarNpcRandomizer
 from landscape_randomizer import LandscapeRandomizer
 from executable_randomizer import ExecutableRandomizer
 from lua_randomizer import LuaRandomizer
-from config import Config
 
 logger = logging.getLogger("pavlik")
 
@@ -69,10 +68,8 @@ def randomize_executable(working_set: dict):
     executable_randomizer.start_randomization()
 
 
-def randomize_lua(config: Config):
+def randomize_lua(working_set: dict):
     logger.info("Activating randomizing via lua.")
 
-    lua_randomizer = LuaRandomizer(config)
+    lua_randomizer = LuaRandomizer(working_set)
     lua_randomizer.start_randomization()
-
-    return lua_randomizer.errors

@@ -3957,6 +3957,7 @@ cb_guns_lua:
       - hurricane01
       - rocketLauncher
       - big_swingfire01
+      - hammer01
     - - hailSideGun
       - marsSideGun
       - zeusSideGun

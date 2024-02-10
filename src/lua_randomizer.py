@@ -1,29 +1,12 @@
-from config import Config
-from randomizer import Randomizer
+from working_set_manager import WorkingSetManager
 
 
-class LuaRandomizer(Randomizer):
-    def __init__(self, config: Config) -> None:
-        super().__init__(config)
+class LuaRandomizer(WorkingSetManager):
+    def __init__(self, working_set: dict) -> None:
+        super().__init__(working_set)
 
-        self.options: dict = self.manifest.get("lua")
+        # self.options: dict = self.manifest.get("lua")
         self.vars_path = self.game_path / "data/scripts/randomizer_vars.lua"
-        self.var_statuses = {}
-
-    def configure_randomization(self):
-        working_set = []
-        var_statuses = {}
-        for option, group in self.options.items():
-            if not self.params.get(option, False):
-                status = False
-            else:
-                status = True
-            var_statuses.update({group.get("variable"): status})
-            self.var_statuses = var_statuses
-
-            working_set.append(group)
-
-        return working_set
 
     def create_var_file(self) -> None:
         with open(self.vars_path, "w", encoding="windows-1251") as stream:
@@ -32,16 +15,15 @@ class LuaRandomizer(Randomizer):
     def enable_var(self, lua_info: dict) -> None:
         content = ""
 
-        var: str = lua_info.get("variable")
+        var: str = lua_info["variable"]
         prototypes: dict = lua_info.get("prototypes")
 
         # setting variable status
         # .lower because of lua syntax
-        if var:
-            content = f"{var} = {str(self.var_statuses.get(var)).lower()}\n\n"
+        content = f"{var} = true\n\n"
         # setting prototypes lists
         if prototypes:
-            for num, group in enumerate(prototypes.values()):
+            for num, group in enumerate(prototypes):
                 # this is terrible and horrific code
                 # maybe one day I'll refactor it
                 content = f"{content}{var}_{num+1} = "  # var name
@@ -59,15 +41,13 @@ class LuaRandomizer(Randomizer):
             )
 
     def start_randomization(self) -> None:
-        working_set = self.configure_randomization()
-
-        if not any(self.var_statuses.values()):
+        if not self.lua:
             self.logger.info("Nothing to randomize.")
             return
 
         self.create_var_file()
 
-        for group in working_set:
+        for group in self.lua:
             self.enable_var(group)
 
         self.set_ending_to_file()

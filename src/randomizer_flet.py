@@ -454,7 +454,6 @@ class RandomizerWindow(MainGui):
         if validation:
             try:
                 randomizer = Randomizer(self.config)
-                # ic(randomizer.manifest["server_paths"])
                 working_set = randomizer.generate_working_set()
 
                 self.info_cont_write(self.locale.tr("rand_copy"))
@@ -493,9 +492,9 @@ class RandomizerWindow(MainGui):
                 mr.randomize_executable(working_set)
                 self.progress_bar.value += 0.11
 
-                # self.info_cont_write(self.locale.tr("rand_lua"))
-                # mr.randomize_lua(self.config)
-                # self.progress_bar.value += 0.11
+                self.info_cont_write(self.locale.tr("rand_lua"))
+                mr.randomize_lua(working_set)
+                self.progress_bar.value += 0.11
 
                 self.info_cont_success()
 

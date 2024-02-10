@@ -84,7 +84,7 @@ class Randomizer():
         npc_look = []
         landscape = {}
         exe = {"content": []}
-        lua = {}
+        lua = []
 
         for chkbx, state in self.params.items():
             if not state:
@@ -107,7 +107,7 @@ class Randomizer():
                     exe["content"].append(category["content"])
                     exe["file"] = category["file"]
                 case "lua":
-                    lua = copy.copy(category)
+                    lua.append(category)
 
         return {
             "logger": self.logger,
