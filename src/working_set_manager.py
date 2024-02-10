@@ -6,6 +6,7 @@ class WorkingSetManager():
     def __init__(self, working_set: dict) -> None:
         self.logger: Logger = working_set["logger"]
         self.game_path: Path = Path(working_set["game_path"])
+        self.game_version: str = working_set["game_version"]
         self.folder_to_copy: Path = Path(working_set["folder_to_copy"])
         self.lua_to_edit: Path = Path(working_set["lua_to_edit"])
         self.server_paths: list[str] = working_set["server_paths"]

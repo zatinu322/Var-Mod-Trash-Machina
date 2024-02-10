@@ -41,13 +41,11 @@ def randomize_text(working_set: dict):
     text_randomizer.start_randomization()
 
 
-def randomize_models(config: Config):
+def randomize_models(working_set: dict):
     logger.info("Randomizing models.")
 
-    models_randomizer = ModelsRandomizer(config)
+    models_randomizer = ModelsRandomizer(working_set)
     models_randomizer.start_randomization()
-
-    return models_randomizer.errors
 
 
 def randomize_barnpcs(config: Config):

@@ -477,9 +477,9 @@ class RandomizerWindow(MainGui):
                 mr.randomize_text(working_set)
                 self.progress_bar.value += 0.11
 
-                # self.info_cont_write(self.locale.tr("rand_models"))
-                # mr.randomize_models(self.config)
-                # self.progress_bar.value += 0.11
+                self.info_cont_write(self.locale.tr("rand_models"))
+                mr.randomize_models(working_set)
+                self.progress_bar.value += 0.11
 
                 # self.info_cont_write(self.locale.tr("rand_barnpcs"))
                 # mr.randomize_barnpcs(self.config)

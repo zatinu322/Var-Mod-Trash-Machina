@@ -1,4 +1,5 @@
 import logging
+import copy
 from pathlib import Path
 
 from errors import ManifestMissingError, ResourcesMissingError
@@ -81,9 +82,9 @@ class Randomizer():
         text = []
         models = []
         npc_look = []
-        landscape = []
-        exe = []
-        lua = []
+        landscape = {}
+        exe = {}
+        lua = {}
 
         for chkbx, state in self.params.items():
             if not state:
@@ -101,15 +102,16 @@ class Randomizer():
                 case "npc_look":
                     npc_look.append(category["groups"])
                 case "landscape":
-                    landscape.append(category)
+                    landscape = copy.copy(category)
                 case "exe":
-                    exe.append(category)
+                    exe = copy.copy(category)
                 case "lua":
-                    lua.append(category)
+                    lua = copy.copy(category)
 
         return {
             "logger": self.logger,
             "game_path": self.game_path,
+            "game_version": self.game_version,
             "folder_to_copy": self.manifest["folder_to_copy"],
             "lua_to_edit": self.manifest["lua_to_edit"],
             "server_paths": self.manifest["server_paths"],
