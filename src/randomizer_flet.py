@@ -8,6 +8,7 @@ from flet import Page, Row, Column, FilePicker, dropdown, ContainerTapEvent, \
     ThemeMode, padding, app, colors, CrossAxisAlignment
 
 import main_randomizer as mr
+from randomizer import Randomizer
 from gui import MainGui
 from config import Config
 from localisation import Localisation
@@ -452,44 +453,60 @@ class RandomizerWindow(MainGui):
 
         if validation:
             try:
+                randomizer = Randomizer(self.config)
+                # ic(randomizer.manifest["server_paths"])
+                working_set = randomizer.generate_working_set()
+
                 self.info_cont_write(self.locale.tr("rand_copy"))
-                mr.copy_files(self.config, True)
+                mr.copy_files(working_set)
                 self.progress_bar.value += 0.11
+
+                self.info_cont_write(self.locale.tr("rand_prepare"))
+                mr.edit_files(working_set)
+                # self.progress_bar.value += 0.11
 
                 self.info_cont_write(self.locale.tr("rand_files"))
-                errors, status = mr.randomize_files(self.config)
-                if not status:
-                    self.info_cont_write(f"{self.locale.tr('rand_nothing')}")
-                else:
-                    self.info_cont_write(f"{self.locale.tr('rand_done')}")
-                self.progress_bar.value += 0.11
+                mr.randomize_files(working_set)
+                # if not status:
+                #     self.info_cont_write(f"{self.locale.tr('rand_nothing')}")
+                # else:
+                #     self.info_cont_write(f"{self.locale.tr('rand_done')}")
+                # self.progress_bar.value += 0.11
 
-                self.info_cont_write(self.locale.tr("rand_text"))
-                mr.randomize_text(self.config)
-                self.progress_bar.value += 0.11
+                # self.info_cont_write(self.locale.tr("rand_text"))
+                # mr.randomize_text(self.config)
+                # self.progress_bar.value += 0.11
 
-                self.info_cont_write(self.locale.tr("rand_models"))
-                mr.randomize_models(self.config)
-                self.progress_bar.value += 0.11
+                # self.info_cont_write(self.locale.tr("rand_models"))
+                # mr.randomize_models(self.config)
+                # self.progress_bar.value += 0.11
 
-                self.info_cont_write(self.locale.tr("rand_barnpcs"))
-                mr.randomize_barnpcs(self.config)
-                self.progress_bar.value += 0.11
+                # self.info_cont_write(self.locale.tr("rand_barnpcs"))
+                # mr.randomize_barnpcs(self.config)
+                # self.progress_bar.value += 0.11
 
-                self.info_cont_write(self.locale.tr("rand_landscape"))
-                mr.randomize_landscape(self.config)
-                self.progress_bar.value += 0.11
+                # self.info_cont_write(self.locale.tr("rand_landscape"))
+                # mr.randomize_landscape(self.config)
+                # self.progress_bar.value += 0.11
 
-                self.info_cont_write(self.locale.tr("rand_executable"))
-                mr.randomize_executable(self.config)
-                self.progress_bar.value += 0.11
+                # self.info_cont_write(self.locale.tr("rand_executable"))
+                # mr.randomize_executable(self.config)
+                # self.progress_bar.value += 0.11
 
-                self.info_cont_write(self.locale.tr("rand_lua"))
-                mr.randomize_lua(self.config)
-                self.progress_bar.value += 0.11
+                # self.info_cont_write(self.locale.tr("rand_lua"))
+                # mr.randomize_lua(self.config)
+                # self.progress_bar.value += 0.11
 
                 self.info_cont_success()
 
+            # TODO: Move TypeError to validation or raise my own here!
+            # except TypeError:
+            #     self.info_cont_write(
+            #         self.locale.tr('incorrect_types'),
+            #         "red"
+            #     )
+            #     self.info_cont_abort()
+            #     return
             except ManifestMissingError as bad_manifest:
                 self.info_cont_write(
                     f"{self.locale.tr('bad_manifest')}\n{bad_manifest}",
@@ -509,9 +526,9 @@ class RandomizerWindow(MainGui):
                     "red"
                 )
                 self.info_cont_abort()
-            except Exception as exc:
-                self.info_cont_write(exc, "red")
-                self.info_cont_abort()
+            # except Exception as exc:
+            #     self.info_cont_write(exc, "red")
+            #     self.info_cont_abort()
             finally:
                 self.info_cont_btn.disabled = False
 

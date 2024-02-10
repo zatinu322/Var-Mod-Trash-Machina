@@ -3,16 +3,17 @@ import os
 from random import shuffle
 from pathlib import Path
 
-from randomizer import Randomizer
-from config import Config
+from icecream import ic
+
+from working_set_manager import WorkingSetManager
 
 
-class FileRandomizer(Randomizer):
-    def __init__(self, config: Config) -> None:
-        super().__init__(config)
+class FileRandomizer(WorkingSetManager):
+    def __init__(self, working_set: dict) -> None:
+        super().__init__(working_set)
 
         self.temp_dir = self.game_path / "temp_random"
-        self.options = self.manifest.get("files")
+        # self.options = self.manifest.get("files")
 
     def copy_files(self,
                    groups: list[dict],
@@ -23,10 +24,11 @@ class FileRandomizer(Randomizer):
             repeated_files = []
 
         for group in groups:
-            for k, v in group.items():
-                for file in v:
-                    data_path = Path(self.game_path) / k / file
-                    temp_path = Path(self.temp_dir) / file
+            ic(group)
+            for file_path, files_list in group.items():
+                for file in files_list:
+                    data_path = self.game_path / file_path / file
+                    temp_path = self.temp_dir / file
                     try:
                         if dest == "temp":
                             if temp_path.exists():
@@ -49,7 +51,8 @@ class FileRandomizer(Randomizer):
                                         shutil.copyfile(temp_path, data_path)
                                         os.remove(temp_path)
                     except FileNotFoundError as e:
-                        self.report_error(e)
+                        self.logger.error(e)
+                        # self.report_error(e)
         return [True, repeated_files]
 
     def rename_files(self, files_list: list, bckw=False) -> bool:
@@ -63,9 +66,11 @@ class FileRandomizer(Randomizer):
                 elif bckw:
                     os.rename(new_file_path, old_file_path)
             except FileNotFoundError as exc:
-                self.report_error(exc)
+                self.logger.error(exc)
+                # self.report_error(exc)
             except FileExistsError as exc:
-                self.report_error(exc)
+                self.logger.error(exc)
+                # self.report_error(exc)
 
             filename += 1
 
@@ -94,10 +99,10 @@ class FileRandomizer(Randomizer):
         return True
 
     def start_randomization(self) -> bool:
-        working_set = self.configure_randomization()
-        if not working_set:
+        if not self.files:
             self.logger.info("Nothing to randomize.")
             return False
-        for groups in working_set:
+        for groups in self.files:
             self.randomize(groups)
+
         return True

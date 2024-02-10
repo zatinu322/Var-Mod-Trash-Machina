@@ -1,6 +1,6 @@
 import logging
 
-from file_copier import FileCopier
+from file_utils import FileCopier, FileEditor
 from file_randomizer import FileRandomizer
 from text_randomizer import TextRandomizer
 from models_randomizer import ModelsRandomizer
@@ -13,22 +13,25 @@ from config import Config
 logger = logging.getLogger("pavlik")
 
 
-def copy_files(config: Config, need_validation: bool = False):
+def copy_files(working_set: dict) -> None:
     logger.info("Copying necessary files.")
 
-    file_copier = FileCopier(config, need_validation)
-    file_copier.transfer_files()
-
-    return file_copier.errors
+    file_copier = FileCopier(working_set)
+    file_copier.copy_files()
 
 
-def randomize_files(config: Config):
+def edit_files(working_set: dict) -> None:
+    logger.info("Editing necessary files.")
+
+    file_editor = FileEditor(working_set)
+    file_editor.edit_files()
+
+
+def randomize_files(working_set: dict):
     logger.info("Randomizing files.")
 
-    file_randomizer = FileRandomizer(config)
-    status = file_randomizer.start_randomization()
-
-    return file_randomizer.errors, status
+    file_randomizer = FileRandomizer(working_set)
+    file_randomizer.start_randomization()
 
 
 def randomize_text(config: Config):
