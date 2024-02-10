@@ -485,9 +485,9 @@ class RandomizerWindow(MainGui):
                 mr.randomize_barnpcs(working_set)
                 self.progress_bar.value += 0.11
 
-                # self.info_cont_write(self.locale.tr("rand_landscape"))
-                # mr.randomize_landscape(self.config)
-                # self.progress_bar.value += 0.11
+                self.info_cont_write(self.locale.tr("rand_landscape"))
+                mr.randomize_landscape(working_set)
+                self.progress_bar.value += 0.11
 
                 # self.info_cont_write(self.locale.tr("rand_executable"))
                 # mr.randomize_executable(self.config)

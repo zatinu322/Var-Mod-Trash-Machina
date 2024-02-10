@@ -55,13 +55,11 @@ def randomize_barnpcs(working_set: dict):
     barnpc_randomizer.start_randomization()
 
 
-def randomize_landscape(config: Config):
+def randomize_landscape(working_set: dict):
     logger.info("Randomizing landscape.")
 
-    landscape_randomizer = LandscapeRandomizer(config)
+    landscape_randomizer = LandscapeRandomizer(working_set)
     landscape_randomizer.start_randomization()
-
-    return landscape_randomizer.errors
 
 
 def randomize_executable(config: Config):
