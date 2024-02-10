@@ -1,5 +1,4 @@
-from pydantic import BaseModel, ValidationError
-from icecream import ic
+from pydantic import BaseModel
 
 
 class ManifestTypes(BaseModel):
@@ -94,35 +93,16 @@ class TriggersToChangeTypes(BaseModel):
 
 
 class FilesTypes(BaseModel):
-    cb_maps: dict[str, list[dict[str, list[str]]]]
-    cb_digits: dict[str, list[dict[str, list[str]]]]
-    cb_splashes: dict[str, list[dict[str, list[str]]]]
-    cb_bkgd: dict[str, list[dict[str, list[str]]]]
-    cb_clans: dict[str, list[dict[str, list[str]]]]
-    cb_gui_icons: dict[str, list[dict[str, list[str]]]]
-    cb_radar: dict[str, list[dict[str, list[str]]]]
-    cb_goods_guns: dict[str, list[dict[str, list[str]]]]
-    cb_cab_cargo: dict[str, list[dict[str, list[str]]]]
-    cb_aim: dict[str, list[dict[str, list[str]]]]
-    cb_music: dict[str, list[dict[str, list[str]]]]
-    cb_speech: dict[str, list[dict[str, list[str]]]]
-    cb_radio: dict[str, list[dict[str, list[str]]]]
-    cb_crashes: dict[str, list[dict[str, list[str]]]]
-    cb_explosions: dict[str, list[dict[str, list[str]]]]
-    cb_engines: dict[str, list[dict[str, list[str]]]]
-    cb_horns: dict[str, list[dict[str, list[str]]]]
-    cb_hits: dict[str, list[dict[str, list[str]]]]
-    cb_shooting: dict[str, list[dict[str, list[str]]]]
-    cb_other_sounds: dict[str, list[dict[str, list[str]]]]
-    cb_env_textures: dict[str, list[dict[str, list[str]]]]
-    cb_masks: dict[str, list[dict[str, list[str]]]]
-    cb_veh_skins: dict[str, list[dict[str, list[str]]]]
-    cb_lightmaps: dict[str, list[dict[str, list[str]]]]
-    cb_skybox: dict[str, list[dict[str, list[str]]]]
-    cb_tiles: dict[str, list[dict[str, list[str]]]]
+    type: str
+    groups: list[list[dict[str, list[str]]]]
 
 
 class TextTypes(BaseModel):
+    type: str
+    groups: list[list[dict[str, dict[str, str | list[str]]]]]
+
+
+class TextInfoTypes(BaseModel):
     tag: str
     name: str
     text: str
@@ -131,12 +111,19 @@ class TextTypes(BaseModel):
 
 
 class ModelsTypes(BaseModel):
+    type: str
     tag: str
     name: str
-    models: list[str]
+    path: str
+    groups: list[list[str]]
 
 
 class BarNpcModelsTypes(BaseModel):
+    type: str
+    groups: list[dict[str, str | list[str]]]
+
+
+class BarNpcModelsInfoTypes(BaseModel):
     file: str
     tag: str
     name: str
@@ -146,6 +133,7 @@ class BarNpcModelsTypes(BaseModel):
 
 
 class LandscapeTypes(BaseModel):
+    type: str
     file: str
     state: str
     maps: list[str]
@@ -153,79 +141,76 @@ class LandscapeTypes(BaseModel):
 
 
 class ExecutableTypes(BaseModel):
+    type: str
     file: str
-    cb_render: str
-    cb_gravity: str
-    cb_fov: str
-    cb_armor: str
+    content: str
 
 
 class LuaTypes(BaseModel):
+    type: str
     variable: str
-    prototypes: dict[str, list[str]] = None
+    prototypes: list[list[str]] = None
 
 
-def validate_types(validator: object, manifest: dict) -> bool:
+def validate_types(validator: object, manifest: dict) -> None:
     validator.model_validate(validator(**manifest), strict=True)
-    return True
 
 
-def validate_manifest_types(manifest: dict) -> bool:
-    try:
-        validate_types(ManifestTypes, manifest)
+def validate_manifest_types(manifest: dict) -> None:
+    """
+    Validates strict tags in manifest.
 
-    #     for _, file_info in data["triggers_to_change"].items():
-    #         validate_types(TriggersToChangeTypes, file_info)
+    Raises ValidationError if validation fails.
+    """
+    validate_types(ManifestTypes, manifest)
 
-    #     validate_types(FilesTypes, data["files"])
+    for _, trigger in manifest["triggers_to_change"].items():
+        validate_types(
+            TriggersToChangeTypes,
+            trigger
+        )
 
-    except ValidationError as e:
-        ic(e)
-        return False
-    else:
-        return True
+    for files_category in [
+        "cb_maps", "cb_digits", "cb_splashes", "cb_bkgd",
+        "cb_clans", "cb_gui_icons", "cb_radar", "cb_goods_guns",
+        "cb_cab_cargo", "cb_aim", "cb_music", "cb_speech",
+        "cb_radio", "cb_crashes", "cb_explosions", "cb_engines",
+        "cb_horns", "cb_hits", "cb_shooting", "cb_other_sounds",
+        "cb_env_textures", "cb_masks", "cb_veh_skins",
+        "cb_lightmaps", "cb_skybox", "cb_tiles",
+    ]:
+        validate_types(FilesTypes, manifest[files_category])
 
+    for text_category in [
+        "cb_names", "cb_dialogues", "cb_quests", "cb_controls",
+        "cb_fadingmsgs", "cb_gui_text", "cb_books_history",
+        "cb_descriptions", "cb_weather"
+    ]:
+        validate_types(TextTypes, manifest[text_category])
+        for groups in manifest[text_category]["groups"]:
+            for group in groups:
+                for _, xml in group.items():
+                    validate_types(TextInfoTypes, xml)
 
-if __name__ == "__main__":
+    for models_category in [
+        "cb_env_models", "cb_towns", "cb_guns", "cb_trees",
+        "cb_wheels", "cb_humans"
+    ]:
+        validate_types(ModelsTypes, manifest[models_category])
 
-    file = "resources\\manifests\\new_manifest_steam.yaml"
+    validate_types(BarNpcModelsTypes, manifest["cb_npc_look"])
 
-    validate_manifest_types(file)
-# user = ManifestTypes(**data)
+    for look in manifest["cb_npc_look"]["groups"]:
+        validate_types(BarNpcModelsInfoTypes, look)
 
-# try:
-#     user.model_validate(ManifestTypes(**data), strict=True)
-# except ValidationError as e:
-#     ic(e.errors())
+    validate_types(LandscapeTypes, manifest["cb_landscape"])
 
-# for _, v in data["text"].items():
-#     for _, v1 in v.items():
-#         for _, v2 in v1.items():
-#             a = TextTypes(**v2)
-#             a.model_validate(a, strict=True)
+    for exe_category in [
+        "cb_render", "cb_gravity", "cb_fov", "cb_armor",
+    ]:
+        validate_types(ExecutableTypes, manifest[exe_category])
 
-# for _, v in data["models"].items():
-#     for _, v1 in v.items():
-#         for _, v2 in v1.items():
-#             a = ModelsTypes(**v2)
-#             a.model_validate(a, strict=True)
-
-# for _, v in data["bar_npc_models"].items():
-#     for _, v1 in v.items():
-#         a = BarNpcModelsTypes(**v1)
-#         a.model_validate(a, strict=True)
-
-# for _, v in data["landscape"].items():
-#     for _, v1 in v.items():
-#         a = LandscapeTypes(**v1)
-#         a.model_validate(a, strict=True)
-
-# a = ExecutableTypes(**data["executable"])
-# a.model_validate(a, strict=True)
-
-# for _, v in data["lua"].items():
-#     a = LuaTypes(**v)
-#     a.model_validate(a, strict=True)
-
-# triggers = Files(**data["files"])
-# triggers.model_validate(triggers, strict=True)
+    for lua_category in [
+        "cb_guns_lua", "cb_ai_vehs", "cb_dwellers", "cb_pl_veh",
+    ]:
+        validate_types(LuaTypes, manifest[lua_category])

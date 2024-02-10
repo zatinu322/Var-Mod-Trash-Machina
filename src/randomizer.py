@@ -29,8 +29,7 @@ class Randomizer():
     def validate_manifest(self) -> bool | None:
         self.logger.info("Validating manifest.")
 
-        if not validate_manifest_types(self.manifest):
-            raise TypeError("Manifest types are not validated.")
+        validate_manifest_types(self.manifest)
 
         res_validation = self.manifest["resources_validation"]
         for file_path in res_validation:

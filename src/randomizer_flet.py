@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-from icecream import ic
+from pydantic import ValidationError
 from flet import Page, Row, Column, FilePicker, dropdown, ContainerTapEvent, \
     TextButton, AlertDialog, Text, FilePickerResultEvent, \
     ControlEvent, Container, alignment, MainAxisAlignment, \
@@ -409,13 +409,12 @@ class RandomizerWindow(MainGui):
             )
             self.info_cont_abort()
             return
-        except VersionError as bad_version:
+        except VersionError:
             self.info_cont_write(
                 f"{self.locale.tr('incorrect_version')}",
                 color="red"
             )
             self.info_cont_abort()
-            ic(bad_version)
             return
         except ManifestMissingError as no_manifest:
             self.info_cont_write(
@@ -427,7 +426,6 @@ class RandomizerWindow(MainGui):
 
         match exe_status:
             case "no_exe":
-                ic('no exe')
                 logger.warning("Randomization options related to executable \
                                randomizing will be forcibly disabled.")
                 self.info_cont_write(
@@ -441,7 +439,6 @@ class RandomizerWindow(MainGui):
                     self.cb_gravity
                 )
             case "no_fov":
-                ic('no_fov')
                 self.info_cont_write(
                     f"{self.locale.tr('is_continued')}",
                     color="yellow"
@@ -449,7 +446,7 @@ class RandomizerWindow(MainGui):
 
                 self.uncheck_chkbxs(self.cb_fov)
 
-        self.progress_bar.value += 0.11
+        self.progress_bar.value += 0.10
 
         if validation:
             try:
@@ -458,11 +455,11 @@ class RandomizerWindow(MainGui):
 
                 self.info_cont_write(self.locale.tr("rand_copy"))
                 mr.copy_files(working_set)
-                self.progress_bar.value += 0.11
+                self.progress_bar.value += 0.10
 
                 self.info_cont_write(self.locale.tr("rand_prepare"))
                 mr.edit_files(working_set)
-                # self.progress_bar.value += 0.11
+                self.progress_bar.value += 0.10
 
                 self.info_cont_write(self.locale.tr("rand_files"))
                 mr.randomize_files(working_set)
@@ -470,42 +467,48 @@ class RandomizerWindow(MainGui):
                 #     self.info_cont_write(f"{self.locale.tr('rand_nothing')}")
                 # else:
                 #     self.info_cont_write(f"{self.locale.tr('rand_done')}")
-                self.progress_bar.value += 0.11
+                self.progress_bar.value += 0.10
 
                 self.info_cont_write(self.locale.tr("rand_text"))
                 mr.randomize_text(working_set)
-                self.progress_bar.value += 0.11
+                self.progress_bar.value += 0.10
 
                 self.info_cont_write(self.locale.tr("rand_models"))
                 mr.randomize_models(working_set)
-                self.progress_bar.value += 0.11
+                self.progress_bar.value += 0.10
 
                 self.info_cont_write(self.locale.tr("rand_barnpcs"))
                 mr.randomize_barnpcs(working_set)
-                self.progress_bar.value += 0.11
+                self.progress_bar.value += 0.10
 
                 self.info_cont_write(self.locale.tr("rand_landscape"))
                 mr.randomize_landscape(working_set)
-                self.progress_bar.value += 0.11
+                self.progress_bar.value += 0.10
 
                 self.info_cont_write(self.locale.tr("rand_executable"))
-                mr.randomize_executable(working_set)
-                self.progress_bar.value += 0.11
+                new_exe = mr.randomize_executable(working_set)
+                self.progress_bar.value += 0.10
+                if new_exe:
+                    for option, value in new_exe.items():
+                        self.info_cont_write(
+                            f"{'\t'*10}{self.locale.tr(option)}: {value}",
+                            "yellow"
+                        )
 
                 self.info_cont_write(self.locale.tr("rand_lua"))
                 mr.randomize_lua(working_set)
-                self.progress_bar.value += 0.11
+                self.progress_bar.value += 0.10
 
                 self.info_cont_success()
-
-            # TODO: Move TypeError to validation or raise my own here!
-            # except TypeError:
-            #     self.info_cont_write(
-            #         self.locale.tr('incorrect_types'),
-            #         "red"
-            #     )
-            #     self.info_cont_abort()
-            #     return
+            except ValidationError as validation_error:
+                self.info_cont_write(
+                    self.locale.tr('incorrect_types'),
+                    "red"
+                )
+                self.info_cont_abort()
+                for error in validation_error.errors():
+                    logger.error(error)
+                return
             except ManifestMissingError as bad_manifest:
                 self.info_cont_write(
                     f"{self.locale.tr('bad_manifest')}\n{bad_manifest}",
@@ -534,8 +537,6 @@ class RandomizerWindow(MainGui):
 
 def main(page: Page) -> None:
     def window_resized(e: ControlEvent) -> None:
-        ic(page.width)
-        ic(page.window_width)
         main_app.main_column.width = page.width
         main_app.main_column.height = page.height-3
         try:

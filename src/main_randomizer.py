@@ -61,11 +61,13 @@ def randomize_landscape(working_set: dict):
     landscape_randomizer.start_randomization()
 
 
-def randomize_executable(working_set: dict):
+def randomize_executable(working_set: dict) -> dict:
     logger.info("Randomizing executable.")
 
     executable_randomizer = ExecutableRandomizer(working_set)
-    executable_randomizer.start_randomization()
+    exe_options = executable_randomizer.start_randomization()
+
+    return exe_options
 
 
 def randomize_lua(working_set: dict):

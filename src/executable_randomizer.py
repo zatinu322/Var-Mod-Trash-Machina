@@ -1,7 +1,5 @@
 import struct
 
-from icecream import ic
-
 from working_set_manager import WorkingSetManager
 from data import OFFSETS_EXE, generate_offsets
 
@@ -39,7 +37,6 @@ class ExecutableRandomizer(WorkingSetManager):
     def randomize(self) -> dict:
         file_path = self.game_path / self.exe["file"]
         offsets_exe = self.generate_offsets(OFFSETS_EXE.copy())
-        ic(offsets_exe)
 
         # logic by Aleksandr "Seel" Parfenenkov
         with open(file_path, "rb+") as exe:
@@ -60,8 +57,7 @@ class ExecutableRandomizer(WorkingSetManager):
         if not self.exe["content"]:
             self.logger.info("Nothing to randomize.")
             return
-        ic(self.exe)
 
         offsets_exe = self.randomize()
 
-        ic(self.collect_info(offsets_exe))
+        return self.collect_info(offsets_exe)
