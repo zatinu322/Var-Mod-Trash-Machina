@@ -2,56 +2,44 @@ import struct
 
 from icecream import ic
 
-from config import Config
-from randomizer import Randomizer
+from working_set_manager import WorkingSetManager
 from data import OFFSETS_EXE, generate_offsets
 
 
-class ExecutableRandomizer(Randomizer):
-    def __init__(self, config: Config) -> None:
-        super().__init__(config)
+class ExecutableRandomizer(WorkingSetManager):
+    def __init__(self, working_set: dict) -> None:
+        super().__init__(working_set)
 
-        self.options: dict = self.manifest.get("executable")
-
-    def configure_randomization(self) -> None:
-        for param, status in self.params.items():
-            if param not in self.options:
-                continue
-            if status:
-                continue
-
-            self.options.pop(param)
-
-    def generate_offsets(self) -> dict:
+    def generate_offsets(self, offsets_exe: dict) -> dict:
         # we should not overwrite global const
-        offsets_exe = OFFSETS_EXE.copy()
         offsets = generate_offsets()
 
-        if "Render" in self.options.values():
-            offsets_exe.update(offsets.get("render"))
-        if "Gravity" in self.options.values():
-            offsets_exe.update(offsets.get("gravity"))
-        if "FOV" in self.options.values():
-            offsets_exe.update(offsets.get("fov"))
-        if "Armor" in self.options.values():
-            offsets_exe.update(offsets.get("armor"))
+        if "Render" in self.exe["content"]:
+            offsets_exe.update(offsets["render"])
+        if "Gravity" in self.exe["content"]:
+            offsets_exe.update(offsets["gravity"])
+        if "FOV" in self.exe["content"]:
+            offsets_exe.update(offsets["fov"])
+        if "Armor" in self.exe["content"]:
+            offsets_exe.update(offsets["armor"])
 
         return offsets_exe
 
     def collect_info(self, config: dict):
         info = {}
-        if "Render" in self.options.values():
+        if "Render" in self.exe["content"]:
             info.update({"new_models_render": config.get(0x30808B)})
-        if "Gravity" in self.options.values():
+        if "Gravity" in self.exe["content"]:
             info.update({"new_gravity": config.get(0x202D25)})
-        if "FOV" in self.options.values():
+        if "FOV" in self.exe["content"]:
             info.update({"new_fov": round(config.get(0x5E5A74), 3)})
 
         return info
 
     def randomize(self) -> dict:
-        file_path = self.game_path / self.options.get("file")
-        offsets_exe = self.generate_offsets()
+        file_path = self.game_path / self.exe["file"]
+        offsets_exe = self.generate_offsets(OFFSETS_EXE.copy())
+        ic(offsets_exe)
 
         # logic by Aleksandr "Seel" Parfenenkov
         with open(file_path, "rb+") as exe:
@@ -69,10 +57,10 @@ class ExecutableRandomizer(Randomizer):
         return offsets_exe
 
     def start_randomization(self) -> None:
-        self.configure_randomization()
-        if len(self.options) <= 1:
+        if not self.exe["content"]:
             self.logger.info("Nothing to randomize.")
             return
+        ic(self.exe)
 
         offsets_exe = self.randomize()
 

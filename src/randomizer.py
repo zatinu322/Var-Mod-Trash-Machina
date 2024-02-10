@@ -83,7 +83,7 @@ class Randomizer():
         models = []
         npc_look = []
         landscape = {}
-        exe = {}
+        exe = {"content": []}
         lua = {}
 
         for chkbx, state in self.params.items():
@@ -104,7 +104,8 @@ class Randomizer():
                 case "landscape":
                     landscape = copy.copy(category)
                 case "exe":
-                    exe = copy.copy(category)
+                    exe["content"].append(category["content"])
+                    exe["file"] = category["file"]
                 case "lua":
                     lua = copy.copy(category)
 

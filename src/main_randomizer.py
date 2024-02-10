@@ -62,13 +62,11 @@ def randomize_landscape(working_set: dict):
     landscape_randomizer.start_randomization()
 
 
-def randomize_executable(config: Config):
+def randomize_executable(working_set: dict):
     logger.info("Randomizing executable.")
 
-    executable_randomizer = ExecutableRandomizer(config)
+    executable_randomizer = ExecutableRandomizer(working_set)
     executable_randomizer.start_randomization()
-
-    return executable_randomizer.errors
 
 
 def randomize_lua(config: Config):

@@ -489,9 +489,9 @@ class RandomizerWindow(MainGui):
                 mr.randomize_landscape(working_set)
                 self.progress_bar.value += 0.11
 
-                # self.info_cont_write(self.locale.tr("rand_executable"))
-                # mr.randomize_executable(self.config)
-                # self.progress_bar.value += 0.11
+                self.info_cont_write(self.locale.tr("rand_executable"))
+                mr.randomize_executable(working_set)
+                self.progress_bar.value += 0.11
 
                 # self.info_cont_write(self.locale.tr("rand_lua"))
                 # mr.randomize_lua(self.config)
