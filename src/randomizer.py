@@ -2,7 +2,7 @@ import logging
 import copy
 from pathlib import Path
 
-from errors import ManifestMissingError, ResourcesMissingError
+from errors import ManifestMissingError, ResourcesMissingError, ModsFoundError
 from config import Config
 from yaml_operations import YamlConfig
 from yaml_schema import validate_manifest_types
@@ -15,7 +15,6 @@ class Randomizer():
         self.game_version = config.game_version
         self.params = config.chkbxs
         manifest = YamlConfig(config.manifest)
-        self.options = {}
         self.errors = 0
         self.logger = logging.getLogger("pavlik")
         if manifest.yaml:
@@ -23,6 +22,14 @@ class Randomizer():
         else:
             self.logger.error(f"Unable to load {config.manifest}")
             raise ManifestMissingError(config.manifest)
+
+        if "options" in dir(config):
+            options = YamlConfig(config.options)
+            if options.yaml:
+                self.options = options.yaml
+            else:
+                self.logger.error(f"Unable to load {config.options}")
+                raise ManifestMissingError(config.options)
 
         self.validate_manifest()
 
@@ -56,6 +63,45 @@ class Randomizer():
                 "Additional game validation is not specified. Skipping."
             )
             return True
+        elif isinstance(game_validation, str):
+            mod_manifest_path = self.game_path / "data" / game_validation
+            if not mod_manifest_path.exists():
+                raise ResourcesMissingError(mod_manifest_path)
+
+            mod_manifest = YamlConfig(mod_manifest_path)
+
+            match self.game_version:
+                case "cp114" | "cr114":
+                    if len(mod_manifest.yaml) > 2:
+                        keys = list(mod_manifest.yaml.keys())
+                        raise ModsFoundError(keys[:-2])
+
+                    if self.game_version == "cp114":
+                        return True
+
+                case "isl12cp" | "isl12cr":
+                    pass
+
+            # update manifest based on installed options
+            match self.game_version:
+                case "cr114" | "isl12cr":
+                    for mod, opt in mod_manifest.yaml.items():
+                        if mod == "community_remaster":
+                            if opt["hd_vehicle_models"] == "yes" \
+                            and opt["ost_remaster"] == "yes":
+                                installed = "ost_and_models"
+                            elif not opt["hd_vehicle_models"] == "yes" \
+                            and opt["ost_remaster"] == "yes":
+                                installed = "only_ost"
+                            elif opt["hd_vehicle_models"] == "yes" \
+                            and not opt["ost_remaster"] == "yes":
+                                installed = "only_models"
+
+            self.manifest.update(
+                self.options[installed]
+            )
+            return True
+
         else:
             raise NotImplementedError()
 
@@ -129,13 +175,3 @@ class Randomizer():
     def report_error(self, msg: str) -> None:
         self.logger.error(msg)
         self.errors += 1
-
-    def configure_randomization(self) -> list:
-        working_set = []
-        for option, groups in self.options.items():
-            if not self.params.get(option, False):
-                continue
-            for group in groups.values():
-                working_set.append(group)
-
-        return working_set

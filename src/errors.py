@@ -77,3 +77,11 @@ class VersionError(Exception):
 
     def __str__(self) -> str:
         return self.version
+
+
+class ModsFoundError(Exception):
+    def __init__(self, mods: list) -> None:
+        self.mods = mods
+
+    def __str__(self) -> str:
+        return str(self.mods)

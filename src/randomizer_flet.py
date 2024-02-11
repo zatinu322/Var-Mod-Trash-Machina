@@ -16,7 +16,7 @@ from validation import Validation
 from errors import LocalisationMissingError, RootNotFoundError, \
     ExeMissingError, GameNotFoundError, VersionError, \
     ManifestMissingError, GDPFoundError, ResourcesMissingError, \
-    ManifestKeyError
+    ManifestKeyError, ModsFoundError
 from data import FULL_NAME, MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, \
     SUPPORTED_VERSIONS, PRESETS
 
@@ -440,7 +440,7 @@ class RandomizerWindow(MainGui):
                 )
             case "no_fov":
                 self.info_cont_write(
-                    f"{self.locale.tr('is_continued')}",
+                    f"{self.locale.tr('compatch_no_fov')}",
                     color="yellow"
                 )
 
@@ -508,14 +508,18 @@ class RandomizerWindow(MainGui):
                 self.info_cont_abort()
                 for error in validation_error.errors():
                     logger.error(error)
-                return
             except ManifestMissingError as bad_manifest:
                 self.info_cont_write(
                     f"{self.locale.tr('bad_manifest')}\n{bad_manifest}",
                     "red"
                 )
                 self.info_cont_abort()
-                return
+            except ModsFoundError as mods_found:
+                self.info_cont_write(
+                    f"{self.locale.tr('mods_found')}:\n{mods_found}",
+                    "red"
+                )
+                self.info_cont_abort()
             except ResourcesMissingError as res_missing:
                 self.info_cont_write(
                     f"{self.locale.tr('file_missing')}\n{res_missing}",
@@ -528,6 +532,7 @@ class RandomizerWindow(MainGui):
                     "red"
                 )
                 self.info_cont_abort()
+
             # except Exception as exc:
             #     self.info_cont_write(exc, "red")
             #     self.info_cont_abort()

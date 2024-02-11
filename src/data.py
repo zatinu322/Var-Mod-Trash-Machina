@@ -75,7 +75,8 @@ VERSIONS_INFO = {
                 "length": 20
             }
         ],
-        "manifest": "resources/manifests/manifest_cr114.yaml"
+        "manifest": "resources/manifests/manifest_cr114.yaml",
+        "options": "resources/options/options_cr114.yaml"
     },
     "isl12cp": {
         "exe": [
@@ -95,7 +96,8 @@ VERSIONS_INFO = {
                 "length": 20
             }
         ],
-        "manifest": "resources/manifests/manifest_isl12cr.yaml"
+        "manifest": "resources/manifests/manifest_isl12cr.yaml",
+        "options": "resources/options/options_cr114.yaml"
     },
     "isl1053": {
         "exe": [

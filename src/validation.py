@@ -129,20 +129,26 @@ class Validation():
         if not version_info:
             raise VersionError(game_version)
 
+        valid, exe_status = self.steam_version(
+            game_version, version_info, exe
+        )
+
         match game_version:
             case "steam" | "isl1053":
-                valid, exe_status = self.steam_version(
-                    game_version, version_info, exe
-                )
-            case "cp114" | "cr114" | "isl12cp" | "isl12cr":
-                valid, exe_status = self.steam_version(
-                    game_version, version_info, exe
-                )
-                # raise VersionError(game_version)
+                options = None
+            case "cp114" | "isl102cp":
+                options = None
+                exe_status = "no_fov"
+            case "cr114" | "isl12cr":
+                options = Path(version_info["options"])
+                exe_status = "no_fov"
 
-        # TODO: Add different mods validation through yaml or existing files
-
-        return valid, exe_status, Path(version_info["manifest"])
+        return (
+            valid,
+            exe_status,
+            Path(version_info["manifest"]),
+            options
+        )
 
     @staticmethod
     def get_exe_version(
@@ -169,7 +175,7 @@ class Validation():
 
         logger.info("Game path validated.")
 
-        version_valid, exe_status, manifest = self.game_version(
+        version_valid, exe_status, manifest, options = self.game_version(
             settings.game_version, exe
         )
         if not version_valid:
@@ -184,26 +190,14 @@ class Validation():
             logger.error(f"Manifest not found in {manifest}")
             raise ManifestMissingError(manifest)
 
+        if options:
+            if options.exists():
+                settings.options = options
+                logger.info(f"Options is set as {settings.options}")
+            else:
+                logger.error(f"Options not found in {options}")
+                raise ManifestMissingError(options)
+
         logger.info("Randomization settings validated.")
 
         return True, exe_status
-
-    def path_list(self, paths_list: list[str] | str):
-        if isinstance(paths_list, str):
-            paths_list = [paths_list]
-
-        for file_path in paths_list:
-            if not self.path(file_path):
-                logger.error(f"File not found: {file_path}")
-                return (False, file_path)
-        return (True, "")
-
-    def generate_path_list(self, main_path: str, add_paths: list[str]):
-        """
-        Generates list of paths from one main path and additional paths to it.
-        """
-        paths = []
-
-        for path in add_paths:
-            paths.append(Path(main_path) / Path(path))
-        return paths

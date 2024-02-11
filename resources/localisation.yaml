@@ -127,6 +127,7 @@ rus:
   file_missing: "Отсутствует необходимый файл:"
   wrong_key_type: "Неверный тип данных для ключа"
   incorrect_types: "Манифест некорректен. Проверьте randomizer.log для подробностей."
+  mods_found: Найдены несовместимые установленные моды
   randomization_aborted: "Рандомизация прервана."
 
 eng:
@@ -258,4 +259,5 @@ eng:
   file_missing: "A required file is missing:"
   wrong_key_type: "Incorrect key type for"
   incorrect_types: "Manifest is invalid. See randomizer.log for details."
+  mods_found: Found incompatible installed mods
   randomization_aborted: "Randomization aborted."

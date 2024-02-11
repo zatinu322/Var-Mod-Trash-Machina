@@ -1,5 +1,5 @@
 # Technical information
-version_validation: "mod_manifest.yaml"
+version_validation: mod_manifest.yaml
 resources_validation:
   - data/profiles/1/profile.xml
   - data/scripts/randomizer.lua
@@ -339,7 +339,7 @@ cb_maps:
 cb_digits:
   type: files
   groups:
-    - - data/if/ico/digitals/large/:
+    - - data/if/ico_hd/digitals/large/:
         - num_large_0.dds
         - num_large_1.dds
         - num_large_2.dds
@@ -350,7 +350,7 @@ cb_digits:
         - num_large_7.dds
         - num_large_8.dds
         - num_large_9.dds
-    - - data/if/ico/digitals/small/:
+    - - data/if/ico_hd/digitals/small/:
         - num_small_0.dds
         - num_small_1.dds
         - num_small_2.dds
@@ -364,22 +364,23 @@ cb_digits:
 cb_splashes:
   type: files
   groups:
-    - - data/if/ico/splashes/:
+    - - data/if/ico_hd/splashes/:
         - arack.dds
         - chel.dds
         - druids.dds
         - gonki.dds
-        - les.dds
         - loading_screen_1.dds
-        - loading_screen_2.dds
-        - loading_screen_3.dds
         - loading_screen_4.dds
-        - most_slon.dds
-        - noch.dds
         - ogon.dds
         - paris.dds
         - plane.dds
         - zavod.dds
+      - data/if/ico/splashes/:
+        - les.dds
+        - loading_screen_2.dds
+        - loading_screen_3.dds
+        - most_slon.dds
+        - noch.dds
 cb_bkgd:
   type: files
   groups:
@@ -399,7 +400,7 @@ cb_bkgd:
 cb_clans:
   type: files
   groups:
-    - - data/if/ico/clans/:
+    - - data/if/ico_hd/clans/:
         - adventurers02.dds
         - al_faran02.dds
         - beer02.dds
@@ -500,6 +501,31 @@ cb_gui_icons:
   type: files
   groups:
     - - data/if/ico/garagewnd/action panel/:
+        - btn_do-all_d.dds
+        - btn_do-all_e.dds
+        - btn_do-all_p.dds
+        - btn_truck_d.dds
+        - btn_truck_e.dds
+        - btn_truck_p.dds
+        - lay_body_d.dds
+        - lay_body_e.dds
+        - lay_body_s.dds
+        - lay_cab_d.dds
+        - lay_cab_e.dds
+        - lay_cab_s.dds
+        - lay_paint_d.dds
+        - lay_paint_e.dds
+        - lay_paint_s.dds
+        - lay_refuel_d.dds
+        - lay_refuel_e.dds
+        - lay_refuel_s.dds
+        - lay_reload_d.dds
+        - lay_reload_e.dds
+        - lay_reload_s.dds
+        - lay_repair_d.dds
+        - lay_repair_e.dds
+        - lay_repair_s.dds
+      - data/if/ico_hd/garagewnd/action panel/:
         - bcb_arrow_d.dds
         - bcb_arrow_e.dds
         - bcb_arrow_h.dds
@@ -530,30 +556,6 @@ cb_gui_icons:
         - bcb_truck_h.dds
         - bcb_truck_p.dds
         - bcb_truck_s.dds
-        - btn_do-all_d.dds
-        - btn_do-all_e.dds
-        - btn_do-all_p.dds
-        - btn_truck_d.dds
-        - btn_truck_e.dds
-        - btn_truck_p.dds
-        - lay_body_d.dds
-        - lay_body_e.dds
-        - lay_body_s.dds
-        - lay_cab_d.dds
-        - lay_cab_e.dds
-        - lay_cab_s.dds
-        - lay_paint_d.dds
-        - lay_paint_e.dds
-        - lay_paint_s.dds
-        - lay_refuel_d.dds
-        - lay_refuel_e.dds
-        - lay_refuel_s.dds
-        - lay_reload_d.dds
-        - lay_reload_e.dds
-        - lay_reload_s.dds
-        - lay_repair_d.dds
-        - lay_repair_e.dds
-        - lay_repair_s.dds
       - data/if/ico/garagewnd/icons:
         - cab_buy_1.dds
         - cab_buy_2.dds
@@ -573,18 +575,19 @@ cb_gui_icons:
         - wshop_button_1.dds
         - wshop_button_1b.dds
         - wshop_button_2.dds
-      - data/if/ico/characteristicwnd/:
+      - data/if/ico_hd/characteristicwnd/:
         - cab_and_body_disabled.dds
         - cab_and_body_enabled.dds
         - overview_disabled.dds
         - overview_enabled.dds
         - weapons_disabled.dds
         - weapons_enabled.dds
-      - data/if/ico/inventorydlg/:
+      - data/if/ico_hd/inventorydlg/:
         - btn_moveall_d.dds
         - btn_moveall_e.dds
         - btn_moveall_p.dds
         - btn_moveall_s.dds
+      - data/if/ico/inventorydlg/:
         - get_all_1.dds
         - get_all_1b.dds
         - get_all_2.dds
@@ -597,17 +600,17 @@ cb_gui_icons:
         - m_shop_disactiv.dds
         - s_shop_activ.dds
         - s_shop_disactiv.dds
-        - tab_goods_e.dds
-        - tab_goods_n.dds
-        - tab_weapon_e.dds
-        - tab_weapon_n.dds
         - t_shop_activ.dds
         - t_shop_disactiv.dds
         - w_shop_activ.dds
         - w_shop_disactiv.dds
+      - data/if/ico_hd/workshopdlg/:
+        - tab_goods_e.dds
+        - tab_goods_n.dds
+        - tab_weapon_e.dds
+        - tab_weapon_n.dds
       - data/if/ico/motherpanel/:
         - main_quest_activ.dds
-        - tab_shop_s.dds
         - close_e.dds
         - main_journal_activ.dds
         - main_shop_disactiv.dds
@@ -616,14 +619,10 @@ cb_gui_icons:
         - main_map_disactiv.dds
         - tab_map_h.dds
         - main_shop_activ.dds
-        - tab_repair_e.dds
         - main_close_1b.dds
         - tab_journal_h.dds
-        - tab_map_e.dds
         - tab_invent_h.dds
-        - tab_bar_s.dds
         - main_close_1.dds
-        - tab_journal_s.dds
         - close_p.dds
         - tab_quest_h.dds
         - main_journal_disactiv.dds
@@ -631,41 +630,47 @@ cb_gui_icons:
         - main_town2_disactiv.dds
         - tab_repair_h.dds
         - main_quest_disactiv.dds
-        - tab_stats_e.dds
-        - tab_repair_s.dds
         - main_stats_disactiv.dds
         - main_map_activ.dds
         - main_stats_activ.dds
-        - tab_shop_e.dds
         - main_town1_activ.dds
         - tab_stats_h.dds
-        - tab_house_s.dds
-        - tab_quest_e.dds
         - main_workshop_disactiv.dds
-        - tab_map_s.dds
         - main_town1_disactiv.dds
         - leave_h.dds
         - main_town2_activ.dds
         - tab_house_h.dds
-        - tab_invent_s.dds
         - main_workshop_activ.dds
         - close_h.dds
         - main_invent_activ.dds
         - tab_bar_h.dds
-        - tab_stats_s.dds
         - leave_e.dds
-        - tab_invent_e.dds
-        - tab_house_e.dds
-        - tab_journal_e.dds
         - tab_shop_h.dds
         - main_bar_activ.dds
         - main_invent_disactiv.dds
+      - data/if/ico_hd/motherpanel/:
         - tab_bar_e.dds
+        - tab_bar_s.dds
+        - tab_house_e.dds
+        - tab_house_s.dds
+        - tab_invent_e.dds
+        - tab_invent_s.dds
+        - tab_journal_e.dds
+        - tab_journal_s.dds
+        - tab_map_e.dds
+        - tab_map_s.dds
+        - tab_quest_e.dds
         - tab_quest_s.dds
-    - - data/if/ico/maingameinterfacewnd/:
+        - tab_repair_e.dds
+        - tab_repair_s.dds
+        - tab_shop_e.dds
+        - tab_shop_s.dds
+        - tab_stats_e.dds
+        - tab_stats_s.dds
+    - - data/if/ico_hd/maingameinterfacewnd/:
         - get_drop.dds
         - horn.dds
-      - data/if/ico/bossindicator/bossicons/:
+      - data/if/ico_hd/bossindicator/bossicons/:
         - boss1.dds
         - boss2.dds
         - boss3.dds
@@ -744,7 +749,7 @@ cb_gui_icons:
         - groups_1_2b.dds
         - groups_1b.dds
         - wshop_button_2b.dds
-      - data/if/ico/garagewnd/cbscroll:
+      - data/if/ico_hd/garagewnd/cbscroll:
         - btn_next-item_d.dds
         - btn_next-item_e.dds
         - btn_next-item_h.dds
@@ -753,7 +758,7 @@ cb_gui_icons:
         - btn_prev-item_e.dds
         - btn_prev-item_h.dds
         - btn_prev-item_p.dds
-      - data/if/ico/garagewnd/skinscroll:
+      - data/if/ico_hd/garagewnd/skinscroll:
         - paint_next_disabled.dds
         - paint_next_enabled.dds
         - paint_next_pressed.dds
@@ -844,18 +849,15 @@ cb_gui_icons:
         - weaponna.dds
       - data/if/ico/garagewnd/icons:
         - armor.dds
-        - blast.dds
         - cab_buy.dds
         - cargo_buy.dds
         - cargotank.dds
         - control.dds
-        - energy.dds
         - fueltank.dds
         - hp.dds
         - inform.dds
         - maxspeed.dds
         - minus.dds
-        - persing.dds
         - plus.dds
         - power.dds
         - reammo.dds
@@ -863,19 +865,24 @@ cb_gui_icons:
         - skin_buy.dds
         - vehicles_buy.dds
         - weight.dds
-      - data/if/ico/shop/:
+      - data/if/ico_hd/garagewnd/icons:
+        - blast.dds
+        - energy.dds
+        - piercing.dds
+      - data/if/ico_hd/shop/:
         - icn_goods.dds
         - icn_price_buy.dds
         - icn_price_sell.dds
+      - data/if/ico/shop/:
         - shop_buy.dds
         - shop_cargo.dds
         - shop_sell.dds
-    - - data/if/ico/shop/:
+    - - data/if/ico_hd/shop/:
         - btn_listpos_d.dds
         - btn_listpos_e.dds
         - btn_listpos_p.dds
         - btn_listpos_s.dds
-    - - data/if/ico/targetinfownd:
+    - - data/if/ico_hd/targetinfownd:
         - resist1.dds
         - resist2.dds
         - resist3.dds
@@ -908,7 +915,7 @@ cb_radar:
 cb_goods_guns:
   type: files
   groups:
-    - - data/if/ico/inventorydlg/goods/:
+    - - data/if/ico_hd/inventorydlg/goods/:
         - books.dds
         - bottles.dds
         - details.dds
@@ -922,57 +929,127 @@ cb_goods_guns:
         - shkatylka.dds
         - tobacco.dds
         - trees.dds
+      - data/if/ico_hd/inventorydlg/weapon/:
+        - bumblebee.dds
+        - bumblebee_min.dds
+        - cyclops.dds
+        - cyclops_min.dds
+        - dimzavesa.dds
+        - dimzavesa_min.dds
+        - dragon.dds
+        - dragon_min.dds
+        - elephant01.dds
+        - elephant01_min.dds
+        - fagot01.dds
+        - fagot01_min.dds
+        - flag.dds
+        - flag_min.dds
+        - gvozdorazbrasivatel.dds
+        - gvozdorazbrasivatel_min.dds
+        - hailsidegun.dds
+        - hailsidegun_min.dds
+        - hammer01.dds
+        - hammer01_min.dds
+        - hornet.dds
+        - hornet_min.dds
+        - huntersidegun.dds
+        - huntersidegun_min.dds
+        - hurricane01.dds
+        - hurricane01_min.dds
+        - kord.dds
+        - kord_min.dds
+        - kpvt01.dds
+        - kpvt01_min.dds
+        - marssidegun.dds
+        - marssidegun_min.dds
+        - maslorazliv.dds
+        - maslorazliv_min.dds
+        - maxim01.dds
+        - maxim01_min.dds
+        - minoykladchik1.dds
+        - minoykladchik1_min.dds
+        - mraksidegun.dds
+        - mraksidegun_min.dds
+        - octopus.dds
+        - octopus_min.dds
+        - odin01.dds
+        - odin01_min.dds
+        - omega01.dds
+        - omega01_min.dds
+        - pkt.dds
+        - pkt_min.dds
+        - rainmetal.dds
+        - rainmetal_min.dds
+        - rapier.dds
+        - rapier_min.dds
+        - specter.dds
+        - specter_min.dds
+        - storm.dds
+        - storm_min.dds
+        - swingfire.dds
+        - swingfire_min.dds
+        - tank.dds
+        - tank_min.dds
+        - turboakselerator.dds
+        - turboakselerator_min.dds
+        - vector01.dds
+        - vector01_min.dds
+        - vulcan.dds
+        - vulcan_min.dds
+        - zeussidegun.dds
+        - zeussidegun_min.dds
       - data/if/ico/inventorydlg/weapon/:
         - 01.dds
-        - bumblebee.dds
-        - cyclops.dds
-        - dimzavesa.dds
-        - dragon.dds
-        - elephant01.dds
-        - fagot01.dds
-        - flag.dds
-        - gvozdorazbrasivatel.dds
-        - hailsidegun.dds
-        - hammer01.dds
-        - hornet.dds
-        - huntersidegun.dds
-        - hurricane01.dds
-        - kord.dds
-        - kpvt01.dds
-        - marssidegun.dds
-        - maslorazliv.dds
-        - maxim01.dds
-        - minoykladchik1.dds
-        - mraksidegun.dds
-        - octopus.dds
-        - odin01.dds
-        - omega01.dds
-        - pkt.dds
-        - rainmetal.dds
-        - rapier.dds
         - robot01.dds
-        - specter.dds
-        - storm.dds
-        - swingfire.dds
-        - tank.dds
-        - turboakselerator.dds
-        - vector01.dds
-        - vulcan.dds
-        - zeussidegun.dds
-      - data/if/ico/inventorydlg/gadgets/:
-        - gadgetw_04.dds
-        - gadgetw_01.dds
-        - gadgetw_03.dds
-        - gadgetg_01.dds
-        - gadgetg_02.dds
-        - gadgetw_02.dds
-        - gadgete_02.dds
-        - fueltank.dds
-        - gadgetg_03.dds
-        - gadgete_03.dds
-        - gadgete_04.dds
-        - gadgetg_04.dds
-        - gadgete_01.dds
+      - data/if/ico_hd/inventorydlg/gadgets/:
+        - gadget1_bul.dds
+        - gadget1_enrg.dds
+        - gadget1_exp.dds
+        - gadget1_v2_bul.dds
+        - gadget1_v2_enrg.dds
+        - gadget1_v2_exp.dds
+        - gadget2_bul.dds
+        - gadget2_enrg.dds
+        - gadget2_exp.dds
+        - gadget2_v2_bul.dds
+        - gadget2_v2_enrg.dds
+        - gadget2_v2_exp.dds
+        - gadget2_v3_bul.dds
+        - gadget2_v3_enrg.dds
+        - gadget2_v3_exp.dds
+        - gadget3_bul.dds
+        - gadget3_enrg.dds
+        - gadget3_exp.dds
+        - gadget3_v2_bul.dds
+        - gadget3_v2_enrg.dds
+        - gadget3_v2_exp.dds
+        - gadget4_bul.dds
+        - gadget4_enrg.dds
+        - gadget4_exp.dds
+        - gadget4_v2_bul.dds
+        - gadget4_v2_enrg.dds
+        - gadget4_v2_exp.dds
+        - gadget5_bul.dds
+        - gadget5_enrg.dds
+        - gadget5_exp.dds
+        - gadget6_bul.dds
+        - gadget6_enrg.dds
+        - gadget6_exp.dds
+        - gadget7_bul.dds
+        - gadget7_enrg.dds
+        - gadget7_exp.dds
+        - sml_gadget1.dds
+        - sml_gadget1_v2.dds
+        - sml_gadget1_v3.dds
+        - sml_gadget2.dds
+        - sml_gadget2_v2.dds
+        - sml_gadget2_v3.dds
+        - sml_gadget3.dds
+        - sml_gadget3_v2.dds
+        - sml_gadget3_v3.dds
+        - sml_gadget4.dds
+        - sml_gadget4_v2.dds
+        - sml_gadget4_v3.dds
 cb_cab_cargo:
   type: files
   groups:
@@ -1029,7 +1106,6 @@ cb_aim:
   groups:
     - - data/if/ico/smartcursorwnd/:
         - cross.dds
-        - cross1.dds
         - missile_target.dds
         - sight_blue.dds
         - sight_green.dds
@@ -1037,6 +1113,8 @@ cb_aim:
         - sight_missile.dds
         - sight_red.dds
         - sight_target.dds
+      - data/if/ico_hd/smartcursorwnd/:
+        - cross1.dds
         - small_cross.dds
 cb_music:
   type: files
@@ -3185,7 +3263,7 @@ cb_names:
           tag: "Item"
           name: "id"
           text: "value"
-      - data/if/diz/levelinfo.xml:
+      - data/if/diz/levelinfo_hd.xml:
           tag: "LevelInfo"
           name: "name"
           text: "fullName"
