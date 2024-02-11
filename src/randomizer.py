@@ -2,7 +2,8 @@ import logging
 import copy
 from pathlib import Path
 
-from errors import ManifestMissingError, ResourcesMissingError, ModsFoundError
+from errors import ManifestMissingError, ResourcesMissingError, \
+    ModsFoundError, ModNotFoundError
 from config import Config
 from yaml_operations import YamlConfig
 from yaml_schema import validate_manifest_types
@@ -72,15 +73,38 @@ class Randomizer():
 
             match self.game_version:
                 case "cp114" | "cr114":
-                    if len(mod_manifest.yaml) > 2:
+                    if self.game_version == "cp114":
+                        mods_amount = 1
+                    elif self.game_version == "cr114":
+                        mods_amount = 2
+
+                    if len(mod_manifest.yaml) > mods_amount:
                         keys = list(mod_manifest.yaml.keys())
-                        raise ModsFoundError(keys[:-2])
+                        raise ModsFoundError(keys[:-mods_amount])
 
                     if self.game_version == "cp114":
                         return True
 
                 case "isl12cp" | "isl12cr":
-                    pass
+                    if "ImprovedStoryline" not in mod_manifest.yaml:
+                        raise ModNotFoundError("Improved Storyline v1.2")
+
+                    if mod_manifest.yaml["ImprovedStoryline"][
+                        "version"
+                    ] != "1.2":
+                        raise ModNotFoundError("Improved Storyline v1.2")
+
+                    if self.game_version == "isl12cp":
+                        mods_amount = 2
+                    elif self.game_version == "isl12cr":
+                        mods_amount = 3
+
+                    if len(mod_manifest.yaml) > mods_amount:
+                        keys = list(mod_manifest.yaml.keys())
+                        raise ModsFoundError(keys[:-mods_amount])
+
+                    if self.game_version == "isl12cp":
+                        return True
 
             # update manifest based on installed options
             match self.game_version:
@@ -101,7 +125,6 @@ class Randomizer():
                 self.options[installed]
             )
             return True
-
         else:
             raise NotImplementedError()
 

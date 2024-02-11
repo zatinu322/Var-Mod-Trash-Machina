@@ -16,7 +16,7 @@ from validation import Validation
 from errors import LocalisationMissingError, RootNotFoundError, \
     ExeMissingError, GameNotFoundError, VersionError, \
     ManifestMissingError, GDPFoundError, ResourcesMissingError, \
-    ManifestKeyError, ModsFoundError
+    ManifestKeyError, ModsFoundError, ModNotFoundError
 from data import FULL_NAME, MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, \
     SUPPORTED_VERSIONS, PRESETS
 
@@ -517,6 +517,12 @@ class RandomizerWindow(MainGui):
             except ModsFoundError as mods_found:
                 self.info_cont_write(
                     f"{self.locale.tr('mods_found')}:\n{mods_found}",
+                    "red"
+                )
+                self.info_cont_abort()
+            except ModNotFoundError as mod_not_found:
+                self.info_cont_write(
+                    f"{self.locale.tr('mod_not_found')}:\n{mod_not_found}",
                     "red"
                 )
                 self.info_cont_abort()

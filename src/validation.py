@@ -136,7 +136,7 @@ class Validation():
         match game_version:
             case "steam" | "isl1053":
                 options = None
-            case "cp114" | "isl102cp":
+            case "cp114" | "isl12cp":
                 options = None
                 exe_status = "no_fov"
             case "cr114" | "isl12cr":

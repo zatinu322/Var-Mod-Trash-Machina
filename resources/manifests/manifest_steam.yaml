@@ -2471,6 +2471,10 @@ cb_masks:
         - maska01.dds
         - maska02.dds
         - maska03.dds
+      - data/models/masks/region1/woman/:
+        - maska01.dds
+        - maska02.dds
+        - maska03.dds
       - data/models/masks/region2/man/:
         - maska01.dds
         - maska02.dds
@@ -2490,6 +2494,22 @@ cb_masks:
         - player.dds
         - mask02.dds
         - mask03.dds
+    - - data/models/masks/region1/man/:
+        - maska.dds
+        - maska2.dds
+        - maska3.dds
+    - - data/models/masks/region1/woman/:
+        - maska.dds
+        - maska2.dds
+        - maska3.dds
+      - data/models/masks/region2/woman/:
+        - maska01.dds
+        - maska02.dds
+        - maska03.dds
+    - - data/models/masks/region3/man/:
+        - maska.dds
+        - maska02.dds
+        - maska03.dds
 cb_veh_skins:
   type: files
   groups:

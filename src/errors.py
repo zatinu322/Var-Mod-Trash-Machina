@@ -85,3 +85,11 @@ class ModsFoundError(Exception):
 
     def __str__(self) -> str:
         return str(self.mods)
+
+
+class ModNotFoundError(Exception):
+    def __init__(self, mod_name: str) -> None:
+        self.mod_name = mod_name
+
+    def __str__(self) -> str:
+        return self.mod_name
