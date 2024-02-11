@@ -10,7 +10,7 @@ class FileCopier(WorkingSetManager):
         super().__init__(working_set)
 
     def copy_files(self) -> None:
-        dir_path = self.folder_to_copy / "data"
+        dir_path = self.folder_to_copy
         game_dir_path = self.game_path / "data"
 
         self.logger.debug(f"FileCopier: copy {dir_path} to {game_dir_path}.")

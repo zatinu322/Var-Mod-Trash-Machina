@@ -101,20 +101,20 @@ class Validation():
             else:
                 return (False, "no_exe")
 
-        exe_info: dict = version_info.get("exe")
+        exe_info: dict = version_info["exe"]
 
         for version in exe_info:
             detected_version = self.get_exe_version(
                 exe,
-                version.get("offset"),
-                version.get("length")
+                version["offset"],
+                version["length"]
             )
 
-            if detected_version == version.get("version"):
+            if detected_version == version["version"]:
                 return True, "exe"
             else:
-                logger.info(
-                    f"{version.get('version')} expected, \
+                logger.error(
+                    f"{version['version']} expected, \
                     got {detected_version}"
                 )
 
@@ -125,7 +125,7 @@ class Validation():
         game_version: str,
         exe: str
     ) -> tuple[bool, str, Path | str]:
-        version_info = VERSIONS_INFO.get(game_version)
+        version_info = VERSIONS_INFO[game_version]
         if not version_info:
             raise VersionError(game_version)
 
@@ -135,11 +135,14 @@ class Validation():
                     game_version, version_info, exe
                 )
             case "cp114" | "cr114" | "isl12cp" | "isl12cr":
-                raise VersionError(game_version)
+                valid, exe_status = self.steam_version(
+                    game_version, version_info, exe
+                )
+                # raise VersionError(game_version)
 
         # TODO: Add different mods validation through yaml or existing files
 
-        return valid, exe_status, Path(version_info.get("manifest"))
+        return valid, exe_status, Path(version_info["manifest"])
 
     @staticmethod
     def get_exe_version(

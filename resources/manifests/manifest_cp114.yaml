@@ -6,6 +6,7 @@ resources_validation:
   - data/scripts/randomizer_vars.lua
 folder_to_copy: resources/data
 lua_to_edit: data/scripts/server.lua
+# list of all masks, dwellers, cars, guns and other models for servers.xml on each map
 server_paths:
   - data/maps/mainmenu/servers.xml
   - data/maps/r1m1/servers.xml
@@ -18,8 +19,6 @@ server_paths:
   - data/maps/r3m2/servers.xml
   - data/maps/r4m1/servers.xml
   - data/maps/r4m2/servers.xml
-# list of all masks, dwellers, cars,
-# guns and other models for servers.xml on each map
 server_items:
   # other_models
   - cub
@@ -322,7 +321,7 @@ triggers_to_change:
     script: '\n\t\t\tGameFiltersUse()\n\n\t\t\tRestoreAllToleranceStatus()\n\n\t\t\tlocal rrr = GetEntityByName ("hero1Dw")\n\t\t\tif rrr then rrr:Remove() end\n\t\t\t\n\t\t\tlocal rrr = GetEntityByName ("hero2Dw")\n\t\t\tif rrr then rrr:Remove() end\n\n\t\t\tlocal rrr = GetEntityByName ("fatherDw")\n\t\t\tif rrr then rrr:Remove() end\n\n\t\t\tTDeactivate( "ROLIK11" )\n\t\t\tTDeactivate( "ROLIK15" )\n\t\t\tTDeactivate( "ROLIK16" )\n\t\t\tTDeactivate( "ROLIK17" )\n\t\t\tTDeactivate( "ROLIK12" )\n\t\t\tTDeactivate( "ROLIK13" )\n\t\t\tTDeactivate( "ROLIK18" )\n\t\t\tTDeactivate( "ROLIK14" )\n\n\t\t\tlocal Plf = GetPlayerVehicle()\n\t\t\tPlf:SetExternalPathByName("start_rolik_mycar")\n\t\t\tPlf:PlaceToEndOfPath()\n\t\t\tPlf:SetRotation(Quaternion(-0.007, 1.000, -0.010, 0.021))\n\t\t\tPlf:setGodMode(0)\n\n\t\t\tTActivate ("tr_Tutotial_Start")\n\n\t\t\tStopPlayingCustomMusic()\n\n\t\t\tSetCameraBehindPlayerVehicle()\n\n\t\t\ttrigger:Deactivate() \n\t\t'
   data/maps/r1m1/triggers.xml:
     name: trFirstRolik
-    script: '\n\t\t\tg_ObjCont:SetGameTime( 10, 0, 10, 9, 2234 )\n\n\t\t\tSetRadarUpgrade(1)\n\n\t\t\tif RAND_PLAYER_VEH then\n\t\t\t\tAddPlayerVehicle(RAND_VEH_3[random(getn(RAND_VEH_3))])\n\t\t\tend\n\n\t\t\tif RAND_GUNS then\n\t\t\t\tgiveguns_random()\n\t\t\tend\n\n\t\t\tlocal Plf = GetPlayerVehicle()\n\t\t\tif Plf then\n\t\t\t\tPlf:setGodMode(1)\n\t\t\t\tPlf:SetGamePositionOnGround(CVector(3355.000, 368.500, 3308.000))\n\t\t\t\tPlf:SetRotation(Quaternion(-0.007, 1.000, -0.010, 0.021))\n\t\t\tend\n\n\t\t\tFly("start_game", CINEMATIC_NO_AIM, 0, 68, 1, 1 )\n\t\t\tStartCinematic()\n\t\t\tUpdateCinematic( 1 )\n\n\t\t\tAddCinematicMessage( 77771, 0.1)\n\n\t\t\tTActivate("trFirstRolikMusic")\n\t\t\tTActivate("StartGame")\n\n\t\t\ttrigger:Deactivate()\n\t\t'
+    script: '\n\t\t\tg_ObjCont:SetGameTime( 10, 0, 10, 9, 2234 )\n\n\t\t\tSetRadarUpgrade(1)\n\t\t\tTActivate("trKraiPlaceSecret")\n\n\t\t\tif RAND_PLAYER_VEH then\n\t\t\t\tAddPlayerVehicle(RAND_VEH_3[random(getn(RAND_VEH_3))])\n\t\t\tend\n\n\t\t\tif RAND_GUNS then\n\t\t\t\tgiveguns_random()\n\t\t\tend\n\n\t\t\tlocal Plf = GetPlayerVehicle()\n\t\t\tif Plf then\n\t\t\t\tPlf:setGodMode(1)\n\t\t\t\tPlf:SetGamePositionOnGround(CVector(3355.000, 368.500, 3308.000))\n\t\t\t\tPlf:SetRotation(Quaternion(-0.007, 1.000, -0.010, 0.021))\n\t\t\tend\n\n\t\t\tFly("start_game", CINEMATIC_NO_AIM, 0, 68, 1, 1 )\n\t\t\tStartCinematic()\n\t\t\tUpdateCinematic( 1 )\n\n\t\t\tTActivate("trFirstRolikMusic")\n\t\t\tTActivate("StartGame")\n\n\t\t\tShowFirstNarratorText()\n\n\t\t\ttrigger:Deactivate()\n\t\t'
 cb_maps:
   type: files
   groups:
@@ -410,18 +409,24 @@ cb_clans:
         - church_of_enlightenment02.dds
         - commonwealth_of independent_towns02.dds
         - crimson_dawn02.dds
+        - desert_people02.dds
         - doom_bringers02.dds
         - druids02.dds
         - explorers02.dds
         - farmers_union02.dds
         - felixs_gang02.dds
+        - fishermen02.dds
         - free_traders_alliance02.dds
         - harakhat02.dds
         - kurtadam02.dds
         - militarists02.dds
         - njeri02.dds
+        - nomads02.dds
         - north_nath_traders02.dds
+        - npp02.dds
         - oracles_disciples02.dds
+        - scientists_followers02.dds
+        - serseri02.dds
         - steel_giants02.dds
         - technicians02.dds
         - trappers02.dds
@@ -436,18 +441,24 @@ cb_clans:
         - church_of_enlightenment03.dds
         - commonwealth_of independent_towns03.dds
         - crimson_dawn03.dds
+        - desert_people03.dds
         - doom_bringers03.dds
         - druids03.dds
         - explorers03.dds
         - farmers_union03.dds
         - felixs_gang03.dds
+        - fishermen03.dds
         - free_traders_alliance03.dds
         - harakhat03.dds
         - kurtadam03.dds
         - militarists03.dds
         - njeri03.dds
+        - nomads03.dds
         - north_nath_traders03.dds
+        - npp03.dds
         - oracles_disciples03.dds
+        - scientists_followers03.dds
+        - serseri03.dds
         - steel_giants03.dds
         - technicians03.dds
         - trappers03.dds
@@ -462,19 +473,25 @@ cb_clans:
         - church_of_enlightenment.dds
         - commonwealth_of independent_towns.dds
         - crimson_dawn.dds
+        - desert_people.dds
         - doom_bringers.dds
         - druids.dds
         - explorers.dds
         - farmers_union.dds
         - felixs_gang.dds
+        - fishermen.dds
         - free_traders_alliance.dds
         - harakhat.dds
         - kurtadam.dds
         - logotip01.dds
         - militarists.dds
         - njeri.dds
+        - nomads.dds
         - north_nath_traders.dds
+        - npp.dds
         - oracles_disciples.dds
+        - scientists_followers.dds
+        - serseri.dds
         - steel_giants.dds
         - technicians.dds
         - trappers.dds
@@ -1232,6 +1249,7 @@ cb_speech:
         - r1m3_401_ben_radio.ogg
         - r1m3_402_hero.ogg
         - r1m3_403_ben_radio.ogg
+        - r1m3_4041_ben_radio.ogg
         - r1m3_404_ben_radio.ogg
         - r1m3_405_hero.ogg
         - r1m3_406_ben_radio.ogg
@@ -1357,7 +1375,10 @@ cb_speech:
         - r2m2_1_cd_officer_radio.ogg
         - r2m2_20_hero.ogg
         - r2m2_21_axel.ogg
+        - r2m2_22_2_hero.ogg
         - r2m2_22_hero.ogg
+        - r2m2_22b_hero.ogg
+        - r2m2_23_2_axel.ogg
         - r2m2_23_axel.ogg
         - r2m2_24_hero.ogg
         - r2m2_25_axel.ogg
@@ -1368,6 +1389,7 @@ cb_speech:
         - r2m2_2_cd_officer_radio.ogg
         - r2m2_30_hero.ogg
         - r2m2_31_axel.ogg
+        - r2m2_31b_axel.ogg
         - r2m2_32_hero.ogg
         - r2m2_33_axel.ogg
         - r2m2_35_alice.ogg
@@ -2456,6 +2478,25 @@ cb_env_textures:
         - copped_cliff.dds
       - data/models/buildings/region3/:
         - meh_druids_wall.dds
+      - data/models/ammo/:
+        - shell_big_gun.dds
+        - shell_big_mortar.dds
+        - shell_big_shotgun.dds
+        - shell_sml_pulemet.dds
+        - shell_sml_shotgun.dds
+      - data/models/buildings/region1/cemetery/:
+        - grave.dds
+        - text1.dds
+        - text2.dds
+        - text3.dds
+        - text4.dds
+        - text5.dds
+        - text6.dds
+        - text7.dds
+        - text8.dds
+        - text9.dds
+        - text10.dds
+        - textd1.dds
 cb_masks:
   type: files
   groups:
@@ -2598,8 +2639,10 @@ cb_veh_skins:
         - cab_1_8.dds
     - - data/models/vehicles/bug/:
         - cargo_1_0.dds
+        - cargo_1_1.dds
         - cargo_1_2.dds
         - cargo_1_3.dds
+        - cargo_1_4.dds
         - cargo_1_5.dds
         - cargo_1_6.dds
         - cargo_1_7.dds
@@ -2609,6 +2652,8 @@ cb_veh_skins:
         - cargo_detal_1_8.dds
     - - data/models/vehicles/cruiser/:
         - cab_00.dds
+        - cab_01.dds
+        - cab_02.dds
         - cab_03.dds
         - cab_04.dds
         - cab_05.dds
@@ -2617,12 +2662,39 @@ cb_veh_skins:
         - cab_08.dds
     - - data/models/vehicles/cruiser/:
         - cab_detal_00.dds
+        - cab_detal_01.dds
+        - cab_detal_02.dds
+        - cab_detal_03.dds
+        - cab_detal_04.dds
+        - cab_detal_05.dds
         - cab_detal_06.dds
+        - cab_detal_07.dds
         - cab_detal_08.dds
         - cab01_detal.dds
+    - - data/models/vehicles/dozer/:
+        - cab01_00.dds
+        - cab01_01.dds
+        - cab01_02.dds
+        - cab01_03.dds
+        - cab01_04.dds
+        - cab01_05.dds
+        - cab01_06.dds
+        - cab01_07.dds
+        - cab01_08.dds
+    - - data/models/vehicles/dozer/:
+        - shassis01_00.dds
+        - shassis01_01.dds
+        - shassis01_02.dds
+        - shassis01_03.dds
+        - shassis01_04.dds
+        - shassis01_05.dds
+        - shassis01_06.dds
+        - shassis01_07.dds
+        - shassis01_08.dds
     - - data/models/vehicles/fighter/:
         - fighter00.dds
         - fighter01.dds
+        - fighter02.dds
         - fighter03.dds
         - fighter04.dds
         - fighter05.dds
@@ -2637,6 +2709,15 @@ cb_veh_skins:
         - cab06d.dds
         - cab07.dds
         - cab08.dds
+        - cab01_00.dds
+        - cab01_01.dds
+        - cab01_02.dds
+        - cab01_03.dds
+        - cab01_04.dds
+        - cab01_05.dds
+        - cab01_06.dds
+        - cab01_07.dds
+        - cab01_08.dds
     - - data/models/vehicles/mirotvorec/:
         - cab01_0.dds
         - cab01_1.dds
@@ -3403,6 +3484,7 @@ cb_env_models:
       - gadget_05
       - gadget_12
       - gadget_06
+      - grave1
     - - sack_dot_brocken1
       - sack_dot_brocken2
       - light_dots_brocken1
@@ -3540,6 +3622,7 @@ cb_env_models:
       - quest_cd1
       - quest_cd2
       - artefact2
+      - grave2
     - - fishman2
       - arena_barricade10
       - civilhouse2_skin
