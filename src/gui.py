@@ -622,7 +622,7 @@ class MainGui(UserControl):
         )
         self.main_cont = Container(
             self.main_column,
-            border=border.all("1", "red")
+            # border=border.all("1", "red")
         )
         return self.main_cont
 
