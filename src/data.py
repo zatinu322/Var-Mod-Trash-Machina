@@ -150,7 +150,7 @@ PRESETS = {
         "cb_names": True,
         "cb_npc_look": True,
         "cb_other_sounds": True,
-        "cb_pl_veh": True,
+        "cb_pl_veh": False,
         "cb_quests": True,
         "cb_radar": True,
         "cb_radio": True,

@@ -89,9 +89,9 @@ class Randomizer():
                     if "ImprovedStoryline" not in mod_manifest.yaml:
                         raise ModNotFoundError("Improved Storyline v1.2")
 
-                    if mod_manifest.yaml["ImprovedStoryline"][
-                        "version"
-                    ] != "1.2":
+                    isl_ver = mod_manifest.yaml["ImprovedStoryline"]["version"]
+
+                    if isl_ver not in ["1.2", "1.2 HD"]:
                         raise ModNotFoundError("Improved Storyline v1.2")
 
                     if self.game_version == "isl12cp":
@@ -181,7 +181,7 @@ class Randomizer():
             "logger": self.logger,
             "game_path": self.game_path,
             "game_version": self.game_version,
-            "folder_to_copy": self.manifest["folder_to_copy"],
+            "resources": self.manifest["resources_validation"],
             "lua_to_edit": self.manifest["lua_to_edit"],
             "server_paths": self.manifest["server_paths"],
             "server_items": self.manifest["server_items"],

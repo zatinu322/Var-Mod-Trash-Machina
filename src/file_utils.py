@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from working_set_manager import WorkingSetManager
+from data import RESOURCES_PATH
 
 
 class FileCopier(WorkingSetManager):
@@ -10,12 +11,21 @@ class FileCopier(WorkingSetManager):
         super().__init__(working_set)
 
     def copy_files(self) -> None:
-        dir_path = self.folder_to_copy
-        game_dir_path = self.game_path / "data"
+        for file in self.resources:
+            file_path = RESOURCES_PATH / file
+            file_game_path = self.game_path / file
 
-        self.logger.debug(f"FileCopier: copy {dir_path} to {game_dir_path}.")
+            if file_game_path.exists():
+                self.logger.info(
+                    f"{file_game_path} already exists."
+                )
+                continue
 
-        shutil.copytree(dir_path, game_dir_path, dirs_exist_ok=True)
+            self.logger.debug(
+                f"Copying {file_path} to {file_game_path}."
+            )
+
+            shutil.copy(file_path, file_game_path)
 
 
 class FileEditor(WorkingSetManager):

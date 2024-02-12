@@ -79,11 +79,23 @@ function CreateTeam(Name, Belong, CreatePos, ListOfVehicle, WalkPos, IsWares, Ro
         local i=1
         local id=0
 
-        if RAND_VEH then
-            local len = getn(ListOfVehicle)
-            ListOfVehicle = prot_random(len, "team")
+        -- check if Molokovoz01 in list to prevent trailer softlock
+        local rand_true = 1
+        while ListOfVehicle[i] do
+            if ListOfVehicle[i] == "Molokovoz01" then
+                rand_true = 0
+            end
+            i = i + 1
         end
 
+        if rand_true == 1 then
+            if RAND_VEH then
+                local len = getn(ListOfVehicle)
+                ListOfVehicle = prot_random(len, "team")
+            end
+        end
+
+        i = 1
         while ListOfVehicle[i] do
             local id = CreateNewObject{
                         prototypeName = ListOfVehicle[i],
@@ -147,9 +159,11 @@ function CreateVehicleEx( PrototypeName, Name, pos, belong )
 		bel = 1100
 	end
 
-	if RAND_VEH then
-		PrototypeName = prot_random(1, "ex")
-	end
+    if PrototypeName ~= "Molokovoz01" then
+        if RAND_VEH then
+            PrototypeName = prot_random(1, "ex")
+        end
+    end
 
 	local id = CreateNewObject {
 		prototypeName = PrototypeName,

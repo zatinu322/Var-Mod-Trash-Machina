@@ -1,24 +1,27 @@
 # Technical information
-version_validation: False
+version_validation: mod_manifest.yaml
 resources_validation:
   - data/profiles/1/profile.xml
   - data/scripts/randomizer.lua
   - data/scripts/randomizer_vars.lua
 lua_to_edit: data/scripts/server.lua
+# list of all masks, dwellers, cars, guns and other models for servers.xml on each map
 server_paths:
   - data/maps/mainmenu/servers.xml
   - data/maps/r1m1/servers.xml
   - data/maps/r1m2/servers.xml
   - data/maps/r1m3/servers.xml
   - data/maps/r1m4/servers.xml
+  - data/maps/r1m5/servers.xml
+  - data/maps/r1m6/servers.xml
+  - data/maps/r1m7/servers.xml
   - data/maps/r2m1/servers.xml
+  - data/maps/r2m1_bossfight/servers.xml
   - data/maps/r2m2/servers.xml
   - data/maps/r3m1/servers.xml
   - data/maps/r3m2/servers.xml
   - data/maps/r4m1/servers.xml
   - data/maps/r4m2/servers.xml
-# list of all masks, dwellers, cars,
-# guns and other models for servers.xml on each map
 server_items:
   # other_models
   - cub
@@ -33,6 +36,8 @@ server_items:
   - dweller_ben
   - dweller_axel
   - dweller_white
+  - dweller_snowlisa
+  - dweller_homer
   # masks
   - boss04dronegun
   - r1_man
@@ -41,6 +46,7 @@ server_items:
   - r2_woman
   - r3_man
   - r4_man
+  - r5_man
   - mask_father
   - mask_hero
   - mask_lisa
@@ -48,6 +54,8 @@ server_items:
   - mask_axel
   - mask_oracul
   - gadget_12
+  - mask_snowlisa
+  - mask_thief
   # guns
   - dragon01
   - dragon01gun
@@ -318,10 +326,7 @@ server_items:
 triggers_to_change:
   data/maps/r1m1/cinematriggers.xml:
     name: Finish00
-    script: '\n\t\t\tGameFiltersUse()\n\n\t\t\tRestoreAllToleranceStatus()\n\n\t\t\tlocal rrr = GetEntityByName ("hero1Dw")\n\t\t\tif rrr then rrr:Remove() end\n\t\t\t\n\t\t\tlocal rrr = GetEntityByName ("hero2Dw")\n\t\t\tif rrr then rrr:Remove() end\n\n\t\t\tlocal rrr = GetEntityByName ("fatherDw")\n\t\t\tif rrr then rrr:Remove() end\n\n\t\t\tTDeactivate( "ROLIK11" )\n\t\t\tTDeactivate( "ROLIK15" )\n\t\t\tTDeactivate( "ROLIK16" )\n\t\t\tTDeactivate( "ROLIK17" )\n\t\t\tTDeactivate( "ROLIK12" )\n\t\t\tTDeactivate( "ROLIK13" )\n\t\t\tTDeactivate( "ROLIK18" )\n\t\t\tTDeactivate( "ROLIK14" )\n\n\t\t\tlocal Plf = GetPlayerVehicle()\n\t\t\tPlf:SetExternalPathByName("start_rolik_mycar")\n\t\t\tPlf:PlaceToEndOfPath()\n\t\t\tPlf:SetRotation(Quaternion(-0.007, 1.000, -0.010, 0.021))\n\t\t\tPlf:setGodMode(0)\n\n\t\t\tTActivate ("tr_Tutotial_Start")\n\n\t\t\tStopPlayingCustomMusic()\n\n\t\t\tSetCameraBehindPlayerVehicle()\n\n\t\t\ttrigger:Deactivate() \n\t\t'
-  data/maps/r1m1/triggers.xml:
-    name: trFirstRolik
-    script: '\n\t\t\tg_ObjCont:SetGameTime( 10, 0, 10, 9, 2234 )\n\n\t\t\tSetRadarUpgrade(1)\n\n\t\t\tif RAND_PLAYER_VEH then\n\t\t\t\tAddPlayerVehicle(RAND_VEH_3[random(getn(RAND_VEH_3))])\n\t\t\tend\n\n\t\t\tif RAND_GUNS then\n\t\t\t\tgiveguns_random()\n\t\t\tend\n\n\t\t\tlocal Plf = GetPlayerVehicle()\n\t\t\tif Plf then\n\t\t\t\tPlf:setGodMode(1)\n\t\t\t\tPlf:SetGamePositionOnGround(CVector(3355.000, 368.500, 3308.000))\n\t\t\t\tPlf:SetRotation(Quaternion(-0.007, 1.000, -0.010, 0.021))\n\t\t\tend\n\n\t\t\tFly("start_game", CINEMATIC_NO_AIM, 0, 68, 1, 1 )\n\t\t\tStartCinematic()\n\t\t\tUpdateCinematic( 1 )\n\n\t\t\tAddCinematicMessage( 77771, 0.1)\n\n\t\t\tTActivate("trFirstRolikMusic")\n\t\t\tTActivate("StartGame")\n\n\t\t\ttrigger:Deactivate()\n\t\t'
+    script: '\n\t\t\tShowHostileVehicles(true)\n\t\t\t\n\t\t\tRestoreAllToleranceStatus()\n\n\t\t\tTeamCreate("HospitalEnemy",1013,CVector(2648.307, 321.213, 1661.576),{"Sml301"})\n\t\t\tlocal hen = GetEntityByName("HospitalEnemy_vehicle_0")\n\t\t\tif hen then hen:SetRotation(Quaternion(-0.024, 0.714, -0.000, -0.700)) end\n\n\t\t\tlocal rrr = GetEntityByName ("hero1Dw")\n\t\t\tif rrr then rrr:Remove() end\n\t\t\t\n\t\t\tlocal rrr = GetEntityByName ("hero2Dw")\n\t\t\tif rrr then rrr:Remove() end\n\n\t\t\tlocal rrr = GetEntityByName ("fatherDw")\n\t\t\tif rrr then rrr:Remove() end\n\t\t\t\n\t\t\tlocal vehFelix = GetEntityByName("FelixCarPrologue")\n\t\t\tif vehFelix then vehFelix:Remove() end\n\t\t\tlocal hLisa = getObj("humLisa")\n\t\t\tif hLisa then hLisa:Remove() end\n\t\t\tlocal hFelix = getObj("humFelix")\n\t\t\tif hFelix then hFelix:Remove() end\n\t\t\t\n\t\t\tlocal vehLisa5 = GetEntityByName("Venchik_vehicle_0")\n\t\t\tif vehLisa5 then vehLisa5:Remove() end\n\t\t\t\n\t\t\tlocal vehLisa6 = GetEntityByName("Bolnoy_vehicle_0")\n\t\t\tif vehLisa6 then vehLisa6:Remove() end\n\t\t\t\t\t\t\n\t\t\tif RAND_PLAYER_VEH then\n\t\t\t\tAddPlayerVehicle(RAND_VEH_3[random(getn(RAND_VEH_3))])\n\t\t\tend\n\n\t\t\tif RAND_GUNS then\n\t\t\t\tgiveguns_random()\n\t\t\tend\n\n\t\t\tlocal Plf = GetPlayerVehicle()\n\t\t\tif Plf then\n\t\t\t\tPlf:setGodMode(1)\n\t\t\t\tPlf:SetExternalPathByName("start_rolik_mycar")\n\t\t\t\tPlf:PlaceToEndOfPath()\n\t\t\t\tPlf:SetRotation(Quaternion(-0.007, 1.000, -0.010, 0.021))\n\t\t\t\tPlf:SetSkin(0)\n\t\t\t\tPlf:setGodMode(0)\n\t\t\t\tPlf:setImmortalMode(0)\n\t\t\t\tPlf:SetBelong(1100)\n\t\t\tend\n\n\t\t\tStopPlayingCustomMusic()\n\n\t\t\tSetCameraBehindPlayerVehicle()\n\n\t\t\tEnableAutoHelp( false )\n\n\t\t\tSpawnMessageBox( "90001" )\n\n\t\t\tlocal b = SpawnMessageBox( "90000" )\n\t\t\tif b == 1 then\n\t\t\t\tTakeQuest("FirstTimePlay")\n\t\t\t\tCompleteQuest("FirstTimePlay")\n\t\t\t\tAddImportantFadingMsgId("fm_mr_shlyapa_off")\n\t\t\telse\n\t\t\t\tAddImportantFadingMsgId("fm_mr_shlyapa_on")\n\t\t\tend\n\n\t\t\tif LevelInfoManager then\n\t\t\t\tLevelInfoManager:ClearVisibilityMapForLevel("r1m1")\n\t\t\tend\n\n\t\t\tTDeactivate( "ROLIK15" )\n\t\t\tTDeactivate( "ROLIK16" )\n\t\t\tTDeactivate( "ROLIK12" )\n\t\t\tTDeactivate( "ROLIK13" )\n\t\t\tTDeactivate( "ROLIK18" )\n\t\t\tTDeactivate( "ROLIK14" )\n\t\t\tTDeactivate( "trOpeningOpen1" )\n\t\t\tTDeactivate( "trOpening1" )\n\t\t\tTDeactivate( "trOpening11" )\n\t\t\tTDeactivate( "trOpening2" )\n\t\t\tTDeactivate( "trOpening22" )\n\t\t\tTDeactivate( "trOpening3" )\n\t\t\tTDeactivate( "trOpening4" )\n\t\t\tTDeactivate( "trOpening5" )\n\t\t\tTDeactivate( "trOpeningEnd" )\n\t\t\tTDeactivate( "StartGame" )\n\t\t\tTActivate("triggerExitToMap12")\n\t\t\tTActivate("loc_lisa")\n\t\t\tTActivate("BotanikVanCreate")\n\n\t\t\ttrigger:Deactivate() \n\t\t'
 cb_maps:
   type: files
   groups:
@@ -330,6 +335,8 @@ cb_maps:
         - r1m2.dds
         - r1m3.dds
         - r1m4.dds
+        - r1m5.dds
+        - r1m6.dds
         - r2m1.dds
         - r2m2.dds
         - r3m1.dds
@@ -339,7 +346,7 @@ cb_maps:
 cb_digits:
   type: files
   groups:
-    - - data/if/ico/digitals/large/:
+    - - data/if/ico_hd/digitals/large/:
         - num_large_0.dds
         - num_large_1.dds
         - num_large_2.dds
@@ -350,7 +357,7 @@ cb_digits:
         - num_large_7.dds
         - num_large_8.dds
         - num_large_9.dds
-    - - data/if/ico/digitals/small/:
+    - - data/if/ico_hd/digitals/small/:
         - num_small_0.dds
         - num_small_1.dds
         - num_small_2.dds
@@ -364,22 +371,27 @@ cb_digits:
 cb_splashes:
   type: files
   groups:
-    - - data/if/ico/splashes/:
+    - - data/if/ico_hd/splashes/:
         - arack.dds
         - chel.dds
         - druids.dds
         - gonki.dds
-        - les.dds
         - loading_screen_1.dds
-        - loading_screen_2.dds
-        - loading_screen_3.dds
         - loading_screen_4.dds
-        - most_slon.dds
-        - noch.dds
         - ogon.dds
         - paris.dds
         - plane.dds
         - zavod.dds
+        - mainmenu.dds
+        - r1m5.dds
+        - r1m6.dds
+        - r1m7.dds
+      - data/if/ico/splashes/:
+        - les.dds
+        - loading_screen_2.dds
+        - loading_screen_3.dds
+        - most_slon.dds
+        - noch.dds
 cb_bkgd:
   type: files
   groups:
@@ -388,19 +400,30 @@ cb_bkgd:
         - bardialog2.dds
         - bardialog3.dds
         - bardialog4.dds
+        - bunkerdialog1.dds
         - cardialog1.dds
         - cardialog2.dds
         - castledialog1.dds
         - dialog_bar.dds
+        - druidtempledialog1.dds
         - fatherhousedialog1.dds
         - housebendialog1.dds
+        - housedialog1.dds
+        - ironisttempledialog1.dds
         - museumdialog1.dds
+        - officedialog1.dds
+        - officedialog2.dds
+        - oilderrickdialog1.dds
         - oracledialog.dds
+        - powerstationdialog1.dds
+        - shopdialog1.dds
+        - storagedialog1.dds
 cb_clans:
   type: files
   groups:
-    - - data/if/ico/clans/:
+    - - data/if/ico_hd/clans/:
         - adventurers02.dds
+        - antimilitarists02.dds
         - al_faran02.dds
         - beer02.dds
         - bounty_hunters02.dds
@@ -409,24 +432,33 @@ cb_clans:
         - church_of_enlightenment02.dds
         - commonwealth_of independent_towns02.dds
         - crimson_dawn02.dds
+        - desert_people02.dds
         - doom_bringers02.dds
         - druids02.dds
         - explorers02.dds
         - farmers_union02.dds
         - felixs_gang02.dds
+        - fishermen02.dds
         - free_traders_alliance02.dds
         - harakhat02.dds
+        - hermits02.dds
         - kurtadam02.dds
         - militarists02.dds
         - njeri02.dds
+        - nomads02.dds
         - north_nath_traders02.dds
+        - npp02.dds
         - oracles_disciples02.dds
+        - refuelers02.dds
+        - scientists_followers02.dds
+        - serseri02.dds
         - steel_giants02.dds
         - technicians02.dds
         - trappers02.dds
         - vagabonds02.dds
     - - data/if/ico/clans/:
         - adventurers03.dds
+        - antimilitarists03.dds
         - al_faran03.dds
         - beer03.dds
         - bounty_hunters03.dds
@@ -435,24 +467,33 @@ cb_clans:
         - church_of_enlightenment03.dds
         - commonwealth_of independent_towns03.dds
         - crimson_dawn03.dds
+        - desert_people03.dds
         - doom_bringers03.dds
         - druids03.dds
         - explorers03.dds
         - farmers_union03.dds
         - felixs_gang03.dds
+        - fishermen03.dds
         - free_traders_alliance03.dds
         - harakhat03.dds
+        - hermits03.dds
         - kurtadam03.dds
         - militarists03.dds
         - njeri03.dds
+        - nomads03.dds
         - north_nath_traders03.dds
+        - npp03.dds
         - oracles_disciples03.dds
+        - refuelers03.dds
+        - scientists_followers03.dds
+        - serseri03.dds
         - steel_giants03.dds
         - technicians03.dds
         - trappers03.dds
         - vagabonds03.dds
     - - data/models/logos/:
         - adventurers.dds
+        - antimilitarists.dds
         - al_faran.dds
         - beer.dds
         - bounty_hunters.dds
@@ -461,19 +502,27 @@ cb_clans:
         - church_of_enlightenment.dds
         - commonwealth_of independent_towns.dds
         - crimson_dawn.dds
+        - desert_people.dds
         - doom_bringers.dds
         - druids.dds
         - explorers.dds
         - farmers_union.dds
         - felixs_gang.dds
+        - fishermen.dds
         - free_traders_alliance.dds
         - harakhat.dds
+        - hermits.dds
         - kurtadam.dds
         - logotip01.dds
         - militarists.dds
         - njeri.dds
+        - nomads.dds
         - north_nath_traders.dds
+        - npp.dds
         - oracles_disciples.dds
+        - REFUELERS.dds
+        - scientists_followers.dds
+        - serseri.dds
         - steel_giants.dds
         - technicians.dds
         - trappers.dds
@@ -482,6 +531,31 @@ cb_gui_icons:
   type: files
   groups:
     - - data/if/ico/garagewnd/action panel/:
+        - btn_do-all_d.dds
+        - btn_do-all_e.dds
+        - btn_do-all_p.dds
+        - btn_truck_d.dds
+        - btn_truck_e.dds
+        - btn_truck_p.dds
+        - lay_body_d.dds
+        - lay_body_e.dds
+        - lay_body_s.dds
+        - lay_cab_d.dds
+        - lay_cab_e.dds
+        - lay_cab_s.dds
+        - lay_paint_d.dds
+        - lay_paint_e.dds
+        - lay_paint_s.dds
+        - lay_refuel_d.dds
+        - lay_refuel_e.dds
+        - lay_refuel_s.dds
+        - lay_reload_d.dds
+        - lay_reload_e.dds
+        - lay_reload_s.dds
+        - lay_repair_d.dds
+        - lay_repair_e.dds
+        - lay_repair_s.dds
+      - data/if/ico_hd/garagewnd/action panel/:
         - bcb_arrow_d.dds
         - bcb_arrow_e.dds
         - bcb_arrow_h.dds
@@ -512,30 +586,6 @@ cb_gui_icons:
         - bcb_truck_h.dds
         - bcb_truck_p.dds
         - bcb_truck_s.dds
-        - btn_do-all_d.dds
-        - btn_do-all_e.dds
-        - btn_do-all_p.dds
-        - btn_truck_d.dds
-        - btn_truck_e.dds
-        - btn_truck_p.dds
-        - lay_body_d.dds
-        - lay_body_e.dds
-        - lay_body_s.dds
-        - lay_cab_d.dds
-        - lay_cab_e.dds
-        - lay_cab_s.dds
-        - lay_paint_d.dds
-        - lay_paint_e.dds
-        - lay_paint_s.dds
-        - lay_refuel_d.dds
-        - lay_refuel_e.dds
-        - lay_refuel_s.dds
-        - lay_reload_d.dds
-        - lay_reload_e.dds
-        - lay_reload_s.dds
-        - lay_repair_d.dds
-        - lay_repair_e.dds
-        - lay_repair_s.dds
       - data/if/ico/garagewnd/icons:
         - cab_buy_1.dds
         - cab_buy_2.dds
@@ -555,18 +605,19 @@ cb_gui_icons:
         - wshop_button_1.dds
         - wshop_button_1b.dds
         - wshop_button_2.dds
-      - data/if/ico/characteristicwnd/:
+      - data/if/ico_hd/characteristicwnd/:
         - cab_and_body_disabled.dds
         - cab_and_body_enabled.dds
         - overview_disabled.dds
         - overview_enabled.dds
         - weapons_disabled.dds
         - weapons_enabled.dds
-      - data/if/ico/inventorydlg/:
+      - data/if/ico_hd/inventorydlg/:
         - btn_moveall_d.dds
         - btn_moveall_e.dds
         - btn_moveall_p.dds
         - btn_moveall_s.dds
+      - data/if/ico/inventorydlg/:
         - get_all_1.dds
         - get_all_1b.dds
         - get_all_2.dds
@@ -579,17 +630,17 @@ cb_gui_icons:
         - m_shop_disactiv.dds
         - s_shop_activ.dds
         - s_shop_disactiv.dds
-        - tab_goods_e.dds
-        - tab_goods_n.dds
-        - tab_weapon_e.dds
-        - tab_weapon_n.dds
         - t_shop_activ.dds
         - t_shop_disactiv.dds
         - w_shop_activ.dds
         - w_shop_disactiv.dds
+      - data/if/ico_hd/workshopdlg/:
+        - tab_goods_e.dds
+        - tab_goods_n.dds
+        - tab_weapon_e.dds
+        - tab_weapon_n.dds
       - data/if/ico/motherpanel/:
         - main_quest_activ.dds
-        - tab_shop_s.dds
         - close_e.dds
         - main_journal_activ.dds
         - main_shop_disactiv.dds
@@ -598,14 +649,10 @@ cb_gui_icons:
         - main_map_disactiv.dds
         - tab_map_h.dds
         - main_shop_activ.dds
-        - tab_repair_e.dds
         - main_close_1b.dds
         - tab_journal_h.dds
-        - tab_map_e.dds
         - tab_invent_h.dds
-        - tab_bar_s.dds
         - main_close_1.dds
-        - tab_journal_s.dds
         - close_p.dds
         - tab_quest_h.dds
         - main_journal_disactiv.dds
@@ -613,41 +660,47 @@ cb_gui_icons:
         - main_town2_disactiv.dds
         - tab_repair_h.dds
         - main_quest_disactiv.dds
-        - tab_stats_e.dds
-        - tab_repair_s.dds
         - main_stats_disactiv.dds
         - main_map_activ.dds
         - main_stats_activ.dds
-        - tab_shop_e.dds
         - main_town1_activ.dds
         - tab_stats_h.dds
-        - tab_house_s.dds
-        - tab_quest_e.dds
         - main_workshop_disactiv.dds
-        - tab_map_s.dds
         - main_town1_disactiv.dds
         - leave_h.dds
         - main_town2_activ.dds
         - tab_house_h.dds
-        - tab_invent_s.dds
         - main_workshop_activ.dds
         - close_h.dds
         - main_invent_activ.dds
         - tab_bar_h.dds
-        - tab_stats_s.dds
         - leave_e.dds
-        - tab_invent_e.dds
-        - tab_house_e.dds
-        - tab_journal_e.dds
         - tab_shop_h.dds
         - main_bar_activ.dds
         - main_invent_disactiv.dds
+      - data/if/ico_hd/motherpanel/:
         - tab_bar_e.dds
+        - tab_bar_s.dds
+        - tab_house_e.dds
+        - tab_house_s.dds
+        - tab_invent_e.dds
+        - tab_invent_s.dds
+        - tab_journal_e.dds
+        - tab_journal_s.dds
+        - tab_map_e.dds
+        - tab_map_s.dds
+        - tab_quest_e.dds
         - tab_quest_s.dds
-    - - data/if/ico/maingameinterfacewnd/:
+        - tab_repair_e.dds
+        - tab_repair_s.dds
+        - tab_shop_e.dds
+        - tab_shop_s.dds
+        - tab_stats_e.dds
+        - tab_stats_s.dds
+    - - data/if/ico_hd/maingameinterfacewnd/:
         - get_drop.dds
         - horn.dds
-      - data/if/ico/bossindicator/bossicons/:
+      - data/if/ico_hd/bossindicator/bossicons/:
         - boss1.dds
         - boss2.dds
         - boss3.dds
@@ -726,7 +779,7 @@ cb_gui_icons:
         - groups_1_2b.dds
         - groups_1b.dds
         - wshop_button_2b.dds
-      - data/if/ico/garagewnd/cbscroll:
+      - data/if/ico_hd/garagewnd/cbscroll:
         - btn_next-item_d.dds
         - btn_next-item_e.dds
         - btn_next-item_h.dds
@@ -735,7 +788,7 @@ cb_gui_icons:
         - btn_prev-item_e.dds
         - btn_prev-item_h.dds
         - btn_prev-item_p.dds
-      - data/if/ico/garagewnd/skinscroll:
+      - data/if/ico_hd/garagewnd/skinscroll:
         - paint_next_disabled.dds
         - paint_next_enabled.dds
         - paint_next_pressed.dds
@@ -753,6 +806,17 @@ cb_gui_icons:
         - truck_prev_enabled.dds
         - truck_prev_pressed.dds
         - truck_prev_selected.dds
+      - data/if/ico/localmap/:
+        - icn_bridgetown.dds
+        - icn_dock.dds
+        - icn_gasstation.dds
+        - icn_oilpump.dds
+        - icn_oilvillage.dds
+        - icn_oraclebase.dds
+        - icn_outpost.dds
+        - icn_tunnel.dds
+        - icn_village.dds
+        - icn_town.dds 
     - - data/if/ico/globalmap/:
         - gmap_ico_1.dds
         - gmap_ico_2.dds
@@ -761,6 +825,8 @@ cb_gui_icons:
         - r1m2.dds
         - r1m3.dds
         - r1m4.dds
+        - r1m5.dds
+        - r1m6.dds
         - r2m1.dds
         - r2m2.dds
         - r3m1.dds
@@ -826,18 +892,15 @@ cb_gui_icons:
         - weaponna.dds
       - data/if/ico/garagewnd/icons:
         - armor.dds
-        - blast.dds
         - cab_buy.dds
         - cargo_buy.dds
         - cargotank.dds
         - control.dds
-        - energy.dds
         - fueltank.dds
         - hp.dds
         - inform.dds
         - maxspeed.dds
         - minus.dds
-        - persing.dds
         - plus.dds
         - power.dds
         - reammo.dds
@@ -845,19 +908,24 @@ cb_gui_icons:
         - skin_buy.dds
         - vehicles_buy.dds
         - weight.dds
-      - data/if/ico/shop/:
+      - data/if/ico_hd/garagewnd/icons:
+        - blast.dds
+        - energy.dds
+        - piercing.dds
+      - data/if/ico_hd/shop/:
         - icn_goods.dds
         - icn_price_buy.dds
         - icn_price_sell.dds
+      - data/if/ico/shop/:
         - shop_buy.dds
         - shop_cargo.dds
         - shop_sell.dds
-    - - data/if/ico/shop/:
+    - - data/if/ico_hd/shop/:
         - btn_listpos_d.dds
         - btn_listpos_e.dds
         - btn_listpos_p.dds
         - btn_listpos_s.dds
-    - - data/if/ico/targetinfownd:
+    - - data/if/ico_hd/targetinfownd:
         - resist1.dds
         - resist2.dds
         - resist3.dds
@@ -890,7 +958,7 @@ cb_radar:
 cb_goods_guns:
   type: files
   groups:
-    - - data/if/ico/inventorydlg/goods/:
+    - - data/if/ico_hd/inventorydlg/goods/:
         - books.dds
         - bottles.dds
         - details.dds
@@ -904,57 +972,128 @@ cb_goods_guns:
         - shkatylka.dds
         - tobacco.dds
         - trees.dds
+      - data/if/ico_hd/inventorydlg/weapon/:
+        - bumblebee.dds
+        - bumblebee_min.dds
+        - cyclops.dds
+        - cyclops_min.dds
+        - dimzavesa.dds
+        - dimzavesa_min.dds
+        - dragon.dds
+        - dragon_min.dds
+        - elephant01.dds
+        - elephant01_min.dds
+        - fagot01.dds
+        - fagot01_min.dds
+        - flag.dds
+        - flag_min.dds
+        - gvozdorazbrasivatel.dds
+        - gvozdorazbrasivatel_min.dds
+        - hailsidegun.dds
+        - hailsidegun_min.dds
+        - hammer01.dds
+        - hammer01_min.dds
+        - hornet.dds
+        - hornet_min.dds
+        - huntersidegun.dds
+        - huntersidegun_min.dds
+        - hurricane01.dds
+        - hurricane01_min.dds
+        - kord.dds
+        - kord_min.dds
+        - kpvt01.dds
+        - kpvt01_min.dds
+        - marssidegun.dds
+        - marssidegun_min.dds
+        - maslorazliv.dds
+        - maslorazliv_min.dds
+        - maxim01.dds
+        - maxim01_min.dds
+        - minoykladchik1.dds
+        - minoykladchik1_min.dds
+        - mraksidegun.dds
+        - mraksidegun_min.dds
+        - octopus.dds
+        - octopus_min.dds
+        - odin01.dds
+        - odin01_min.dds
+        - omega01.dds
+        - omega01_min.dds
+        - pkt.dds
+        - pkt_min.dds
+        - rainmetal.dds
+        - rainmetal_min.dds
+        - rapier.dds
+        - rapier_min.dds
+        - specter.dds
+        - specter_min.dds
+        - storm.dds
+        - storm_min.dds
+        - swingfire.dds
+        - swingfire_min.dds
+        - tank.dds
+        - tank_min.dds
+        - turboakselerator.dds
+        - turboakselerator_min.dds
+        - vector01.dds
+        - vector01_min.dds
+        - vulcan.dds
+        - vulcan_min.dds
+        - zeussidegun.dds
+        - zeussidegun_min.dds
       - data/if/ico/inventorydlg/weapon/:
         - 01.dds
-        - bumblebee.dds
-        - cyclops.dds
-        - dimzavesa.dds
-        - dragon.dds
-        - elephant01.dds
-        - fagot01.dds
-        - flag.dds
-        - gvozdorazbrasivatel.dds
-        - hailsidegun.dds
-        - hammer01.dds
-        - hornet.dds
-        - huntersidegun.dds
-        - hurricane01.dds
-        - kord.dds
-        - kpvt01.dds
-        - marssidegun.dds
-        - maslorazliv.dds
-        - maxim01.dds
-        - minoykladchik1.dds
-        - mraksidegun.dds
-        - octopus.dds
-        - odin01.dds
-        - omega01.dds
-        - pkt.dds
-        - rainmetal.dds
-        - rapier.dds
         - robot01.dds
-        - specter.dds
-        - storm.dds
-        - swingfire.dds
-        - tank.dds
-        - turboakselerator.dds
-        - vector01.dds
-        - vulcan.dds
-        - zeussidegun.dds
-      - data/if/ico/inventorydlg/gadgets/:
-        - gadgetw_04.dds
-        - gadgetw_01.dds
-        - gadgetw_03.dds
-        - gadgetg_01.dds
-        - gadgetg_02.dds
-        - gadgetw_02.dds
-        - gadgete_02.dds
-        - fueltank.dds
-        - gadgetg_03.dds
-        - gadgete_03.dds
-        - gadgete_04.dds
-        - gadgetg_04.dds
-        - gadgete_01.dds
+      - data/if/ico_hd/inventorydlg/gadgets/:
+        - gadget1_bul.dds
+        - gadget1_enrg.dds
+        - gadget1_exp.dds
+        - gadget1_v2_bul.dds
+        - gadget1_v2_enrg.dds
+        - gadget1_v2_exp.dds
+        - gadget2_bul.dds
+        - gadget2_enrg.dds
+        - gadget2_exp.dds
+        - gadget2_v2_bul.dds
+        - gadget2_v2_enrg.dds
+        - gadget2_v2_exp.dds
+        - gadget2_v3_bul.dds
+        - gadget2_v3_enrg.dds
+        - gadget2_v3_exp.dds
+        - gadget3_bul.dds
+        - gadget3_enrg.dds
+        - gadget3_exp.dds
+        - gadget3_v2_bul.dds
+        - gadget3_v2_enrg.dds
+        - gadget3_v2_exp.dds
+        - gadget4_bul.dds
+        - gadget4_enrg.dds
+        - gadget4_exp.dds
+        - gadget4_v2_bul.dds
+        - gadget4_v2_enrg.dds
+        - gadget4_v2_exp.dds
+        - gadget5_bul.dds
+        - gadget5_enrg.dds
+        - gadget5_exp.dds
+        - gadget6_bul.dds
+        - gadget6_enrg.dds
+        - gadget6_exp.dds
+        - gadget7_bul.dds
+        - gadget7_enrg.dds
+        - gadget7_exp.dds
+        - sml_gadget1.dds
+        - sml_gadget1_v2.dds
+        - sml_gadget1_v3.dds
+        - sml_gadget2.dds
+        - sml_gadget2_v2.dds
+        - sml_gadget2_v3.dds
+        - sml_gadget3.dds
+        - sml_gadget3_v2.dds
+        - sml_gadget3_v3.dds
+        - sml_gadget4.dds
+        - sml_gadget4_v2.dds
+        - sml_gadget4_v3.dds
+        - sml_gadget4_v4.dds
 cb_cab_cargo:
   type: files
   groups:
@@ -1006,12 +1145,13 @@ cb_cab_cargo:
         - belaz_cab01.dds
         - belaz_cab02.dds
         - belaz_cab03.dds
+      - data/if/ico/inventorydlg/scout/:
+        - denscoutcab.dds
 cb_aim:
   type: files
   groups:
     - - data/if/ico/smartcursorwnd/:
         - cross.dds
-        - cross1.dds
         - missile_target.dds
         - sight_blue.dds
         - sight_green.dds
@@ -1019,6 +1159,8 @@ cb_aim:
         - sight_missile.dds
         - sight_red.dds
         - sight_target.dds
+      - data/if/ico_hd/smartcursorwnd/:
+        - cross1.dds
         - small_cross.dds
 cb_music:
   type: files
@@ -1033,6 +1175,7 @@ cb_music:
         - town2(country).ogg
         - town3(techno).ogg
         - town4(military).ogg
+        - LaBelle.ogg
       - data/music/cinematics/:
         - battle01.ogg
         - battle02.ogg
@@ -1045,12 +1188,17 @@ cb_music:
         - bio06.ogg
         - bio07unloop.ogg
         - bio08.ogg
+        - cemetery1.ogg
         - death01.ogg
         - death02.ogg
+        - foreverandone.ogg
+        - greenleaves.ogg
         - intensedialogue01.ogg
         - intensedialogue02.ogg
         - intensedialogue03.ogg
         - intensedialogue04.ogg
+        - intensedialogue05.ogg
+        - nochnoi.ogg
         - passage01unloop.ogg
         - passage02.ogg
         - passage02a.ogg
@@ -1060,15 +1208,22 @@ cb_music:
         - passage03b.ogg
         - passage04.ogg
         - passage05.ogg
+        - promise.ogg
+        - PromiseGuitar.ogg
         - quietdialogue01.ogg
         - quietdialogue02.ogg
         - quietdialogue03.ogg
         - quietdialogue04.ogg
+        - quietdialogue5.ogg
+        - region5.ogg
         - sadness1.ogg
+        - SpecEndSong.ogg
         - techno01.ogg
         - techno02.ogg
         - techno03.ogg
         - techno04.ogg
+        - Tiamat.ogg
+        - ToastTo.ogg
       - data/music/blocks/region1/1-3/:
         - alarm1.ogg
         - alarm2.ogg
@@ -1080,6 +1235,8 @@ cb_music:
         - alarm7.ogg
         - battle7.ogg
         - driving7.ogg
+      - data/music/blocks/region1/5/:
+        - shlyapalinka.ogg
       - data/music/blocks/region2/france/:
         - alarm6.ogg
         - battle6.ogg
@@ -1104,6 +1261,10 @@ cb_music:
         - alarm9.ogg
         - battle9.ogg
         - driving9.ogg
+      - data/music/blocks/region5/2/:
+        - alarm52.ogg
+        - battle52.ogg
+        - driving52.ogg
 cb_speech:
   type: files
   groups:
@@ -1231,6 +1392,7 @@ cb_speech:
         - r1m3_401_ben_radio.ogg
         - r1m3_402_hero.ogg
         - r1m3_403_ben_radio.ogg
+        - r1m3_4044_ben_radio.ogg
         - r1m3_404_ben_radio.ogg
         - r1m3_405_hero.ogg
         - r1m3_406_ben_radio.ogg
@@ -1266,6 +1428,7 @@ cb_speech:
         - r1m4_8_guard.ogg
         - r1m4_9_hero.ogg
       - data/sounds/speech/r2m1/:
+        - r1m2_10_cd_officer_radio.ogg
         - r2m1_0_hero.ogg
         - r2m1_100_hero.ogg
         - r2m1_101_njeri.ogg
@@ -1280,6 +1443,7 @@ cb_speech:
         - r2m1_10_stranger.ogg
         - r2m1_110_hero.ogg
         - r2m1_111_njeri.ogg
+        - r2m1_1111_njeri.ogg
         - r2m1_112_hero.ogg
         - r2m1_113_njeri.ogg
         - r2m1_11_stranger.ogg
@@ -1356,7 +1520,10 @@ cb_speech:
         - r2m2_1_cd_officer_radio.ogg
         - r2m2_20_hero.ogg
         - r2m2_21_axel.ogg
+        - r2m2_22_2_hero.ogg
         - r2m2_22_hero.ogg
+        - r2m2_22b_hero.ogg
+        - r2m2_23_2_axel.ogg
         - r2m2_23_axel.ogg
         - r2m2_24_hero.ogg
         - r2m2_25_axel.ogg
@@ -1367,6 +1534,7 @@ cb_speech:
         - r2m2_2_cd_officer_radio.ogg
         - r2m2_30_hero.ogg
         - r2m2_31_axel.ogg
+        - r2m2_31b_axel.ogg
         - r2m2_32_hero.ogg
         - r2m2_33_axel.ogg
         - r2m2_35_alice.ogg
@@ -1387,6 +1555,7 @@ cb_speech:
         - r2m2_50_hero.ogg
         - r2m2_51_hero.ogg
         - r2m2_5_hero.ogg
+        - r2m2_5_felix.ogg
         - r2m2_6_felix.ogg
         - r2m2_7_cd_officer_radio.ogg
         - r2m2_8_cd_officer_radio.ogg
@@ -1484,6 +1653,45 @@ cb_speech:
         - ending1.ogg
         - ending2.ogg
         - r1m1_969_narrator.ogg
+        - ending11.ogg
+        - ending12.ogg
+        - ending13.ogg
+        - ending21.ogg
+        - ending22.ogg
+        - ending23.ogg
+        - ending3.ogg
+        - ending4.ogg
+        - ending5.ogg
+        - ending7.ogg
+        - ending71.ogg
+        - ending72.ogg
+        - ending8.ogg
+        - ending9.ogg
+        - narator_pl_g.ogg
+        - narator_pl_n.ogg
+        - narator_pl_n2.ogg
+        - narator_r1m1_b.ogg
+        - narator_r1m1_g.ogg
+        - narator_r1m1_g2.ogg
+        - narator_r1m3_b.ogg
+        - narator_r1m3_g.ogg
+        - narator_r1m3_g2.ogg
+        - narator_r1m3_n.ogg
+        - narator_r1m4_b.ogg
+        - narator_r1m4_g.ogg
+        - narator_r1m6_b.ogg
+        - narator_r1m6_g.ogg
+        - narator_r2m1_b.ogg
+        - narator_r2m1_b2.ogg
+        - narator_r2m1_g.ogg
+        - narator_r2m1_g2.ogg
+        - narator_r2m1_g2_2.ogg
+        - narator_r2m1_n.ogg
+        - narator_r3m1_b.ogg
+        - narator_r3m1_b2.ogg
+        - narator_r3m1_g.ogg
+        - narator_r3m1_n.ogg
+        - narator_r3m1_n2.ogg
 cb_radio:
   type: files
   groups:
@@ -1837,6 +2045,7 @@ cb_other_sounds:
       - data/sounds/cinematicsound/:
         - crash.wav
         - energyworking.wav
+        - locomotive.wav
         - flyingdroid.wav
         - ufo01.wav
       - data/sounds/cutscenes/r1m1/:
@@ -1872,6 +2081,8 @@ cb_other_sounds:
         - stand_boss04.wav
       - data/sounds/boss/:
         - oracle.wav
+      - data/sounds/weather/:
+        - snow_ambient.ogg
 cb_env_textures:
   type: files
   groups:
@@ -2139,6 +2350,7 @@ cb_env_textures:
         - maska03.dds
         - maska031.dds
         - med.dds
+        - mod_diffuse.tga
         - mol.dds
         - narc.dds
         - parsel.dds
@@ -2168,6 +2380,16 @@ cb_env_textures:
         - d_ruins.dds
         - d_sand_kust.dds
         - d_tech_kust.dds
+      - data/models/nature/region1/trees/:
+        - dub.dds
+        - elka.dds
+        - kustarnik_1.dds
+        - kustarnik_2.dds
+        - listvenoe.dds
+      - data/models/nature/region1/trees/snow/:
+        - dub.dds
+        - elka.dds
+        - listvenoe.dds
       - data/models/textures/nature/region1/:
         - big_crag.dds
         - crag_rock.dds
@@ -2186,6 +2408,7 @@ cb_env_textures:
         - rock_stones.dds
         - rock_sun_stones.dds
         - seedbad_tomato.dds
+        - seedbad_tomato_snow.dds
         - seedbed.dds
         - sosna.dds
         - swamp_crag.dds
@@ -2212,6 +2435,7 @@ cb_env_textures:
         - d_tree.dds
         - tropiccrag.dds
       - data/models/goods/:
+        - ananaga.dds
         - agrigate.dds
         - back_oil.dds
         - book.dds
@@ -2223,6 +2447,8 @@ cb_env_textures:
         - shkatylka.dds
         - snap_potatoe.dds
         - tobacco.dds
+      - data/models/buildings/region1/:
+        - ChME3_TEX.dds
       - data/models/buildings/region1/brige_tube/:
         - agro_rusty.dds
         - anc_detail.dds
@@ -2272,26 +2498,33 @@ cb_env_textures:
         - cap01.dds
         - cap01_player.dds
         - cap01_player02.dds
+        - cap023_player.dds
         - cap_axel.dds
         - cap_father.dds
         - cargo.dds
         - coat_ben02_01.dds
         - coat_ben02_02.dds
+        - coat_ben02_04.dds
         - coat_player01.dds
         - coat_player02.dds
+        - coat_player022.dds
         - ear_flaps.dds
         - foot_ben01.dds
         - foot_player01.dds
+        - foot_player022.dds
         - glasses01.dds
+        - glasses022.dds
         - headfones01.dds
         - helmet_ben01.dds
         - helmet_ben02.dds
         - hood01_lisa.dds
         - monocle01.dds
         - motor.dds
+        - odnoglazaya_hood.dds
         - raincoat_axel.dds
         - scarf01.dds
         - scarf02.dds
+        - scarf022.dds
         - scarf_ben01.dds
         - segments01.dds
         - shell.dds
@@ -2299,22 +2532,36 @@ cb_env_textures:
         - anger02.dds
         - dweller01.dds
         - dweller03.dds
+        - Tex_0307_0.dds
+        - Tex_0307_2.dds
+        - Tex_0310_0.dds
+        - Tex_0312_0.dds
+        - Tex_0312_2.dds
+        - Tex_0313_0.dds
+        - Tex_0313_2.dds
+        - Tex_0349_3.dds
+        - watcher_cap.dds
+        - watcher_sweater.dds
       - data/models/masks/region1/man/:
         - body01.dds
         - body02.dds
         - body03.dds
+        - body04.dds
         - cap01.dds
         - cap02.dds
         - cap03.dds
         - cap04.dds
         - cap05.dds
         - cap06.dds
+        - cap07.dds
+        - cap08.dds
         - glasses01.dds
         - glasses02.dds
         - glasses03.dds
         - headfones01.dds
         - headfones02.dds
         - headfones03.dds
+        - headfones04.dds
         - helmet01.dds
         - helmet02.dds
         - monocle01.dds
@@ -2325,6 +2572,7 @@ cb_env_textures:
         - respirator01.dds
         - respirator02.dds
         - respirator03.dds
+        - respirator04.dds
       - data/models/masks/region1/woman/:
         - body01.dds
         - body02.dds
@@ -2399,6 +2647,33 @@ cb_env_textures:
         - raincoat_axel.dds
         - scarf_ben01.dds
         - sweater_father01.dds
+        - body01.dds
+        - cap02.dds
+        - cap023_player.dds
+        - glasses01.dds
+        - glasses022.dds
+        - helmet01.dds
+        - jacket022_player.dds
+        - mekchanik_body.dds
+        - mekchanik_cap.dds
+        - mekchanik_headfones.dds
+        - mekchanik_monokle.dds
+        - odnoglazaya_hood.dds
+        - respirator01.dds
+        - scarf022.dds
+        - Tex_0310_0.dds
+        - Tex_0313_0.dds
+        - Tex_0313_2.dds
+        - Tex_0349_3.dds
+        - thief_body_black.dds
+        - thief_cap.dds
+        - thief_headfones.dds
+        - thief_monokle.dds
+        - umnik_coat.dds
+        - umnik_helmet.dds
+        - umnik_scarf.dds
+        - watcher_cap.dds
+        - watcher_sweater.dds
       - data/models/ammo/:
         - roket_long01.dds
         - roket_sml.dds
@@ -2455,6 +2730,69 @@ cb_env_textures:
         - copped_cliff.dds
       - data/models/buildings/region3/:
         - meh_druids_wall.dds
+      - data/models/ammo/:
+        - shell_big_gun.dds
+        - shell_big_mortar.dds
+        - shell_big_shotgun.dds
+        - shell_sml_pulemet.dds
+        - shell_sml_shotgun.dds
+      - data/models/buildings/region1/cemetery/:
+        - grave.dds
+        - text1.dds
+        - text2.dds
+        - text3.dds
+        - text4.dds
+        - text5.dds
+        - text6.dds
+        - text7.dds
+        - text8.dds
+        - text9.dds
+        - text10.dds
+        - textd1.dds
+        - concret.dds
+        - concret_02.dds
+        - concret_03.dds
+        - door_02.dds
+        - roof_04.dds
+        - window_02.dds
+        - wood_03.dds
+        - wood_reshotka_zabor_02.dds
+      - data/models/flags/:
+        - flag_AM.dds
+        - flag_ar.dds
+        - flag_bridage.dds
+        - flag_CI.dds
+        - flag_cit.dds
+        - flag_death.dds
+        - flag_fishermen.dds
+        - flag_NPT.dds
+        - flag_shtok.dds
+        - flag_TA.dds
+        - flag_trap.dds
+        - flag_vagabonds.dds
+        - flag_white.dds
+    - - data/models/buildings/region1/ekran:
+        - end_baza.dds
+        - end_elminst.dds
+        - end_gelvetsia.dds
+        - end_gg.dds
+        - end_gg_gugu.dds
+        - end_gg_gugu_wo_bottles.dds
+        - end_lisa.dds
+        - end_marezzia.dds
+        - end_minin.dds
+        - end_moska.dds
+        - end_njeri.dds
+        - end_olme.dds
+        - end_oracle.dds
+        - end_pesht.dds
+        - end_saliniom.dds
+        - end_set.dds
+        - end_severka.dds
+        - end_sibilla.dds
+        - end_sowth_brod.dds
+        - end_sowth_fu.dds
+        - end_uluk.dds
 cb_masks:
   type: files
   groups:
@@ -2462,10 +2800,15 @@ cb_masks:
         - axel01.dds
         - ben01.dds
         - lisa.dds
+        - odnoglazaya_mask.dds
+        - umnik_mask.dds
+        - watcher_mask.dds
       - data/models/objects/:
         - axel01.dds
         - ben01.dds
         - lisa.dds
+        - odnoglazaya_mask.dds
+        - watcher_mask.dds
     - - data/models/masks/region1/man/:
         - maska01.dds
         - maska02.dds
@@ -2483,6 +2826,8 @@ cb_masks:
         - maska031.dds
       - data/models/masks/main/:
         - player.dds
+        - thief_mask.dds
+        - mekchanik_mask.dds
       - data/models/masks/:
         - mask01.dds
         - mask02.dds
@@ -2497,6 +2842,9 @@ cb_masks:
         - maska.dds
         - maska2.dds
         - maska3.dds
+        - maska4.dds
+        - maska5.dds
+        - maska6.dds
     - - data/models/masks/region1/woman/:
         - maska.dds
         - maska2.dds
@@ -2617,8 +2965,10 @@ cb_veh_skins:
         - cab_1_8.dds
     - - data/models/vehicles/bug/:
         - cargo_1_0.dds
+        - cargo_1_1.dds
         - cargo_1_2.dds
         - cargo_1_3.dds
+        - cargo_1_4.dds
         - cargo_1_5.dds
         - cargo_1_6.dds
         - cargo_1_7.dds
@@ -2628,6 +2978,8 @@ cb_veh_skins:
         - cargo_detal_1_8.dds
     - - data/models/vehicles/cruiser/:
         - cab_00.dds
+        - cab_01.dds
+        - cab_02.dds
         - cab_03.dds
         - cab_04.dds
         - cab_05.dds
@@ -2636,12 +2988,39 @@ cb_veh_skins:
         - cab_08.dds
     - - data/models/vehicles/cruiser/:
         - cab_detal_00.dds
+        - cab_detal_01.dds
+        - cab_detal_02.dds
+        - cab_detal_03.dds
+        - cab_detal_04.dds
+        - cab_detal_05.dds
         - cab_detal_06.dds
+        - cab_detal_07.dds
         - cab_detal_08.dds
         - cab01_detal.dds
+    - - data/models/vehicles/dozer/:
+        - cab01_00.dds
+        - cab01_01.dds
+        - cab01_02.dds
+        - cab01_03.dds
+        - cab01_04.dds
+        - cab01_05.dds
+        - cab01_06.dds
+        - cab01_07.dds
+        - cab01_08.dds
+    - - data/models/vehicles/dozer/:
+        - shassis01_00.dds
+        - shassis01_01.dds
+        - shassis01_02.dds
+        - shassis01_03.dds
+        - shassis01_04.dds
+        - shassis01_05.dds
+        - shassis01_06.dds
+        - shassis01_07.dds
+        - shassis01_08.dds
     - - data/models/vehicles/fighter/:
         - fighter00.dds
         - fighter01.dds
+        - fighter02.dds
         - fighter03.dds
         - fighter04.dds
         - fighter05.dds
@@ -2656,6 +3035,15 @@ cb_veh_skins:
         - cab06d.dds
         - cab07.dds
         - cab08.dds
+        - cab01_00.dds
+        - cab01_01.dds
+        - cab01_02.dds
+        - cab01_03.dds
+        - cab01_04.dds
+        - cab01_05.dds
+        - cab01_06.dds
+        - cab01_07.dds
+        - cab01_08.dds
     - - data/models/vehicles/mirotvorec/:
         - cab01_0.dds
         - cab01_1.dds
@@ -2895,7 +3283,27 @@ cb_lightmaps:
         - lightmap_nighttime_r1m4.dds
         - lightmap_sunrisetime_r1m4.dds
         - lightmap_sunsettime_r1m4.dds
+      - data/maps/r1m5/:
+        - lm_day.tga
+        - lm_night.tga
+        - lm_rise.tga
+        - lm_set.tga
+      - data/maps/r1m6/:
+        - lm_day.tga
+        - lm_night.tga
+        - lm_rise.tga
+        - lm_set.tga
+      - data/maps/r1m7/:
+        - lm_day.tga
+        - lm_night.tga
+        - lm_rise.tga
+        - lm_set.tga
       - data/maps/r2m1/:
+        - lightmap_weather_clear_daytime.dds
+        - lightmap_weather_clear_nighttime.dds
+        - lightmap_weather_clear_risetime.dds
+        - lightmap_weather_clear_settime.dds
+      - data/maps/r2m1_bossfight/:
         - lightmap_weather_clear_daytime.dds
         - lightmap_weather_clear_nighttime.dds
         - lightmap_weather_clear_risetime.dds
@@ -2978,6 +3386,7 @@ cb_tiles:
         - rocks_ground.dds
         - snow_crag1.dds
         - snow_ground1.dds
+        - snow_ground2.dds
         - snow_marcescent_dark.dds
         - stony_covering.dds
         - swamp.dds
@@ -3123,7 +3532,7 @@ cb_names:
           tag: "Item"
           name: "id"
           text: "value"
-      - data/if/diz/levelinfo.xml:
+      - data/if/diz/levelinfo_hd.xml:
           tag: "LevelInfo"
           name: "name"
           text: "fullName"
@@ -3303,6 +3712,7 @@ cb_env_models:
       - road_sign5
       - quest_head1
       - mine02
+      - clothes_player
     - - elast_1
       - windmil
       - factory_box
@@ -3422,6 +3832,9 @@ cb_env_models:
       - gadget_05
       - gadget_12
       - gadget_06
+      - grave1
+      - crimson_medal
+      - ananaga_bottle
     - - sack_dot_brocken1
       - sack_dot_brocken2
       - light_dots_brocken1
@@ -3532,7 +3945,6 @@ cb_env_models:
       - house3
       - conteiner
       - tube3
-      - vagon3
       - rr_lamp
       - brick_dots_brocken1
       - brick_dots_brocken2
@@ -3559,6 +3971,8 @@ cb_env_models:
       - quest_cd1
       - quest_cd2
       - artefact2
+      - grave2
+      - cerkov
     - - fishman2
       - arena_barricade10
       - civilhouse2_skin
@@ -3632,6 +4046,7 @@ cb_env_models:
       - seedbed
       - electro_stolb3
       - electro_stolb1
+      - rr_locovagon
     - - concrete_tube3
       - brick_house4
       - r4_freehouse3
@@ -3903,11 +4318,19 @@ cb_trees:
       - dub1
       - dub2
       - dub3
+      - dub1snow
+      - dub2snow
+      - dub3snow
       - elka1
       - elka2
       - elka3
+      - elka1snow
+      - elka2snow
+      - elka3snow
       - listvenoe2
       - listvenoe3
+      - listvenoe2snow
+      - listvenoe3snow
       - sosna1
       - sosna2
       - sosna3
@@ -3932,6 +4355,7 @@ cb_trees:
       - kustarnik2
       - kustarnik3
       - listvenoe1
+      - listvenoe1snow
       - r1_Dub_Kust1
       - r1_Dub_Kust2
       - dub_kust1_r2
@@ -4101,6 +4525,7 @@ cb_guns_lua:
       - rocketLauncher
       - big_swingfire01
       - hammer01
+      - flagshtock_small
     - - hailSideGun
       - marsSideGun
       - zeusSideGun
@@ -4109,402 +4534,406 @@ cb_ai_vehs:
   type: lua
   variable: RAND_VEH
   prototypes:
-    - - r1m1_scout01
-      - r1m1_scout02
-      - r1m1_scout03
-      - r1m3_MerScout
-      - r1m1_molokovoz01
-      - r1m1_molokovoz02
-      - r1m1_molokovoz03
-      - r1m1_bug01
-      - r1m1_bug02
-      - r1m1_bug03
-      - r1m2_bug04
+    - - RobotBobot02
+      - RobotBobot01
+      - Sml1EnemySpawn
+      - Sml2EnemySpawn
+      - Sml3EnemySpawn
+      - Sml4EnemySpawn
+      - ScoutEnemySpawn
+      - FighterEnemySpawn
+      - HunterEnemySpawn
       - r1m1_sml01
       - r1m1_sml02
       - r1m1_sml03
       - r1m1_sml04
-      - r1m2_hunter02
-      - r1m3_hunter02
-      - Scout01
-      - Scout02
-      - Scout03
-      - ArcadeScout01
-      - Fighter01
-      - Fighter02
-      - Fighter03
-      - Hunter01
-      - Hunter02
-      - Bug01
-      - Bug02
-      - Molokovoz01
-      - Molokovoz02
-      - DemoBandit
-      - PublicDemoBug01
-      - PublicDemoSinks
-      - PublicDemoBandit1
-      - PublicDemoBandit2
-      - PublicDemoFighter
-      - PublicDemoIeriBand1
-      - PublicDemoIeriBand2
-      - PublicDemoIeriCar
-      - LisaCar
-      - FelixVehicle
-      - FelixVehicle2
-      - DemoFighter1
-      - DemoHunter1
-      - DemoHunter2
-      - DemoBug1
-      - DemoBug2
-      - DemoBug3
-      - DemoMolokovoz1
-      - DemoMolokovoz2
-      - DemoMolokovoz3
-      - Revolutioner1
-      - Revolutioner2
-      - MolokovozTest
       - Sml101
+      - SmlOilRunner
       - Sml201
       - Sml301
       - Sml401
-      - BugTest1
-      - BugForSale
-      - MolokovozForSale
-      - Formula01
-      - r1m3_Fighter01
-      - r1m3_Fighter02
-      - r1m3_Sml101
-      - r1m3_molokovoz03
-      - r1m3_molokovozInOldCity
-      - r2m1_Bug1
-      - r2m1_Fighter01
-      - r2m1_Fighter02
-      - r2m1_FighterGulik
-      - r2m1_FighterNarcCaravan
-      - r2m1_Hunter01
-      - r2m1_Hunter02
-      - r2m1_HunterNarcCaravan
-      - r2m1_HunterNarcBoss
-      - r2m1_Molokovoz01
-      - r2m1_scout01
-      - r2m1_scout02
-      - r2m1_scout03
-      - r2m2_Molokovoz01
-      - r2m2_Fighter01
-      - r2m2_Fighter02
-      - r2m2_Hunter01
-      - r2m2_scout01
-      - RobotBobot01
-      - RobotBobot02
-      - r2m2_ShamanHunter01
-      - r2m2_ShamanHunter02
-      - r1m1_CaravanBug01
-      - r1m1_CaravanBug02
-      - r1m1_CaravanBug03
-      - r1m1_CaravanBug04
-      - r1m2_CaravanBug01
-      - r1m2_CaravanBug02
-      - r1m3_CaravanMolokovoz01
-      - r1m3_CaravanMolokovoz02
-      - r2m1_CaravanMolokovoz01
-      - r2m1_CaravanMolokovoz02
-      - MolokovozMenu
-      - FighterMenu
-      - ScoutMenu
       - r1m1_CaravanGuardianSml101
       - r1m1_CaravanGuardianSml201
       - r1m2_CaravanGuardianSml301
       - r1m3_CaravanGuardianSml401
       - r2m1_CaravanGuardianSml401
-      - r2m1_CaravanGuardianScout201
-      - r2m2_CaravanGuardianScout301
-    - - r1m1_scout01
+      - Formula01
+      - r1m1_scout01
       - r1m1_scout02
       - r1m1_scout03
       - r1m3_MerScout
-      - r1m1_molokovoz01
-      - r1m1_molokovoz02
-      - r1m1_molokovoz03
+      - Scout01
+      - Scout02
+      - Scout03
+      - DemoBandit
+      - FelixVehicle
+      - r2m1_scout01
+      - r2m1_scout02
+      - r2m1_scout03
+      - r2m2_scout01
+      - ScoutMenu
+      - r2m1_CaravanGuardianScout201
+      - r2m2_CaravanGuardianScout301
+      - ArcadeScout01
+      - LisaCar
+      - Fighter01
+      - Fighter02
+      - SeraFighter01
+      - r1m3_Fighter01
+      - r1m3_Fighter02
+      - r2m1_Fighter01
+      - r2m2_Fighter01
+      - r2m2_Fighter02
+      - FighterMenu
+      - r1m2_hunter02
+      - Odett_hunter
+      - r1m3_hunter02
+      - r1m3_hunter03
+      - Hunter01
+      - Hunter02
+      - FelixVehicle2
+      - DemoHunter1
+      - r2m1_Hunter01
+      - r2m1_Hunter02
+      - tspfighter2
+      - r2m2_Hunter01
+      - r2m2_ShamanHunter01
       - r1m1_bug01
       - r1m1_bug02
       - r1m1_bug03
       - r1m2_bug04
-      - r1m1_sml01
-      - r1m1_sml02
-      - r1m1_sml03
-      - r1m1_sml04
-      - r1m2_hunter02
-      - r1m3_hunter02
-      - Scout01
-      - Scout02
-      - Scout03
-      - ArcadeScout01
-      - Fighter01
-      - Fighter02
-      - Fighter03
-      - Hunter01
-      - Hunter02
-      - Tank01
+      - r1m3_bug01
       - Bug01
       - Bug02
-      - Molokovoz01
-      - Molokovoz02
-      - Ural00
-      - Ural01
-      - Ural02
-      - DemoBandit
-      - PublicDemoBug01
-      - PublicDemoSinks
-      - PublicDemoBandit1
-      - PublicDemoBandit2
-      - PublicDemoFighter
-      - PublicDemoIeriBand1
-      - PublicDemoIeriBand2
-      - PublicDemoIeriCar
-      - LisaCar
-      - FelixVehicle
-      - FelixVehicle2
-      - DemoFighter1
-      - DemoHunter1
-      - DemoHunter2
-      - DemoBug1
-      - DemoBug2
-      - DemoBug3
-      - DemoMolokovoz1
-      - DemoMolokovoz2
-      - DemoMolokovoz3
-      - DemoUral1
-      - DemoShot1
-      - DemoUral2
-      - DemoUral3
       - Revolutioner1
+      - PetroBug
+      - NazarBug
       - Revolutioner2
-      - MolokovozTest
-      - Sml101
-      - Sml201
-      - Sml301
-      - Sml401
-      - BugTest1
       - BugForSale
-      - UralForSale
-      - MolokovozForSale
-      - UralShot
-      - Formula01
-      - r1m3_Fighter01
-      - r1m3_Fighter02
-      - r1m3_Sml101
-      - r1m3_molokovoz03
-      - r1m3_molokovozInOldCity
       - r2m1_Bug1
-      - r2m1_Fighter01
-      - r2m1_Fighter02
-      - r2m1_FighterGulik
-      - r2m1_FighterNarcCaravan
-      - r2m1_Hunter01
-      - r2m1_Hunter02
-      - r2m1_HunterNarcCaravan
-      - r2m1_HunterNarcBoss
-      - r2m1_Ural01
-      - r2m1_Molokovoz01
-      - r2m1_scout01
-      - r2m1_scout02
-      - r2m1_scout03
-      - r2m2_Molokovoz01
-      - r2m2_Fighter01
-      - r2m2_Fighter02
-      - r2m2_Hunter01
-      - r2m2_scout01
-      - r2m2_Ural01
-      - RobotBobot01
-      - RobotBobot02
-      - RobotTron
-      - RobotMetatron
-      - r2m2_ShamanHunter01
-      - r2m2_ShamanHunter02
       - r1m1_CaravanBug01
       - r1m1_CaravanBug02
       - r1m1_CaravanBug03
       - r1m1_CaravanBug04
       - r1m2_CaravanBug01
       - r1m2_CaravanBug02
+      - r1m1_molokovoz01
+      - r1m1_molokovoz02
+      - r1m3_molokovoz01
+      - molokovozBandos
+      - r1m1_molokovoz03
+      - Molokovoz01
+      - Molokovoz02
+      - MolokovozKolizey
+      - MolokovozChehol
+      - DemoMolokovoz1
+      - DemoMolokovoz3
+      - VelimirMolok
+      - MolokovozForSale
+      - r1m3_molokovoz03
+      - BrigadaVoz
+      - r1m3_molokovozInOldCity
+      - r2m1_Molokovoz01
+      - r2m2_Molokovoz01
       - r1m3_CaravanMolokovoz01
       - r1m3_CaravanMolokovoz02
       - r2m1_CaravanMolokovoz01
       - r2m1_CaravanMolokovoz02
+      - r2m1_CaravanMolokovoz03
+      - MolokovozMenu
+    - - RobotBobot02
+      - RobotBobot01
+      - RobotTron
+      - Sml1EnemySpawn
+      - Sml2EnemySpawn
+      - Sml3EnemySpawn
+      - Sml4EnemySpawn
+      - ScoutEnemySpawn
+      - FighterEnemySpawn
+      - HunterEnemySpawn
+      - r1m1_sml01
+      - r1m1_sml02
+      - r1m1_sml03
+      - r1m1_sml04
+      - Sml101
+      - SmlOilRunner
+      - Sml201
+      - Sml301
+      - Sml401
+      - r1m1_CaravanGuardianSml101
+      - r1m1_CaravanGuardianSml201
+      - r1m2_CaravanGuardianSml301
+      - r1m3_CaravanGuardianSml401
+      - r2m1_CaravanGuardianSml401
+      - Formula01
+      - r1m1_scout01
+      - r1m1_scout02
+      - r1m1_scout03
+      - r1m3_MerScout
+      - Scout01
+      - Scout02
+      - Scout03
+      - DemoBandit
+      - FelixVehicle
+      - r2m1_scout01
+      - r2m1_scout02
+      - r2m1_scout03
+      - r2m2_scout01
+      - ScoutMenu
+      - r2m1_CaravanGuardianScout201
+      - r2m2_CaravanGuardianScout301
+      - ArcadeScout01
+      - LisaCar
+      - Fighter01
+      - Fighter02
+      - SeraFighter01
+      - r1m3_Fighter01
+      - r1m3_Fighter02
+      - r2m1_Fighter01
+      - r2m2_Fighter01
+      - r2m2_Fighter02
+      - FighterMenu
+      - r1m2_hunter02
+      - Odett_hunter
+      - r1m3_hunter02
+      - r1m3_hunter03
+      - Hunter01
+      - Hunter02
+      - FelixVehicle2
+      - DemoHunter1
+      - r2m1_Hunter01
+      - r2m1_Hunter02
+      - tspfighter2
+      - r2m2_Hunter01
+      - r2m2_ShamanHunter01
+      - Tank01
+      - r1m1_bug01
+      - r1m1_bug02
+      - r1m1_bug03
+      - r1m2_bug04
+      - r1m3_bug01
+      - Bug01
+      - Bug02
+      - Revolutioner1
+      - PetroBug
+      - NazarBug
+      - Revolutioner2
+      - BugForSale
+      - r2m1_Bug1
+      - r1m1_CaravanBug01
+      - r1m1_CaravanBug02
+      - r1m1_CaravanBug03
+      - r1m1_CaravanBug04
+      - r1m2_CaravanBug01
+      - r1m2_CaravanBug02
+      - r1m1_molokovoz01
+      - r1m1_molokovoz02
+      - r1m3_molokovoz01
+      - molokovozBandos
+      - r1m1_molokovoz03
+      - Molokovoz01
+      - Molokovoz02
+      - MolokovozKolizey
+      - MolokovozChehol
+      - DemoMolokovoz1
+      - DemoMolokovoz3
+      - VelimirMolok
+      - MolokovozForSale
+      - r1m3_molokovoz03
+      - BrigadaVoz
+      - r1m3_molokovozInOldCity
+      - r2m1_Molokovoz01
+      - r2m2_Molokovoz01
+      - r1m3_CaravanMolokovoz01
+      - r1m3_CaravanMolokovoz02
+      - r2m1_CaravanMolokovoz01
+      - r2m1_CaravanMolokovoz02
+      - r2m1_CaravanMolokovoz03
+      - MolokovozMenu
+      - Ural00
+      - UralTikhomir
+      - Ural01
+      - Ural02
+      - DemoUral1
+      - DemoShot1
+      - TSPFighter
+      - OL_Ural
+      - UralMikolka
+      - LabirintUral
+      - UralForSale
+      - UralShot
+      - r2m1_Ural01
+      - r2m2_Ural01
       - r2m1_CaravanUral01
       - r2m1_CaravanUral02
       - r2m2_CaravanUral01
       - r2m2_CaravanUral02
       - UralMenu
-      - MolokovozMenu
-      - FighterMenu
-      - ScoutMenu
+    - - RobotBobot02
+      - RobotBobot01
+      - RobotTron
+      - RobotMetatron
+      - Sml1EnemySpawn
+      - Sml2EnemySpawn
+      - Sml3EnemySpawn
+      - Sml4EnemySpawn
+      - ScoutEnemySpawn
+      - FighterEnemySpawn
+      - HunterEnemySpawn
+      - CruiserEnemySpawn
+      - DozerEnemySpawn
+      - r1m1_sml01
+      - r1m1_sml02
+      - r1m1_sml03
+      - r1m1_sml04
+      - Sml101
+      - SmlOilRunner
+      - Sml201
+      - Sml301
+      - Sml401
       - r1m1_CaravanGuardianSml101
       - r1m1_CaravanGuardianSml201
       - r1m2_CaravanGuardianSml301
       - r1m3_CaravanGuardianSml401
       - r2m1_CaravanGuardianSml401
-      - r2m1_CaravanGuardianScout201
-      - r2m2_CaravanGuardianScout301
-    - - r1m1_scout01
+      - Formula01
+      - r1m1_scout01
       - r1m1_scout02
       - r1m1_scout03
       - r1m3_MerScout
-      - r1m1_molokovoz01
-      - r1m1_molokovoz02
-      - r1m1_molokovoz03
-      - r1m1_bug01
-      - r1m1_bug02
-      - r1m1_bug03
-      - r1m2_bug04
-      - r1m1_sml01
-      - r1m1_sml02
-      - r1m1_sml03
-      - r1m1_sml04
-      - r1m2_hunter02
-      - r1m3_hunter02
       - Scout01
       - Scout02
       - Scout03
+      - DemoBandit
+      - FelixVehicle
+      - r2m1_scout01
+      - r2m1_scout02
+      - r2m1_scout03
+      - r2m2_scout01
+      - ScoutMenu
+      - r2m1_CaravanGuardianScout201
+      - r2m2_CaravanGuardianScout301
       - ArcadeScout01
+      - LisaCar
       - Fighter01
       - Fighter02
-      - Fighter03
+      - SeraFighter01
+      - r1m3_Fighter01
+      - r1m3_Fighter02
+      - r2m1_Fighter01
+      - r2m2_Fighter01
+      - r2m2_Fighter02
+      - FighterMenu
+      - r1m2_hunter02
+      - Odett_hunter
+      - r1m3_hunter02
+      - r1m3_hunter03
       - Hunter01
       - Hunter02
+      - FelixVehicle2
+      - DemoHunter1
+      - r2m1_Hunter01
+      - r2m1_Hunter02
+      - tspfighter2
+      - r2m2_Hunter01
+      - r2m2_ShamanHunter01
       - Cruiser01
+      - CruiserFelix
       - Cruiser02
+      - CruiserBased
+      - BrigadaCruiser
+      - AKF_Cruiser1
+      - AKF_Cruiser2
+      - Mudr_Cruiser2
+      - CruiserZhrec
       - Dozer01
+      - Dozer02
       - Traktor01
+      - SeraTraktor01
       - Tank01
+      - r1m1_bug01
+      - r1m1_bug02
+      - r1m1_bug03
+      - r1m2_bug04
+      - r1m3_bug01
       - Bug01
       - Bug02
-      - Molokovoz01
-      - Molokovoz02
-      - Ural00
-      - Ural01
-      - Ural02
-      - Belaz01
-      - Mirotvorec01
-      - CoolBelaz_2
-      - CoolBelaz
-      - ArcadeBelaz
-      - DemoBandit
-      - PublicDemoBug01
-      - PublicDemoSinks
-      - PublicDemoBandit1
-      - PublicDemoBandit2
-      - PublicDemoFighter
-      - PublicDemoIeriBand1
-      - PublicDemoIeriBand2
-      - PublicDemoIeriCar
-      - LisaCar
-      - FelixVehicle
-      - FelixVehicle2
-      - AxelVehicle
-      - DemoFighter1
-      - DemoHunter1
-      - DemoHunter2
-      - DemoBug1
-      - DemoBug2
-      - DemoBug3
-      - DemoMolokovoz1
-      - DemoMolokovoz2
-      - DemoMolokovoz3
-      - DemoUral1
-      - DemoShot1
-      - DemoUral2
-      - DemoUral3
-      - DemoBelaz1
-      - DemoBelaz2
-      - DemoBelaz3
-      - DemoMirotvorec1
-      - DemoMirotvorec2
-      - DemoMirotvorec3
       - Revolutioner1
+      - PetroBug
+      - NazarBug
       - Revolutioner2
-      - BelazTest
-      - MolokovozTest
-      - Sml101
-      - Sml201
-      - Sml301
-      - Sml401
-      - mirotvorecTest
-      - mirotvorecTest1
-      - MirotvorecForSale
-      - BugTest1
-      - BelazTest01
-      - BelazTest02
-      - BelazTest03
-      - BelazTest04
-      - BelazTest05
-      - BelazForSale
       - BugForSale
-      - UralForSale
-      - MolokovozForSale
-      - BelazShot
-      - UralShot
-      - MirotvorecShot
-      - Formula01
-      - r1m3_Fighter01
-      - r1m3_Fighter02
-      - r1m3_Sml101
-      - r1m3_molokovoz03
-      - r1m3_molokovozInOldCity
       - r2m1_Bug1
-      - r2m1_Fighter01
-      - r2m1_Fighter02
-      - r2m1_FighterGulik
-      - r2m1_FighterNarcCaravan
-      - r2m1_Hunter01
-      - r2m1_Hunter02
-      - r2m1_HunterNarcCaravan
-      - r2m1_HunterNarcBoss
-      - r2m1_Ural01
-      - r2m1_Belaz01
-      - r2m1_Molokovoz01
-      - r2m1_scout01
-      - r2m1_scout02
-      - r2m1_scout03
-      - r2m2_Molokovoz01
-      - r2m2_Fighter01
-      - r2m2_Fighter02
-      - r2m2_Hunter01
-      - r2m2_scout01
-      - r2m2_Ural01
-      - RobotBobot01
-      - RobotBobot02
-      - RobotTron
-      - RobotMetatron
-      - r2m2_ShamanHunter01
-      - r2m2_ShamanHunter02
       - r1m1_CaravanBug01
       - r1m1_CaravanBug02
       - r1m1_CaravanBug03
       - r1m1_CaravanBug04
       - r1m2_CaravanBug01
       - r1m2_CaravanBug02
+      - r1m1_molokovoz01
+      - r1m1_molokovoz02
+      - r1m3_molokovoz01
+      - molokovozBandos
+      - r1m1_molokovoz03
+      - Molokovoz01
+      - Molokovoz02
+      - MolokovozKolizey
+      - MolokovozChehol
+      - DemoMolokovoz1
+      - DemoMolokovoz3
+      - VelimirMolok
+      - MolokovozForSale
+      - r1m3_molokovoz03
+      - BrigadaVoz
+      - r1m3_molokovozInOldCity
+      - r2m1_Molokovoz01
+      - r2m2_Molokovoz01
       - r1m3_CaravanMolokovoz01
       - r1m3_CaravanMolokovoz02
       - r2m1_CaravanMolokovoz01
       - r2m1_CaravanMolokovoz02
+      - r2m1_CaravanMolokovoz03
+      - MolokovozMenu
+      - Ural00
+      - UralTikhomir
+      - Ural01
+      - Ural02
+      - DemoUral1
+      - DemoShot1
+      - TSPFighter
+      - OL_Ural
+      - UralMikolka
+      - LabirintUral
+      - UralForSale
+      - UralShot
+      - r2m1_Ural01
+      - r2m2_Ural01
       - r2m1_CaravanUral01
       - r2m1_CaravanUral02
       - r2m2_CaravanUral01
       - r2m2_CaravanUral02
       - UralMenu
+      - Belaz01
+      - CoolBelaz_2
+      - BelazTSP
+      - BelazTSPP
+      - CoolBelaz
+      - AxelVehicle
+      - OL_Belaz
+      - Mudr_Belaz
+      - AKF_Belaz1
+      - AKF_Belaz2
+      - BelazTest
+      - BelazForSale
+      - BelazShot
+      - r2m1_Belaz01
       - BelazMenu
-      - MolokovozMenu
-      - FighterMenu
-      - ScoutMenu
-      - r1m1_CaravanGuardianSml101
-      - r1m1_CaravanGuardianSml201
-      - r1m2_CaravanGuardianSml301
-      - r1m3_CaravanGuardianSml401
-      - r2m1_CaravanGuardianSml401
-      - r2m1_CaravanGuardianScout201
-      - r2m2_CaravanGuardianScout301
       - Gladiator02
+      - DemoMirotvorec3
+      - mirotvorecTest
+      - MirotvorecForSale
+      - MirotvorecShot
+      - MirotvorecShot1
 cb_dwellers:
   type: lua
   variable: RAND_DWELLER
@@ -4519,6 +4948,8 @@ cb_dwellers:
       - dweller_ben
       - dweller_axel
       - dweller_white
+      - dweller_snowlisa
+      - dweller_homer
 cb_pl_veh:
   type: lua
   variable: RAND_PLAYER_VEH

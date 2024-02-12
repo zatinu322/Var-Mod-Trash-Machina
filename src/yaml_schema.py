@@ -4,7 +4,6 @@ from pydantic import BaseModel
 class ManifestTypes(BaseModel):
     version_validation: bool | str | None
     resources_validation: list[str]
-    folder_to_copy: str
     lua_to_edit: str
     server_paths: list[str]
     server_items: list[str | dict[str, str]]

@@ -7,7 +7,7 @@ class WorkingSetManager():
         self.logger: Logger = working_set["logger"]
         self.game_path: Path = Path(working_set["game_path"])
         self.game_version: str = working_set["game_version"]
-        self.folder_to_copy: Path = Path(working_set["folder_to_copy"])
+        self.resources: list[str] = working_set["resources"]
         self.lua_to_edit: Path = Path(working_set["lua_to_edit"])
         self.server_paths: list[str] = working_set["server_paths"]
         self.server_items: list[str] = working_set["server_items"]
