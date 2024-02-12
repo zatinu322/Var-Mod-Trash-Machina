@@ -5,7 +5,7 @@ from pathlib import Path
 from errors import ManifestMissingError, ResourcesMissingError, \
     ModsFoundError, ModNotFoundError
 from config import Config
-from yaml_operations import YamlConfig
+from yaml_parser import YamlConfig
 from yaml_schema import validate_manifest_types
 from data import RESOURCES_PATH
 

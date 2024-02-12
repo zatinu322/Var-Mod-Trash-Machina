@@ -1,6 +1,6 @@
 import logging
 
-from yaml_operations import YamlConfig
+from yaml_parser import YamlConfig
 from errors import LocalisationMissingError
 
 logger = logging.getLogger("pavlik")
