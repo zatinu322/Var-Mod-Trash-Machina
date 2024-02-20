@@ -3,8 +3,8 @@ import math
 from pathlib import Path
 
 NAME = "Ex Machina Randomizer"
-VERSION = "v1.0 alpha"
-BUILD = "build 231222a"
+VERSION = "v1.2 beta"
+BUILD = "build 240220a"
 FULL_NAME = f"{NAME} {VERSION} {BUILD}"
 
 MAIN_PATH = Path().resolve()
