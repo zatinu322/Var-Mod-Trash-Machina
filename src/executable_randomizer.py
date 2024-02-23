@@ -1,7 +1,7 @@
 import struct
 
 from working_set_manager import WorkingSetManager
-from data import OFFSETS_EXE, generate_offsets
+from offsets_utils import OFFSETS_EXE, generate_offsets
 
 
 class ExecutableRandomizer(WorkingSetManager):

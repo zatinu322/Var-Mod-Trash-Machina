@@ -7,7 +7,7 @@ from errors import ManifestMissingError, ResourcesMissingError, \
 from config import Config
 from yaml_parser import YamlConfig
 from yaml_schema import validate_manifest_types
-from data import RESOURCES_PATH
+from enviroment import RESOURCES_PATH
 
 
 class Randomizer():

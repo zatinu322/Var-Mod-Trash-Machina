@@ -17,16 +17,17 @@ from errors import LocalisationMissingError, RootNotFoundError, \
     ExeMissingError, GameNotFoundError, VersionError, \
     ManifestMissingError, GDPFoundError, ResourcesMissingError, \
     ManifestKeyError, ModsFoundError, ModNotFoundError
-from data import FULL_NAME, MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, \
-    SUPPORTED_VERSIONS, PRESETS
+from enviroment import MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH
+from gui_info import FULL_NAME, SUPPORTED_VERSIONS, PRESETS
 
-logging.basicConfig(filename="randomizer.log",
-                    level=logging.INFO,
-                    format="[%(levelname)s][%(asctime)s]: %(message)s \
-                            [%(filename)s, %(funcName)s]",
-                    filemode="w",
-                    datefmt="%m/%d/%Y %H:%M:%S",
-                    encoding="utf-8")
+logging.basicConfig(
+    filename="randomizer.log",
+    level=logging.INFO,
+    format="[%(levelname)s][%(asctime)s]: %(message)s [%(filename)s, %(funcName)s]",
+    filemode="w",
+    datefmt="%m/%d/%Y %H:%M:%S",
+    encoding="utf-8"
+)
 
 logger = logging.getLogger("pavlik")
 
