@@ -4342,8 +4342,6 @@ cb_humans:
     - - dweller
       - dweller2
       - dweller3
-      - dweller_player
-      - dweller_father
       - dweller_felix
       - dweller_ben
       - dweller_white

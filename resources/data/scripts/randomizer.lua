@@ -159,7 +159,7 @@ function CreateVehicleEx( PrototypeName, Name, pos, belong )
 		bel = 1100
 	end
 
-    if PrototypeName ~= "Molokovoz01" then
+    if PrototypeName ~= "Molokovoz01" and PrototypeName ~= "r2m1_CaravanMolokovoz03" then
         if RAND_VEH then
             PrototypeName = prot_random(1, "ex")
         end
