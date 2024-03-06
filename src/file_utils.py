@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from working_set_manager import WorkingSetManager
-from validation_data import RESOURCES_PATH
+from enviroment import RESOURCES_PATH
 
 
 class FileCopier(WorkingSetManager):

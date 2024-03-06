@@ -1,53 +1,40 @@
 import logging
 from pathlib import Path
 
-from validation_data import REQUIRED_GAME_FILES, POSSIBLE_EXE_PATHS, VERSIONS_INFO, \
-    NO_EXE_ALLOWED
+from validation_data import REQUIRED_GAME_FILES, POSSIBLE_EXE_PATHS, \
+    VERSIONS_INFO, NO_EXE_ALLOWED
 from config import Config
 from errors import ManifestMissingError, RootNotFoundError, VersionError, \
     GameNotFoundError, GDPFoundError
 
 
-logger = logging.getLogger("pavlik")
+logger = logging.getLogger("validation")
 
 
 class Validation():
     def __init__(self) -> None:
         pass
 
-    @staticmethod
-    def path(path_to_file: Path, *paths):
-        if not isinstance(path_to_file, Path):
-            path_to_file
-
-        for path in paths:
-            path_to_file = Path(path_to_file) / path
-
-        return path_to_file.exists()
-
     def game_dir(
         self,
         path_to_dir: Path,
         silent: bool = True
     ) -> tuple[bool, None | Path]:
+        if silent:
+            logger.setLevel(logging.CRITICAL)
+        else:
+            logger.setLevel(logging.INFO)
+
         # validate main dir
         if not path_to_dir.exists():
-            if not silent:
-                logger.error(
-                    f"Unable to validate game path. \
-                    {path_to_dir} does not exists."
-                )
             raise RootNotFoundError(path_to_dir)
 
         # validate exe
         exe = self.get_exe_name(path_to_dir)
         if not exe:
-            if not silent:
-                logger.warning(f"Can't find executable in {path_to_dir}")
-            # raise ExeMissingError(path_to_dir)
+            logger.warning(f"Can't find executable in {path_to_dir}")
         else:
-            if not silent:
-                logger.info(f"Executable is determined as {exe}.")
+            logger.info(f"Executable is determined as {exe}.")
 
         # validate other files and dirs
         for game_dir in REQUIRED_GAME_FILES:
@@ -55,21 +42,12 @@ class Validation():
             if not full_path.exists():
                 gdp_archives = self.look_for_gdp_archives(path_to_dir)
                 if gdp_archives:
-                    if not silent:
-                        logger.error(
-                            f"Unable to validate game path. \
-                            {full_path} is missing."
-                        )
-                        gdp_paths_str = ", ".join(
-                            [str(gdp.resolve()) for gdp in gdp_archives]
-                        )
-                        logger.info(f"GDP archives found: {gdp_paths_str}")
-                    raise GDPFoundError(gdp_archives)
-                if not silent:
-                    logger.error(
-                        f"Unable to validate game path. \
-                        {full_path} is missing."
+                    gdp_paths_str = ", ".join(
+                        [str(gdp.resolve()) for gdp in gdp_archives]
                     )
+                    logger.info(f"GDP archives found: {gdp_paths_str}")
+                    raise GDPFoundError(gdp_archives)
+
                 raise GameNotFoundError(full_path)
         return True, exe
 
@@ -164,7 +142,7 @@ class Validation():
         except PermissionError as exc:
             logger.error(exc)
 
-    def settings(self, settings: Config):
+    def settings(self, settings: Config) -> tuple[bool, str] | bool:
         logger.info("Validating randomization settings.")
 
         if not settings.game_path:

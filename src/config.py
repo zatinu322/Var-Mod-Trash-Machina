@@ -1,8 +1,9 @@
 import logging
 
 from yaml_parser import YamlConfig
+from yaml_schema import validate_settings_types
 
-logger = logging.getLogger("pavlik")
+logger = logging.getLogger("randomizer")
 
 
 class Config(YamlConfig):
@@ -75,6 +76,7 @@ class Config(YamlConfig):
         }
 
         if self.yaml:
+            validate_settings_types(self.yaml)
             self.load_app_config()
         else:
             logger.info("Unable to load settings. Setting defaults.")
@@ -112,5 +114,5 @@ class Config(YamlConfig):
             }
         )
 
-    def save_config(self):
+    def save_config(self) -> None:
         self.dump_yaml(self.yaml)

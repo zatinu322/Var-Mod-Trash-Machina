@@ -14,22 +14,23 @@ from config import Config
 from localisation import Localisation
 from validation import Validation
 from errors import LocalisationMissingError, RootNotFoundError, \
-    ExeMissingError, GameNotFoundError, VersionError, \
-    ManifestMissingError, GDPFoundError, ResourcesMissingError, \
-    ManifestKeyError, ModsFoundError, ModNotFoundError
+    GameNotFoundError, VersionError, ManifestMissingError, \
+    GDPFoundError, ResourcesMissingError, ManifestKeyError, \
+    ModsFoundError, ModNotFoundError
 from enviroment import MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH
 from gui_info import FULL_NAME, SUPPORTED_VERSIONS, PRESETS
 
 logging.basicConfig(
     filename="randomizer.log",
     level=logging.INFO,
-    format="[%(levelname)s][%(asctime)s]: %(message)s [%(filename)s, %(funcName)s]",
+    format="[%(levelname)s][%(asctime)s]:"
+           "%(message)s [%(filename)s, %(funcName)s]",
     filemode="w",
     datefmt="%m/%d/%Y %H:%M:%S",
     encoding="utf-8"
 )
 
-logger = logging.getLogger("pavlik")
+logger = logging.getLogger("randomizer")
 
 
 class RandomizerWindow(MainGui):
@@ -46,6 +47,8 @@ class RandomizerWindow(MainGui):
         self.config = config
         self.locale = locale
 
+        # container that "disables" main interface
+        # when randomizing
         self.bg_cont = Container(
             Row(
                 controls=[
@@ -222,8 +225,7 @@ class RandomizerWindow(MainGui):
 
         try:
             validation, exe = self.validate.game_dir(game_path)
-        except (RootNotFoundError, ExeMissingError,
-                GameNotFoundError, VersionError):
+        except (RootNotFoundError, GameNotFoundError, VersionError):
             validation, exe = False, None
         except GDPFoundError:
             validation, exe = False, None
@@ -383,20 +385,20 @@ class RandomizerWindow(MainGui):
         try:
             validation, exe_status = self.validate.settings(self.config)
         except RootNotFoundError as no_root:
+            logger.error(
+                f"Unable to validate game path. {no_root} does not exists.")
             self.info_cont_write(
                 f"{self.locale.tr('game_path_missing')}\n{no_root}",
                 color="red"
             )
             self.info_cont_abort()
             return
-        except ExeMissingError as no_exe:
-            self.info_cont_write(
-                f"{self.locale.tr('exe_not found')}\n{no_exe}",
-                color="red"
-            )
-            self.info_cont_abort()
-            return
         except GameNotFoundError as no_game:
+            logger.error(
+                "Unable to validate game path."
+                f"{no_game} is missing."
+            )
+
             self.info_cont_write(
                 f"{self.locale.tr('not_game_dir')}\n{no_game}",
                 color="red"
@@ -404,6 +406,11 @@ class RandomizerWindow(MainGui):
             self.info_cont_abort()
             return
         except GDPFoundError as gdp_found:
+            logger.error(
+                "Unable to validate game path."
+                f"GDP archives found: {gdp_found}"
+            )
+
             self.info_cont_write(
                 f"{self.locale.tr('gdp_found')}\n{gdp_found}",
                 color="red"
@@ -594,8 +601,6 @@ def main(page: Page) -> None:
             alignment=MainAxisAlignment.CENTER
         )
 
-    logger.info(f"Running {FULL_NAME} in {MAIN_PATH}")
-
     page.title = FULL_NAME
     page.vertical_alignment = MainAxisAlignment.START
     page.horizontal_alignment = MainAxisAlignment.CENTER
@@ -610,6 +615,13 @@ def main(page: Page) -> None:
     page.theme_mode = ThemeMode.DARK
     page.padding = padding.all(0)
 
+    page.window_prevent_close = True
+
+    page.on_window_event = save_config
+    page.on_resize = window_resized
+
+    logger.info(f"Running {FULL_NAME} in {MAIN_PATH}")
+
     try:
         main_app = RandomizerWindow(
             page=page,
@@ -622,14 +634,14 @@ def main(page: Page) -> None:
         page.add(create_error_container(loc_missing))
         page.update()
         return
+    except ValidationError as invalid_settings:
+        logger.critical(invalid_settings)
+        page.add(create_error_container(invalid_settings))
+        page.update()
+        return
     except Exception as exc:
         page.add(exc)
         return
-
-    page.window_prevent_close = True
-
-    page.on_window_event = save_config
-    page.on_resize = window_resized
 
     page.add(main_app)
     page.update()
@@ -638,6 +650,8 @@ def main(page: Page) -> None:
     main_app.fill_versions_dd(SUPPORTED_VERSIONS)
     main_app.fill_presets_dd(PRESETS)
     main_app.apply_config()
+
+    logger.debug(f"Config applied: {main_app.config.yaml}")
 
 
 def start():

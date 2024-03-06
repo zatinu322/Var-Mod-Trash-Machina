@@ -34,26 +34,3 @@ class YamlConfig(object):
                 yaml.dump(data, stream)
             except yaml.YAMLError as exc:
                 logger.error(exc)
-
-    def exclude_disabled(
-        self,
-        groups: dict,
-        settings: dict,
-        restrictions: list = []
-    ) -> list:
-        if not groups:
-            groups = self.yaml
-        working_set = []
-        for k, v in self.yaml.items():
-            if not settings.get("k", None):
-                continue
-            if k in restrictions:
-                continue
-
-            if isinstance(v, dict):
-                for group in v.values():
-                    working_set.append(group)
-            elif isinstance(v, str):
-                working_set.append(v)
-
-        return working_set

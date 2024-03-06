@@ -46,14 +46,6 @@ class RootNotFoundError(Exception):
         return self.message
 
 
-class ExeMissingError(Exception):
-    def __init__(self, path: Path) -> None:
-        self.path = path
-
-    def __str__(self) -> str:
-        return str(self.path.resolve())
-
-
 class GameNotFoundError(Exception):
     def __init__(self, path: Path) -> None:
         self.path = path
