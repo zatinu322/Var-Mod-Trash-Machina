@@ -79,10 +79,11 @@ function CreateTeam(Name, Belong, CreatePos, ListOfVehicle, WalkPos, IsWares, Ro
         local i=1
         local id=0
 
-        -- check if Molokovoz01 in list to prevent trailer softlock
+        -- check if prototypes with MolokovozCargo04 is in list 
+        -- to prevent trailer softlock
         local rand_true = 1
         while ListOfVehicle[i] do
-            if ListOfVehicle[i] == "Molokovoz01" then
+            if ListOfVehicle[i] == "Molokovoz01" or ListOfVehicle[i] == "r2m1_CaravanMolokovoz03" then
                 rand_true = 0
             end
             i = i + 1
@@ -159,6 +160,8 @@ function CreateVehicleEx( PrototypeName, Name, pos, belong )
 		bel = 1100
 	end
 
+    -- check if prototypes with MolokovozCargo04 is in list 
+    -- to prevent trailer softlock
     if PrototypeName ~= "Molokovoz01" and PrototypeName ~= "r2m1_CaravanMolokovoz03" then
         if RAND_VEH then
             PrototypeName = prot_random(1, "ex")

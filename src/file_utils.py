@@ -15,12 +15,6 @@ class FileCopier(WorkingSetManager):
             file_path = RESOURCES_PATH / file
             file_game_path = self.game_path / file
 
-            if file_game_path.exists():
-                self.logger.info(
-                    f"{file_game_path} already exists."
-                )
-                continue
-
             self.logger.debug(
                 f"Copying {file_path} to {file_game_path}."
             )
