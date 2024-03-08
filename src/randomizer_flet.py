@@ -2,10 +2,9 @@ import logging
 from pathlib import Path
 
 from pydantic import ValidationError
-from flet import Page, Row, Column, FilePicker, dropdown, ContainerTapEvent, \
-    TextButton, AlertDialog, Text, FilePickerResultEvent, \
-    ControlEvent, Container, alignment, MainAxisAlignment, \
-    ThemeMode, padding, app, colors, CrossAxisAlignment
+from flet import Page, Row, FilePicker, dropdown, ContainerTapEvent, Text, \
+    FilePickerResultEvent, ControlEvent, Container, alignment, \
+    MainAxisAlignment, ThemeMode, padding, app
 
 import main_randomizer as mr
 from randomizer import Randomizer
@@ -20,10 +19,12 @@ from errors import LocalisationMissingError, RootNotFoundError, \
 from enviroment import MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH
 from gui_info import FULL_NAME, SUPPORTED_VERSIONS, PRESETS
 
+# from icecream import ic
+
 logging.basicConfig(
     filename="randomizer.log",
     level=logging.INFO,
-    format="[%(levelname)s][%(asctime)s]:"
+    format="[%(levelname)s][%(asctime)s]: "
            "%(message)s [%(filename)s, %(funcName)s]",
     filemode="w",
     datefmt="%m/%d/%Y %H:%M:%S",
@@ -43,24 +44,10 @@ class RandomizerWindow(MainGui):
     ) -> None:
         super().__init__(page, working_width)
 
-        self.page = page
         self.config = config
         self.locale = locale
 
-        # container that "disables" main interface
-        # when randomizing
-        self.bg_cont = Container(
-            Row(
-                controls=[
-                    Column(
-                        controls=[], alignment=MainAxisAlignment.CENTER,
-                        horizontal_alignment=CrossAxisAlignment.CENTER
-                    )
-                ]
-            ),
-            bgcolor=colors.BLACK87
-        )
-
+        # different column widths for different languages
         self.opt_column_widths = {
             (self.opt_icons, self.t_icons_row): {"rus": 160, "eng": 180},
             (self.opt_text, self.t_text_row): {"rus": 210, "eng": 160},
@@ -71,13 +58,41 @@ class RandomizerWindow(MainGui):
             (self.opt_exe, self.t_executable_row): {"rus": 185, "eng": 165}
         }
 
+        # TODO: Remove
         self.validate = Validation()
 
         # Add FilePicker to page overlay
         self.get_dir_dialog = FilePicker(on_result=self.get_dir_result)
         page.overlay.extend([self.get_dir_dialog])
 
+    def set_widget_connections(self) -> None:
+        """
+        Sets `on_click` and `on_change` connections
+        between controls and it's functions.
+        """
+        self.btn_rus.on_click = self.switch_lang
+        self.btn_eng.on_click = self.switch_lang
+        self.browse_btn.on_click = (
+            lambda _: self.get_dir_dialog.get_directory_path()
+        )
+        self.btn_select_all.on_click = self.change_chkbxs_status
+        self.btn_deselect_all.on_click = self.change_chkbxs_status
+        self.start_randomization_btn.on_click = self.start_randomization
+        self.info_cont_btn.on_click = self.close_info_cont
+
+        self.game_path_tf.on_change = self.game_path_changed
+        self.dd_preset.on_change = self.update_checkboxes_from_preset
+        self.game_version_dd.on_change = self.adjust_cb_state
+        for chkbx in self.chkbxs_dict:
+            chkbx.on_change = self.set_custom_preset
+
+        self.update_app()
+
     def fill_versions_dd(self, versions: dict) -> None:
+        """
+        Fills Dropdown with avaliable game versions
+        from given `dict`.
+        """
         for key, text in versions.items():
             self.game_version_dd.options.append(
                 dropdown.Option(text=text, key=key)
@@ -85,30 +100,19 @@ class RandomizerWindow(MainGui):
         self.update_app()
 
     def fill_presets_dd(self, presets: dict) -> None:
+        """
+        Fills Dropdown with avaliable presets
+        from given `dict`.
+        """
         for preset in presets:
             self.dd_preset.options.append(
                 dropdown.Option(text=preset, key=preset)
             )
 
-    def set_widget_connections(self) -> None:
-        self.btn_rus.on_click = self.switch_lang
-        self.btn_eng.on_click = self.switch_lang
-        self.browse_btn.on_click = (
-            lambda _: self.get_dir_dialog.get_directory_path()
-        )
-        self.game_path_tf.on_change = self.game_path_changed
-        self.btn_select_all.on_click = self.select_or_deselect
-        self.btn_deselect_all.on_click = self.select_or_deselect
-        self.dd_preset.on_change = self.update_checkboxes
-        self.start_randomization_btn.on_click = self.start_randomization
-        self.info_cont_btn.on_click = self.close_info_cont
-        self.game_version_dd.on_change = self.adjust_cb_state
-
-        for chkbx in self.chkbxs_dict:
-            chkbx.on_change = self.set_custom_preset
-        self.update_app()
-
-    def switch_lang(self, e: ContainerTapEvent):
+    def switch_lang(self, e: ContainerTapEvent) -> None:
+        """
+        Switches GUI language to provided.
+        """
         match e.control:
             case self.btn_rus:
                 self.locale.update_lang("rus")
@@ -118,16 +122,10 @@ class RandomizerWindow(MainGui):
                 self.config.lang = "eng"
         self.retranslate_ui()
 
-    def adjust_width(self) -> None:
-        """Adjusts widgets width when changing localisation."""
-
-        for (k, k1), v in self.opt_column_widths.items():
-            k.width = v.get(self.locale.lang)
-            k1.width = v.get(self.locale.lang)
-
-        self.update_app()
-
     def apply_config(self):
+        """
+        Applies data from `self.config` to GUI.
+        """
         self.page.window_left = self.config.pos_x
         self.page.window_top = self.config.pos_y
         if self.config.is_maximized:
@@ -139,21 +137,34 @@ class RandomizerWindow(MainGui):
         self.locale.update_lang(self.config.lang)
         self.retranslate_ui()
 
-        self.game_path_tf.value = self.config.game_path
-        self.update_path_status()
-
         self.dd_preset.value = self.config.preset
         for k, v in self.chkbxs_dict.items():
             if not k.disabled:
                 k.value = self.config.chkbxs.get(v, False)
 
-        self.game_version_dd.value = self.config.game_version
+        self.game_path_tf.value = self.config.game_path
+        self.update_path_status()
 
+        self.game_version_dd.value = self.config.game_version
         self.adjust_cb_state()
 
         self.update_app()
 
+    def adjust_width(self) -> None:
+        """
+        Adjusts widgets width when changing localisation.
+        """
+
+        for (k, k1), v in self.opt_column_widths.items():
+            k.width = v.get(self.locale.lang)
+            k1.width = v.get(self.locale.lang)
+
+        self.update_app()
+
     def retranslate_ui(self) -> None:
+        """
+        Retranslates whole GUI according to language in `self.locale`
+        """
         self.expandable_options.name.value = self.locale.tr("options_title")
         self.dd_preset.label = self.locale.tr("t_presets")
         self.btn_deselect_all.text = self.locale.tr("btn_deselect_all")
@@ -180,40 +191,36 @@ class RandomizerWindow(MainGui):
             option.text = self.locale.tr(option.key)
 
         self.update_path_status()
-
         self.adjust_width()
-
         self.update_app()
 
-    def update_app(self):
+    def update_app(self) -> None:
+        """
+        Updates all controlls used in GUI.
+        """
         self.update()
         self.page.update()
         self.expandable_options.update()
 
-    def create_dialog(
-        self,
-        modal: bool = False,
-        title: str = "",
-        content: str = "",
-        actions: list[TextButton, None] = []
-    ) -> AlertDialog:
-        return AlertDialog(
-            modal=modal,
-            title=Text(title),
-            content=Text(content),
-            actions=actions,
-        )
-
     def get_dir_result(self, e: FilePickerResultEvent) -> None:
+        """
+        Proceeds game path from FilePicker to GUI
+        and updates it's status.
+        """
         if e.path:
             self.game_path_tf.value = e.path
             self.update_path_status()
             self.update_app()
 
     def game_path_changed(self, e: ControlEvent) -> None:
+        """
+        Handles every change in game path field
+        (except from FilePicker) and updates path status.
+        """
         self.update_path_status(e.data)
 
     def update_path_status(self, cur_value: str = None) -> None:
+        """Updates path validation status in GUI."""
         if cur_value is None:
             cur_value = self.game_path_tf.value
         if cur_value == "":
@@ -247,7 +254,7 @@ class RandomizerWindow(MainGui):
                 self.game_path_status_t.opacity = 100
                 self.game_path_status_t.color = "yellow"
 
-                self.enable_or_disable_cb(
+                self.change_cb_state(
                     True,
                     self.cb_render,
                     self.cb_fov,
@@ -260,7 +267,11 @@ class RandomizerWindow(MainGui):
             self.game_path_status_t.value = self.locale.tr("invalid_path")
         self.update_app()
 
-    def select_or_deselect(self, e: ControlEvent):
+    def change_chkbxs_status(self, e: ControlEvent) -> None:
+        """
+        Checks or unchecks all checkboxes in settings category,
+        based on what bool value is provided in ControlEvent.
+        """
         match e.control:
             case self.btn_select_all:
                 checked = True
@@ -270,23 +281,32 @@ class RandomizerWindow(MainGui):
         for chkbx in self.chkbxs_dict:
             if not chkbx.disabled:
                 chkbx.value = checked
+
         self.set_custom_preset()
 
         self.update_app()
 
     def show_info_cont(self) -> None:
+        """
+        Disables main GUI and places Container
+        with human-readable randomization log.
+        """
         self.page.overlay.append(self.bg_cont)
         self.page.overlay.append(self.info_cont)
+
+        # clear all previous content if any
         self.log_container.controls.clear()
         self.progress_bar.value = 0
         self.info_cont_btn.disabled = True
-        self.retranslate_ui()
 
     def info_cont_write(
         self,
         message: str,
         color: str | int = "white"
     ) -> None:
+        """
+        Adds provided message to randomization log container.
+        """
         self.log_container.controls.append(
             Text(
                 value=message,
@@ -295,32 +315,54 @@ class RandomizerWindow(MainGui):
         )
         self.update_app()
 
-    def info_cont_abort(self):
+    def info_cont_abort(self) -> None:
+        """
+        Reports about aborting randomization.
+
+        Sets Container widgets to default.
+        """
         self.info_cont_write(self.locale.tr("randomization_aborted"), "red")
         self.info_cont_write(self.locale.tr("rand_OK"))
+
         self.info_cont_btn.disabled = False
         self.progress_bar.value = 0
+
         self.update_app()
 
-    def info_cont_success(self):
+    def info_cont_success(self) -> None:
+        """
+        Reports about successful randomization.
+
+        Sets Container widgets to success state.
+        """
         self. info_cont_write(self.locale.tr("rand_done_full"), "green")
         self.info_cont_write(self.locale.tr("rand_OK"))
+
         self.info_cont_btn.disabled = False
         self.progress_bar.value = 1
+
         self.update_app()
 
     def close_info_cont(self, e: ControlEvent) -> None:
+        """
+        Closes randomization log Container
+        when pressing OK button in it.
+        """
         self.page.overlay.remove(self.info_cont)
         self.page.overlay.remove(self.bg_cont)
+
         self.update_app()
 
-    def update_checkboxes(self, e: ControlEvent) -> None:
+    def update_checkboxes_from_preset(self, e: ControlEvent) -> None:
+        """
+        Updates checkboxes according to chosen preset.
+        """
         chkbxs_config = PRESETS.get(e.data, {})
         for k, v in self.chkbxs_dict.items():
-            new_value = chkbxs_config.get(v, None)
+            new_value = chkbxs_config.get(v)
             if new_value is None:
                 continue
-            elif not k.disabled:
+            if not k.disabled:
                 k.value = new_value
             else:
                 k.value = False
@@ -328,12 +370,16 @@ class RandomizerWindow(MainGui):
         self.update_app()
 
     def adjust_cb_state(self, e: ControlEvent = None) -> None:
+        """
+        Updates checkboxes state (not values) according
+        to chosen game_version in versions Dropdown.
+        """
         match self.game_version_dd.value:
             case "cp114" | "cr114" | "isl12cp" | "isl12cr":
                 self.uncheck_chkbxs(self.cb_fov)
-                self.enable_or_disable_cb(True, self.cb_fov)
+                self.change_cb_state(True, self.cb_fov)
             case "steam":
-                self.enable_or_disable_cb(
+                self.change_cb_state(
                     False,
                     self.cb_render,
                     self.cb_gravity,
@@ -342,6 +388,9 @@ class RandomizerWindow(MainGui):
                 )
 
     def collect_chkbxs_values(self) -> dict:
+        """
+        Collects current checkboxes values to dictionary.
+        """
         return {v: k.value for (k, v) in self.chkbxs_dict.items()}
 
     def update_config(self) -> None:
@@ -361,16 +410,27 @@ class RandomizerWindow(MainGui):
         self.config.update_config()
 
     def set_custom_preset(self, e: ControlEvent = None) -> None:
+        """
+        Sets custom preset if any chechbox's value was changed.
+        """
         self.dd_preset.value = "p_custom"
+
         self.update_app()
 
     def uncheck_chkbxs(self, *chkbxs):
+        """
+        Unchecks provided checkboxes.
+        """
         for chkbx in chkbxs:
             chkbx.value = False
         self.update_config()
         self.update_app()
 
-    def enable_or_disable_cb(self, is_disabled: bool, *chkbxs) -> None:
+    def change_chkbxs_state(self, is_disabled: bool, *chkbxs) -> None:
+        """
+        Enables or disables provided checkboxes.
+        When disables it also sets checkbox value to False.
+        """
         for chkbx in chkbxs:
             chkbx.disabled = is_disabled
         self.update_config()
@@ -569,6 +629,9 @@ def main(page: Page) -> None:
         main_app.update()
 
     def save_config(e: ControlEvent) -> None:
+        """
+        Saves config when exiting application.
+        """
         if e.data == "close":
             try:
                 main_app.update_config()
@@ -579,6 +642,10 @@ def main(page: Page) -> None:
             page.window_destroy()
 
     def create_error_container(message: str) -> None:
+        """
+        Creates error container instead of main GUI
+        if semothing went wrong on startup.
+        """
         page.window_maximizable = False
 
         return Row(

@@ -4,7 +4,7 @@ from flet import UserControl, Page, ButtonStyle, RoundedRectangleBorder, \
     Container, Dropdown, ElevatedButton, FontWeight, Text, Row, \
     Column, MainAxisAlignment, border, Checkbox, TextField, \
     padding, alignment, ProgressBar, Image, CrossAxisAlignment, \
-    ControlEvent, Icon, icons, animation, IconButton
+    ControlEvent, Icon, icons, animation, IconButton, colors
 
 
 class MainGui(UserControl):
@@ -14,8 +14,10 @@ class MainGui(UserControl):
         self.page = page
         self.main_width = width
         self.button_style = ButtonStyle(
-            shape=RoundedRectangleBorder(radius=10)
+            shape=RoundedRectangleBorder(radius=10),
+            color="#202429"
         )
+
         self.btn_rus, self.btn_eng = self.create_lang_buttons()
         self.options_gui = self.create_options()
         self.expandable_options = ExpandableContainer(
@@ -24,9 +26,11 @@ class MainGui(UserControl):
         self.game_path_setting_gui = self.create_game_path_setting()
         self.start_randomization_btn = self.create_randomization_btn()
         self.game_version_dd = self.create_game_version_setting()
+
         self.info_cont = self.create_info_container()
 
-    # lang buttons
+        self.bg_cont = self.create_bg_cont()
+
     def create_lang_buttons(self) -> None:
         """
         Creates buttons with flag icons for changing language.
@@ -48,8 +52,12 @@ class MainGui(UserControl):
             )
         )
 
-    # options
     def create_options(self) -> list:
+        """
+        Creates instance variables related to options.
+
+        Returns list with option controls.
+        """
         self.create_opt_chkbxs()
 
         self.dd_preset = Dropdown()
@@ -444,8 +452,12 @@ class MainGui(UserControl):
             self.cb_wheels: "cb_wheels",
         }
 
-    # game path
-    def create_game_path_setting(self):
+    def create_game_path_setting(self) -> Column:
+        """
+        Creates controls for managing game path.
+
+        Returns flet.Column.
+        """
         self.game_path_tf = TextField(width=600)
         self.browse_btn = ElevatedButton(
             bgcolor="white10",
@@ -468,20 +480,23 @@ class MainGui(UserControl):
             ]
         )
 
-    # game version
-    def create_game_version_setting(self):
+    def create_game_version_setting(self) -> Dropdown:
         return Dropdown(width=600)
 
-    # randomization button
-    def create_randomization_btn(self):
+    def create_randomization_btn(self) -> ElevatedButton:
         return ElevatedButton(
             width=300,
             height=70,
             style=self.button_style
         )
 
-    # info container
     def create_info_container(self) -> Row:
+        """
+        Creates Container that is used for showing
+        human readable log during randomization.
+
+        Returns flet.Row.
+        """
         self.create_info_container_widgets()
         self.log_container.controls.clear()  # clear previous log
         return Row(
@@ -539,7 +554,11 @@ class MainGui(UserControl):
             alignment=MainAxisAlignment.CENTER
         )
 
-    def create_info_container_widgets(self):
+    def create_info_container_widgets(self) -> None:
+        """
+        Creates widgets for Container that is being used
+        for showing human-readable log during randomization.
+        """
         self.progress_bar = ProgressBar(width=590, height=20, value=0)
         self.status_text = Text()
         self.info_cont_heading = Text(size=16, weight=FontWeight.BOLD)
@@ -549,6 +568,23 @@ class MainGui(UserControl):
             spacing=1,
             width=600,
             scroll=True
+        )
+
+    def create_bg_cont(self) -> Container:
+        """
+        Creates container that is used for "disabling"
+        main GUI while randomizing.
+        """
+        return Container(
+            Row(
+                controls=[
+                    Column(
+                        controls=[], alignment=MainAxisAlignment.CENTER,
+                        horizontal_alignment=CrossAxisAlignment.CENTER
+                    )
+                ]
+            ),
+            bgcolor=colors.BLACK87
         )
 
     def build(self) -> Container:
@@ -643,7 +679,7 @@ class ExpandableContainer(UserControl):
         self.name = name
         self.content = content
 
-        self.format_name()
+        self._format_name()
 
         self.expand_icon = IconButton(
             icon=icons.KEYBOARD_ARROW_DOWN,
@@ -651,11 +687,14 @@ class ExpandableContainer(UserControl):
             on_click=lambda e: self.expand_container(e)
         )
 
-    def format_name(self) -> None:
+    def _format_name(self) -> None:
         self.name.size = 16
         self.name.weight = FontWeight.BOLD
 
     def expand_container(self, e: ControlEvent) -> None:
+        """
+        Opens or closes container depending on it's current height.
+        """
         if self.controls[0].height != self.full_height:
             self.controls[0].height = self.full_height
             self.expand_icon.icon = icons.KEYBOARD_ARROW_UP

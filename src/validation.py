@@ -39,17 +39,19 @@ class Validation():
         # validate other files and dirs
         for game_dir in REQUIRED_GAME_FILES:
             full_path = path_to_dir / game_dir
-            if not full_path.exists():
-                gdp_archives = self.look_for_gdp_archives(path_to_dir)
-                if gdp_archives:
-                    gdp_paths_str = ", ".join(
-                        [str(gdp.resolve()) for gdp in gdp_archives]
-                    )
-                    logger.info(f"GDP archives found: {gdp_paths_str}")
-                    raise GDPFoundError(gdp_archives)
+            if full_path.exists():
+                return True, exe
 
-                raise GameNotFoundError(full_path)
-        return True, exe
+            gdp_archives = self.look_for_gdp_archives(path_to_dir)
+            if gdp_archives:
+                gdp_paths_str = ", ".join(
+                    [str(gdp.resolve()) for gdp in gdp_archives]
+                )
+                logger.info(f"GDP archives found: {gdp_paths_str}")
+
+                raise GDPFoundError(gdp_archives)
+
+            raise GameNotFoundError(full_path)
 
     @staticmethod
     def look_for_gdp_archives(game_dir: Path) -> bool | list[Path]:
