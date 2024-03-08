@@ -13,22 +13,28 @@ class Localisation(YamlConfig):
         if not self.yaml or not isinstance(self.yaml, dict):
             raise LocalisationMissingError(self.path, "any")
 
-        self.lang = lang
-
+        self.lang: str = lang
         self.cur_locale: dict = self.yaml.get(self.lang, {})
-        if not self.cur_locale:
-            logger.error(f"\"{self.lang}\" key is missing in {self.path}.")
-            raise LocalisationMissingError(self.path, self.lang)
 
     def update_lang(self, lang: str) -> None:
+        """
+        Updates current localisation dict.
+        """
         self.lang = lang
         self.cur_locale = self.yaml.get(self.lang, {})
+
         if not self.cur_locale:
             logger.error(
-                f"\"{self.lang}\" language info is missing in {self.path}."
+                f"\"{self.lang}\" language is missing in {self.path}."
             )
+            return
 
     def tr(self, message: str) -> str:
+        """
+        Returns phrase in current language by requested key.
+
+        If key is missing - returns key.
+        """
         if message in self.cur_locale:
             return self.cur_locale.get(message)
         else:

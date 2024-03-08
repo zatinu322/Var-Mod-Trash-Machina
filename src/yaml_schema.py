@@ -1,69 +1,6 @@
 from pydantic import BaseModel
 
 
-class SettingsTypes(BaseModel):
-    cb_ai_vehs: bool
-    cb_aim: bool
-    cb_armor: bool
-    cb_bkgd: bool
-    cb_books_history: bool
-    cb_cab_cargo: bool
-    cb_clans: bool
-    cb_controls: bool
-    cb_crashes: bool
-    cb_descriptions: bool
-    cb_dialogues: bool
-    cb_digits: bool
-    cb_dwellers: bool
-    cb_engines: bool
-    cb_env_models: bool
-    cb_env_textures: bool
-    cb_explosions: bool
-    cb_fadingmsgs: bool
-    cb_fov: bool
-    cb_goods_guns: bool
-    cb_gravity: bool
-    cb_gui_icons: bool
-    cb_gui_text: bool
-    cb_guns: bool
-    cb_guns_lua: bool
-    cb_hits: bool
-    cb_horns: bool
-    cb_humans: bool
-    cb_landscape: bool
-    cb_lightmaps: bool
-    cb_maps: bool
-    cb_masks: bool
-    cb_music: bool
-    cb_names: bool
-    cb_npc_look: bool
-    cb_other_sounds: bool
-    cb_pl_veh: bool
-    cb_quests: bool
-    cb_radar: bool
-    cb_radio: bool
-    cb_render: bool
-    cb_shooting: bool
-    cb_skybox: bool
-    cb_speech: bool
-    cb_splashes: bool
-    cb_tiles: bool
-    cb_towns: bool
-    cb_trees: bool
-    cb_veh_skins: bool
-    cb_weather: bool
-    cb_wheels: bool
-    game_path: str
-    height: float
-    is_maximized: bool
-    language: str
-    pos_x: float
-    pos_y: float
-    preset: str
-    version: str
-    width: float
-
-
 class ManifestTypes(BaseModel):
     version_validation: bool | str | None
     resources_validation: list[str]
@@ -216,15 +153,6 @@ class LuaTypes(BaseModel):
 
 def validate_types(validator: object, manifest: dict) -> None:
     validator.model_validate(validator(**manifest), strict=True)
-
-
-def validate_settings_types(settings: dict) -> None:
-    """
-    Validates strict tags in settings.
-
-    Raises ValidationError if validation fails.
-    """
-    validate_types(SettingsTypes, settings)
 
 
 def validate_manifest_types(manifest: dict) -> None:

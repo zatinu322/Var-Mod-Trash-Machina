@@ -31,7 +31,7 @@ logging.basicConfig(
     encoding="utf-8"
 )
 
-logger = logging.getLogger("randomizer")
+logger = logging.getLogger("randomizer_flet")
 
 
 class RandomizerWindow(MainGui):
@@ -254,7 +254,7 @@ class RandomizerWindow(MainGui):
                 self.game_path_status_t.opacity = 100
                 self.game_path_status_t.color = "yellow"
 
-                self.change_cb_state(
+                self.change_chkbxs_state(
                     True,
                     self.cb_render,
                     self.cb_fov,
@@ -377,9 +377,9 @@ class RandomizerWindow(MainGui):
         match self.game_version_dd.value:
             case "cp114" | "cr114" | "isl12cp" | "isl12cr":
                 self.uncheck_chkbxs(self.cb_fov)
-                self.change_cb_state(True, self.cb_fov)
+                self.change_chkbxs_state(True, self.cb_fov)
             case "steam":
-                self.change_cb_state(
+                self.change_chkbxs_state(
                     False,
                     self.cb_render,
                     self.cb_gravity,
@@ -394,6 +394,9 @@ class RandomizerWindow(MainGui):
         return {v: k.value for (k, v) in self.chkbxs_dict.items()}
 
     def update_config(self) -> None:
+        """
+        Updates Config from GUI widgets data.
+        """
         self.config.pos_x = self.page.window_left
         self.config.pos_y = self.page.window_top
         if self.page.window_maximized:
@@ -622,7 +625,8 @@ def main(page: Page) -> None:
             main_app.info_cont.width = page.width
             main_app.info_cont.height = page.height-3
             main_app.info_cont.update()
-        # error occurs because this widget is not always on app main screen
+        # AssertionError occurs because this widget
+        # is not always on app main screen
         except AssertionError:
             pass
 
@@ -635,7 +639,7 @@ def main(page: Page) -> None:
         if e.data == "close":
             try:
                 main_app.update_config()
-                main_app.config.save_config()
+                main_app.config.save_yaml(main_app.config.yaml)
             except Exception as exc:
                 logger.error(exc)
 
@@ -644,7 +648,7 @@ def main(page: Page) -> None:
     def create_error_container(message: str) -> None:
         """
         Creates error container instead of main GUI
-        if semothing went wrong on startup.
+        if something went wrong on startup.
         """
         page.window_maximizable = False
 
@@ -682,11 +686,6 @@ def main(page: Page) -> None:
     page.theme_mode = ThemeMode.DARK
     page.padding = padding.all(0)
 
-    page.window_prevent_close = True
-
-    page.on_window_event = save_config
-    page.on_resize = window_resized
-
     logger.info(f"Running {FULL_NAME} in {MAIN_PATH}")
 
     try:
@@ -701,14 +700,15 @@ def main(page: Page) -> None:
         page.add(create_error_container(loc_missing))
         page.update()
         return
-    except ValidationError as invalid_settings:
-        logger.critical(invalid_settings)
-        page.add(create_error_container(invalid_settings))
+    except Exception as exc:
+        logger.critical(exc)
+        page.add(create_error_container(exc))
         page.update()
         return
-    except Exception as exc:
-        page.add(exc)
-        return
+
+    page.window_prevent_close = True
+    page.on_window_event = save_config
+    page.on_resize = window_resized
 
     page.add(main_app)
     page.update()
@@ -717,8 +717,6 @@ def main(page: Page) -> None:
     main_app.fill_versions_dd(SUPPORTED_VERSIONS)
     main_app.fill_presets_dd(PRESETS)
     main_app.apply_config()
-
-    logger.debug(f"Config applied: {main_app.config.yaml}")
 
 
 def start():

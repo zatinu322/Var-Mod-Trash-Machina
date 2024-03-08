@@ -1,9 +1,8 @@
 import logging
 
 from yaml_parser import YamlConfig
-from yaml_schema import validate_settings_types
 
-logger = logging.getLogger("randomizer")
+logger = logging.getLogger("config")
 
 
 class Config(YamlConfig):
@@ -76,12 +75,16 @@ class Config(YamlConfig):
         }
 
         if self.yaml:
-            validate_settings_types(self.yaml)
             self.load_app_config()
-        else:
-            logger.info("Unable to load settings. Setting defaults.")
+            return
+
+        logger.info("Unable to load settings. Setting defaults.")
 
     def load_app_config(self) -> None:
+        """
+        Provides data from loaded yaml config
+        to instance variables.
+        """
         if not isinstance(self.yaml, dict):
             return
 
@@ -99,6 +102,9 @@ class Config(YamlConfig):
             self.chkbxs.update({k: self.yaml.get(k, False)})
 
     def update_config(self) -> None:
+        """
+        Provides instance data to `self.yaml`.
+        """
         self.yaml.update(
             {
                 "language": self.lang,
@@ -113,6 +119,3 @@ class Config(YamlConfig):
                 **self.chkbxs
             }
         )
-
-    def save_config(self) -> None:
-        self.dump_yaml(self.yaml)
