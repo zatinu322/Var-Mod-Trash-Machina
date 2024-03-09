@@ -36,14 +36,11 @@ class LocalisationMissingError(Exception):
 
 
 class RootNotFoundError(Exception):
-    def __init__(self, path: Path | bool) -> None:
-        if not path:
-            self.message = ""
-        else:
-            self.message = str(path.resolve())
+    def __init__(self, path: Path | None = None) -> None:
+        self.path = path
 
     def __str__(self) -> str:
-        return self.message
+        return self.path
 
 
 class GameNotFoundError(Exception):

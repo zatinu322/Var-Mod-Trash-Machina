@@ -497,8 +497,8 @@ class RandomizerWindow(MainGui):
 
         match exe_status:
             case "no_exe":
-                logger.warning("Randomization options related to executable \
-                               randomizing will be forcibly disabled.")
+                logger.warning("Randomization options related to executable"
+                               "randomizing will be forcibly disabled.")
                 self.info_cont_write(
                     f"{self.locale.tr('is_continued')}",
                     color="yellow"

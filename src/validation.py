@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-from validation_data import REQUIRED_GAME_FILES, POSSIBLE_EXE_PATHS, \
+from validation_data import REQUIRED_GAME_FILES, POSSIBLE_EXE_NAMES, \
     VERSIONS_INFO, NO_EXE_ALLOWED
 from config import Config
 from errors import ManifestMissingError, RootNotFoundError, VersionError, \
@@ -63,7 +63,7 @@ class Validation():
 
     @staticmethod
     def get_exe_name(game_dir: Path) -> Path | None:
-        for exe in POSSIBLE_EXE_PATHS:
+        for exe in POSSIBLE_EXE_NAMES:
             exe_path = game_dir / exe
             if exe_path.exists():
                 return exe_path

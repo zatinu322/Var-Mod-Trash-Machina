@@ -16,11 +16,11 @@ REQUIRED_GAME_FILES = [
     Path("data/weather.xml")
 ]
 
-POSSIBLE_EXE_PATHS = [
-    Path("hta.exe"),
-    Path("game.exe"),
-    Path("start.exe"),
-    Path("ExMachina.exe")
+POSSIBLE_EXE_NAMES = [
+    "hta.exe",
+    "game.exe",
+    "start.exe",
+    "ExMachina.exe",
 ]
 
 NO_EXE_ALLOWED = ["steam", "isl1053"]
