@@ -3427,6 +3427,18 @@ cb_names:
           tag: "Object"
           name: "Name"
           text: "FullName"
+      - data/maps/r1m5/object_names.xml:
+          tag: "Object"
+          name: "Name"
+          text: "FullName"
+      - data/maps/r1m6/object_names.xml:
+          tag: "Object"
+          name: "Name"
+          text: "FullName"
+      - data/maps/r1m7/object_names.xml:
+          tag: "Object"
+          name: "Name"
+          text: "FullName"
       - data/maps/r2m1/object_names.xml:
           tag: "Object"
           name: "Name"
@@ -3493,6 +3505,18 @@ cb_dialogues:
           name: "id"
           text: "value"
       - data/maps/r1m4/strings.xml:
+          tag: "string"
+          name: "id"
+          text: "value"
+      - data/maps/r1m5/strings.xml:
+          tag: "string"
+          name: "id"
+          text: "value"
+      - data/maps/r1m6/strings.xml:
+          tag: "string"
+          name: "id"
+          text: "value"
+      - data/maps/r1m7/strings.xml:
           tag: "string"
           name: "id"
           text: "value"

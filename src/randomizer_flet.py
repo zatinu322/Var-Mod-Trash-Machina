@@ -11,11 +11,13 @@ from randomizer import Randomizer
 from gui import MainGui
 from config import Config
 from localisation import Localisation
-from validation import Validation
+from validation import validate_context, validate_game_dir
 from errors import LocalisationMissingError, RootNotFoundError, \
     GameNotFoundError, VersionError, ManifestMissingError, \
     GDPFoundError, ResourcesMissingError, ManifestKeyError, \
-    ModsFoundError, ModNotFoundError
+    ModsFoundError, ModNotFoundError, ExecutableNotFoundError, \
+    NoGamePathError, NotAbsolutePathError
+
 from enviroment import MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH
 from gui_info import FULL_NAME, SUPPORTED_VERSIONS, PRESETS
 
@@ -57,9 +59,6 @@ class RandomizerWindow(MainGui):
             (self.opt_other, self.t_other_row): {"rus": 150, "eng": 135},
             (self.opt_exe, self.t_executable_row): {"rus": 185, "eng": 165}
         }
-
-        # TODO: Remove
-        self.validate = Validation()
 
         # Add FilePicker to page overlay
         self.get_dir_dialog = FilePicker(on_result=self.get_dir_result)
@@ -228,43 +227,29 @@ class RandomizerWindow(MainGui):
             self.game_path_status_t.opacity = 0
             return
 
-        game_path = Path(self.game_path_tf.value)
+        game_path = Path(self.game_path_tf.value.strip())
 
         try:
-            validation, exe = self.validate.game_dir(game_path)
-        except (RootNotFoundError, GameNotFoundError, VersionError):
-            validation, exe = False, None
+            validate_game_dir(game_path)
+
+            self.game_path_status_t.value = self.locale.tr("valid_path")
+            self.game_path_status_t.opacity = 100
+            self.game_path_status_t.color = "green"
+
+            self.adjust_cb_state()
+            self.update_app()
+
+            return
+        except (RootNotFoundError, GameNotFoundError,
+                VersionError, ExecutableNotFoundError):
+            self.game_path_status_t.color = "red"
+            self.game_path_status_t.opacity = 100
+            self.game_path_status_t.value = self.locale.tr("invalid_path")
         except GDPFoundError:
-            validation, exe = False, None
             self.game_path_status_t.color = "red"
             self.game_path_status_t.opacity = 100
             self.game_path_status_t.value = self.locale.tr("gdp_found")
 
-        if validation:
-            if exe:
-                self.game_path_status_t.value = self.locale.tr("valid_path")
-                self.game_path_status_t.opacity = 100
-                self.game_path_status_t.color = "green"
-
-                self.adjust_cb_state()
-            else:
-                self.game_path_status_t.value = self.locale.tr(
-                    "valid_path_no_exe"
-                )
-                self.game_path_status_t.opacity = 100
-                self.game_path_status_t.color = "yellow"
-
-                self.change_chkbxs_state(
-                    True,
-                    self.cb_render,
-                    self.cb_fov,
-                    self.cb_gravity,
-                    self.cb_armor
-                )
-        else:
-            self.game_path_status_t.color = "red"
-            self.game_path_status_t.opacity = 100
-            self.game_path_status_t.value = self.locale.tr("invalid_path")
         self.update_app()
 
     def change_chkbxs_status(self, e: ControlEvent) -> None:
@@ -343,7 +328,7 @@ class RandomizerWindow(MainGui):
 
         self.update_app()
 
-    def close_info_cont(self, e: ControlEvent) -> None:
+    def close_info_cont(self, _: ControlEvent) -> None:
         """
         Closes randomization log Container
         when pressing OK button in it.
@@ -369,7 +354,7 @@ class RandomizerWindow(MainGui):
 
         self.update_app()
 
-    def adjust_cb_state(self, e: ControlEvent = None) -> None:
+    def adjust_cb_state(self, _: ControlEvent = None) -> None:
         """
         Updates checkboxes state (not values) according
         to chosen game_version in versions Dropdown.
@@ -412,7 +397,7 @@ class RandomizerWindow(MainGui):
         self.config.chkbxs.update(chkbxs)
         self.config.update_config()
 
-    def set_custom_preset(self, e: ControlEvent = None) -> None:
+    def set_custom_preset(self, _: ControlEvent = None) -> None:
         """
         Sets custom preset if any chechbox's value was changed.
         """
@@ -439,186 +424,143 @@ class RandomizerWindow(MainGui):
         self.update_config()
         self.update_app()
 
-    def start_randomization(self, e: ControlEvent = None) -> None:
+    def start_randomization(self, _: ControlEvent = None) -> None:
         self.update_config()
         self.show_info_cont()
         self.info_cont_write(self.locale.tr("rand_start"))
 
         self.info_cont_write(self.locale.tr("rand_validation"))
         try:
-            validation, exe_status = self.validate.settings(self.config)
-        except RootNotFoundError as no_root:
-            logger.error(
-                f"Unable to validate game path. {no_root} does not exists.")
-            self.info_cont_write(
-                f"{self.locale.tr('game_path_missing')}\n{no_root}",
-                color="red"
-            )
-            self.info_cont_abort()
-            return
-        except GameNotFoundError as no_game:
-            logger.error(
-                "Unable to validate game path."
-                f"{no_game} is missing."
-            )
+            fov_allowed, manifest_path, options_path \
+                = validate_context(self.config)
+            self.config.manifest = manifest_path
+            self.config.options = options_path
+        except (RootNotFoundError, ExecutableNotFoundError, GameNotFoundError,
+                GDPFoundError, VersionError, ManifestMissingError,
+                NoGamePathError, NotAbsolutePathError) as err:
+            logger.error(err)
+
+            cont_error_message = self.locale.tr(err.ui_message_key)
+            cont_message_text = err.ui_message_text
+            cont_full_text = f"{cont_error_message}\n{cont_message_text}"\
+                if cont_message_text else cont_error_message
 
             self.info_cont_write(
-                f"{self.locale.tr('not_game_dir')}\n{no_game}",
-                color="red"
-            )
-            self.info_cont_abort()
-            return
-        except GDPFoundError as gdp_found:
-            logger.error(
-                "Unable to validate game path."
-                f"GDP archives found: {gdp_found}"
-            )
-
-            self.info_cont_write(
-                f"{self.locale.tr('gdp_found')}\n{gdp_found}",
-                color="red"
-            )
-            self.info_cont_abort()
-            return
-        except VersionError:
-            self.info_cont_write(
-                f"{self.locale.tr('incorrect_version')}",
-                color="red"
-            )
-            self.info_cont_abort()
-            return
-        except ManifestMissingError as no_manifest:
-            self.info_cont_write(
-                f"{self.locale.tr('manifest_missing')}\n{no_manifest}",
+                cont_full_text,
                 color="red"
             )
             self.info_cont_abort()
             return
 
-        match exe_status:
-            case "no_exe":
-                logger.warning("Randomization options related to executable"
-                               "randomizing will be forcibly disabled.")
-                self.info_cont_write(
-                    f"{self.locale.tr('is_continued')}",
-                    color="yellow"
-                )
-                self.uncheck_chkbxs(
-                    self.cb_render,
-                    self.cb_armor,
-                    self.cb_fov,
-                    self.cb_gravity
-                )
-            case "no_fov":
-                self.info_cont_write(
-                    f"{self.locale.tr('compatch_no_fov')}",
-                    color="yellow"
-                )
+        if not fov_allowed:
+            self.info_cont_write(
+                f"{self.locale.tr('compatch_no_fov')}",
+                color="yellow"
+            )
 
-                self.uncheck_chkbxs(self.cb_fov)
+            self.uncheck_chkbxs(self.cb_fov)
 
         self.progress_bar.value += 0.10
 
-        if validation:
-            try:
-                randomizer = Randomizer(self.config)
-                working_set = randomizer.generate_working_set()
+        try:
+            randomizer = Randomizer(self.config)
+            working_set = randomizer.generate_working_set()
 
-                self.info_cont_write(self.locale.tr("rand_copy"))
-                mr.copy_files(working_set)
-                self.progress_bar.value += 0.10
+            self.info_cont_write(self.locale.tr("rand_copy"))
+            mr.copy_files(working_set)
+            self.progress_bar.value += 0.10
 
-                self.info_cont_write(self.locale.tr("rand_prepare"))
-                mr.edit_files(working_set)
-                self.progress_bar.value += 0.10
+            self.info_cont_write(self.locale.tr("rand_prepare"))
+            mr.edit_files(working_set)
+            self.progress_bar.value += 0.10
 
-                self.info_cont_write(self.locale.tr("rand_files"))
-                mr.randomize_files(working_set)
-                # if not status:
-                #     self.info_cont_write(f"{self.locale.tr('rand_nothing')}")
-                # else:
-                #     self.info_cont_write(f"{self.locale.tr('rand_done')}")
-                self.progress_bar.value += 0.10
+            self.info_cont_write(self.locale.tr("rand_files"))
+            mr.randomize_files(working_set)
+            # if not status:
+            #     self.info_cont_write(f"{self.locale.tr('rand_nothing')}")
+            # else:
+            #     self.info_cont_write(f"{self.locale.tr('rand_done')}")
+            self.progress_bar.value += 0.10
 
-                self.info_cont_write(self.locale.tr("rand_text"))
-                mr.randomize_text(working_set)
-                self.progress_bar.value += 0.10
+            self.info_cont_write(self.locale.tr("rand_text"))
+            mr.randomize_text(working_set)
+            self.progress_bar.value += 0.10
 
-                self.info_cont_write(self.locale.tr("rand_models"))
-                mr.randomize_models(working_set)
-                self.progress_bar.value += 0.10
+            self.info_cont_write(self.locale.tr("rand_models"))
+            mr.randomize_models(working_set)
+            self.progress_bar.value += 0.10
 
-                self.info_cont_write(self.locale.tr("rand_barnpcs"))
-                mr.randomize_barnpcs(working_set)
-                self.progress_bar.value += 0.10
+            self.info_cont_write(self.locale.tr("rand_barnpcs"))
+            mr.randomize_barnpcs(working_set)
+            self.progress_bar.value += 0.10
 
-                self.info_cont_write(self.locale.tr("rand_landscape"))
-                mr.randomize_landscape(working_set)
-                self.progress_bar.value += 0.10
+            self.info_cont_write(self.locale.tr("rand_landscape"))
+            mr.randomize_landscape(working_set)
+            self.progress_bar.value += 0.10
 
-                self.info_cont_write(self.locale.tr("rand_executable"))
-                new_exe = mr.randomize_executable(working_set)
-                self.progress_bar.value += 0.10
-                if new_exe:
-                    for option, value in new_exe.items():
-                        self.info_cont_write(
-                            f"{'\t'*10}{self.locale.tr(option)}: {value}",
-                            "yellow"
-                        )
+            self.info_cont_write(self.locale.tr("rand_executable"))
+            new_exe = mr.randomize_executable(working_set)
+            self.progress_bar.value += 0.10
+            if new_exe:
+                for option, value in new_exe.items():
+                    self.info_cont_write(
+                        f"{'\t'*10}{self.locale.tr(option)}: {value}",
+                        "yellow"
+                    )
 
-                self.info_cont_write(self.locale.tr("rand_lua"))
-                mr.randomize_lua(working_set)
-                self.progress_bar.value += 0.10
+            self.info_cont_write(self.locale.tr("rand_lua"))
+            mr.randomize_lua(working_set)
+            self.progress_bar.value += 0.10
 
-                self.info_cont_success()
-            except ValidationError as validation_error:
-                self.info_cont_write(
-                    self.locale.tr('incorrect_types'),
-                    "red"
-                )
-                self.info_cont_abort()
-                for error in validation_error.errors():
-                    logger.error(error)
-            except ManifestMissingError as bad_manifest:
-                self.info_cont_write(
-                    f"{self.locale.tr('bad_manifest')}\n{bad_manifest}",
-                    "red"
-                )
-                self.info_cont_abort()
-            except ModsFoundError as mods_found:
-                self.info_cont_write(
-                    f"{self.locale.tr('mods_found')}:\n{mods_found}",
-                    "red"
-                )
-                self.info_cont_abort()
-            except ModNotFoundError as mod_not_found:
-                self.info_cont_write(
-                    f"{self.locale.tr('mod_not_found')}:\n{mod_not_found}",
-                    "red"
-                )
-                self.info_cont_abort()
-            except ResourcesMissingError as res_missing:
-                self.info_cont_write(
-                    f"{self.locale.tr('file_missing')}\n{res_missing}",
-                    "red"
-                )
-                self.info_cont_abort()
-            except ManifestKeyError as wrong_key_type:
-                self.info_cont_write(
-                    f"{self.locale.tr('wrong_key_type')} {wrong_key_type}",
-                    "red"
-                )
-                self.info_cont_abort()
+            self.info_cont_success()
+        except ValidationError as validation_error:
+            self.info_cont_write(
+                self.locale.tr('incorrect_types'),
+                "red"
+            )
+            self.info_cont_abort()
+            for error in validation_error.errors():
+                logger.error(error)
+        except ManifestMissingError as bad_manifest:
+            self.info_cont_write(
+                f"{self.locale.tr('bad_manifest')}\n{bad_manifest}",
+                "red"
+            )
+            self.info_cont_abort()
+        except ModsFoundError as mods_found:
+            self.info_cont_write(
+                f"{self.locale.tr('mods_found')}:\n{mods_found}",
+                "red"
+            )
+            self.info_cont_abort()
+        except ModNotFoundError as mod_not_found:
+            self.info_cont_write(
+                f"{self.locale.tr('mod_not_found')}:\n{mod_not_found}",
+                "red"
+            )
+            self.info_cont_abort()
+        except ResourcesMissingError as res_missing:
+            self.info_cont_write(
+                f"{self.locale.tr('file_missing')}\n{res_missing}",
+                "red"
+            )
+            self.info_cont_abort()
+        except ManifestKeyError as wrong_key_type:
+            self.info_cont_write(
+                f"{self.locale.tr('wrong_key_type')} {wrong_key_type}",
+                "red"
+            )
+            self.info_cont_abort()
 
-            # except Exception as exc:
-            #     self.info_cont_write(exc, "red")
-            #     self.info_cont_abort()
-            finally:
-                self.info_cont_btn.disabled = False
+        # except Exception as exc:
+        #     self.info_cont_write(exc, "red")
+        #     self.info_cont_abort()
+        finally:
+            self.info_cont_btn.disabled = False
 
 
 def main(page: Page) -> None:
-    def window_resized(e: ControlEvent) -> None:
+    def window_resized(_: ControlEvent) -> None:
         main_app.main_column.width = page.width
         main_app.main_column.height = page.height-3
         try:
@@ -695,14 +637,9 @@ def main(page: Page) -> None:
             locale=Localisation(LOCALIZATION_PATH),
             working_width=800
         )
-    except LocalisationMissingError as loc_missing:
-        logger.critical(loc_missing)
-        page.add(create_error_container(loc_missing))
-        page.update()
-        return
-    except Exception as exc:
-        logger.critical(exc)
-        page.add(create_error_container(exc))
+    except (LocalisationMissingError, Exception) as error:
+        logger.critical(error)
+        page.add(create_error_container(error))
         page.update()
         return
 

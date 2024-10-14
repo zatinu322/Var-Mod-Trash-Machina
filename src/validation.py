@@ -1,183 +1,194 @@
+from contextlib import contextmanager
 import logging
 from pathlib import Path
 
-from validation_data import REQUIRED_GAME_FILES, POSSIBLE_EXE_NAMES, \
-    VERSIONS_INFO, NO_EXE_ALLOWED
+from validation_data import REQUIRED_GAME_PATHS, POSSIBLE_EXE_NAMES, \
+    VERSIONS
 from config import Config
 from errors import ManifestMissingError, RootNotFoundError, VersionError, \
-    GameNotFoundError, GDPFoundError
-
+    GameNotFoundError, GDPFoundError, ExecutableNotFoundError, \
+    NoGamePathError, NotAbsolutePathError
 
 logger = logging.getLogger("validation")
 
 
-class Validation():
-    def __init__(self) -> None:
-        pass
+def serialize_game_path(game_path: str) -> Path:
+    if not game_path:
+        raise NoGamePathError(game_path)
 
-    def game_dir(
-        self,
-        path_to_dir: Path,
-        silent: bool = True
-    ) -> tuple[bool, None | Path]:
-        if silent:
-            logger.setLevel(logging.CRITICAL)
-        else:
-            logger.setLevel(logging.INFO)
+    serialized_path = Path(game_path.strip())
 
-        # validate main dir
-        if not path_to_dir.exists():
-            raise RootNotFoundError(path_to_dir)
+    if not serialized_path.is_absolute():
+        raise NotAbsolutePathError()
 
-        # validate exe
-        exe = self.get_exe_name(path_to_dir)
-        if not exe:
-            logger.warning(f"Can't find executable in {path_to_dir}")
-        else:
-            logger.info(f"Executable is determined as {exe}.")
+    return serialized_path
 
-        # validate other files and dirs
-        for game_dir in REQUIRED_GAME_FILES:
-            full_path = path_to_dir / game_dir
-            if full_path.exists():
-                return True, exe
 
-            gdp_archives = self.look_for_gdp_archives(path_to_dir)
-            if gdp_archives:
-                gdp_paths_str = ", ".join(
-                    [str(gdp.resolve()) for gdp in gdp_archives]
-                )
-                logger.info(f"GDP archives found: {gdp_paths_str}")
+def validate_context(settings: Config) -> tuple[bool, Path]:
+    """
+    Validates randomization context.
 
-                raise GDPFoundError(gdp_archives)
+    Returns: `fov_allowed`, `manifest_path`, `options_path`
+    """
+    logger.info("Validating randomization settings.")
 
-            raise GameNotFoundError(full_path)
+    game_path = serialize_game_path(settings.game_path)
 
-    @staticmethod
-    def look_for_gdp_archives(game_dir: Path) -> bool | list[Path]:
-        data_path = game_dir / "data"
-        gdps = list(data_path.glob("*.gdp"))
-        if not gdps:
-            return False
-        return gdps
+    exe_path = validate_game_dir(game_path, silent=False)
 
-    @staticmethod
-    def get_exe_name(game_dir: Path) -> Path | None:
-        for exe in POSSIBLE_EXE_NAMES:
-            exe_path = game_dir / exe
-            if exe_path.exists():
-                return exe_path
-        return None
+    logger.info("Game path validated.")
 
-    def steam_version(
-        self,
-        game_version: str,
-        version_info: dict,
-        exe: Path
-    ) -> tuple[bool, str]:
-        if not exe:
-            if game_version in NO_EXE_ALLOWED:
-                return (True, "no_exe")
-            else:
-                return (False, "no_exe")
+    fov_allowed, manifest_path, options_path = validate_game_version(
+        settings.game_version, exe_path
+    )
 
-        exe_info: dict = version_info["exe"]
+    logger.info("Game version validated.")
 
-        for version in exe_info:
-            detected_version = self.get_exe_version(
-                exe,
-                version["offset"],
-                version["length"]
-            )
+    validate_manifest(manifest_path)
 
-            if detected_version == version["version"]:
-                return True, "exe"
-            else:
-                logger.error(
-                    f"{version['version']} expected, \
-                    got {detected_version}"
-                )
+    if options_path:
+        validate_manifest(options_path)
 
+    return fov_allowed, manifest_path, options_path
+
+
+def validate_manifest(manifest_path: Path) -> None:
+    """
+    Validates manifest path.
+
+    Raises `ManifestMissingError` if it doesn't exists.
+    """
+    if not manifest_path.exists():
+        raise ManifestMissingError(manifest_path)
+
+
+def validate_game_version(game_version: str,
+                          exe_path: Path) -> tuple[bool, Path | None]:
+    """
+    Validates game version.
+
+    Returns `fov_allowed`, `manifest_path`, 'option_path'
+    """
+    version_info = VERSIONS[game_version]
+    exe_info = version_info["exe"]
+
+    exe_version = validate_exe_version(exe_path, exe_info)
+    if not exe_version:
         raise VersionError(game_version)
 
-    def game_version(
-        self,
-        game_version: str,
-        exe: str
-    ) -> tuple[bool, str, Path | str]:
-        version_info = VERSIONS_INFO[game_version]
-        if not version_info:
-            raise VersionError(game_version)
+    fov_allowed = version_info["fov_allowed"]
+    manifest_path = Path(version_info["manifest"])
+    options = version_info.get("options")
+    options_path = Path(options) if options else None
 
-        valid, exe_status = self.steam_version(
-            game_version, version_info, exe
+    return fov_allowed, manifest_path, options_path
+
+
+def validate_exe_version(exe_path: Path, exe_info: dict) -> str | None:
+    """
+    Validates executable version.
+
+    Returns detection version if version is correct, `None` otherwise.
+    """
+    for version in exe_info:
+        detected_version = get_exe_version(
+            exe_path,
+            version["offset"],
+            version["length"]
         )
 
-        match game_version:
-            case "steam" | "isl1053":
-                options = None
-            case "cp114" | "isl12cp":
-                options = None
-                exe_status = "no_fov"
-            case "cr114" | "isl12cr":
-                options = Path(version_info["options"])
-                exe_status = "no_fov"
+        if detected_version == version["version"]:
+            return detected_version
 
-        return (
-            valid,
-            exe_status,
-            Path(version_info["manifest"]),
-            options
-        )
 
-    @staticmethod
-    def get_exe_version(
+def get_exe_version(
         exe_path: Path,
         offset: int,
-        length: int
-    ) -> str | None:
-        try:
-            with open(exe_path, "r", encoding="windows-1251") as exe:
-                exe.seek(offset)
-                version = exe.read(length)
-            return version
-        except PermissionError as exc:
-            logger.error(exc)
+        length: int) -> str | None:
+    """
+    Detects executable version based on version data.
 
-    def settings(self, settings: Config) -> tuple[bool, str] | bool:
-        logger.info("Validating randomization settings.")
+    Returns detected version.
+    """
+    try:
+        with open(exe_path, 'r', encoding='windows-1251') as stream:
+            stream.seek(offset)
+            version = stream.read(length)
+        return version
+    except PermissionError as e:
+        logger.error(e)
 
-        if not settings.game_path:
-            raise RootNotFoundError(False)
-        path_valid, exe = self.game_dir(Path(settings.game_path), silent=False)
-        if not path_valid:
-            return False
 
-        logger.info("Game path validated.")
+def validate_game_dir(dir_path: Path, silent: bool = True) -> Path:
+    """
+    Validates that game is installed in given directory.
 
-        version_valid, exe_status, manifest, options = self.game_version(
-            settings.game_version, exe
-        )
-        if not version_valid:
-            return False
+    May raise `RootNotFoundError`, `GameNotFoundError`,
+    `GDPFoundError` if it doesn't.
 
-        logger.info("Game version validated.")
+    Returns path to executable file, if one was found. `None` otherwise.
+    """
+    with change_logging_level(silent):
+        # validate main dir
+        if not dir_path or not dir_path.exists():
+            raise RootNotFoundError(dir_path)
 
-        if manifest.exists():
-            settings.manifest = manifest
-            logger.info(f"Manifest is set as {settings.manifest}")
-        else:
-            logger.error(f"Manifest not found in {manifest}")
-            raise ManifestMissingError(manifest)
+        # locate executable
+        exe_path = get_exe_name(dir_path)
+        if not exe_path:
+            logger.error(f"Can't find executable in {dir_path}")
+            raise ExecutableNotFoundError(dir_path)
 
-        if options:
-            if options.exists():
-                settings.options = options
-                logger.info(f"Options is set as {settings.options}")
-            else:
-                logger.error(f"Options not found in {options}")
-                raise ManifestMissingError(options)
+        logger.info(f"Executable found: {exe_path}")
 
-        logger.info("Randomization settings validated.")
+        # validate other files and dirs
+        for game_dir in REQUIRED_GAME_PATHS:
+            full_path = dir_path / game_dir
+            if not full_path.exists():
+                gdp_archives = look_for_gdp_archives(dir_path)
+                if not gdp_archives:
+                    raise GameNotFoundError(full_path)
+                gdp_paths = ", ".join(
+                    [str(gdp.resolve()) for gdp in gdp_archives]
+                )
 
-        return True, exe_status
+                logger.info(f"GDP archives found: {gdp_paths}")
+
+                raise GDPFoundError
+
+        return exe_path
+
+
+@contextmanager
+def change_logging_level(silent: bool):
+    """
+    Completely disables logging if silent is True.
+    """
+    previous_level = logger.getEffectiveLevel()
+    if silent:
+        logger.setLevel(logging.CRITICAL)
+    try:
+        yield
+    finally:
+        logger.setLevel(previous_level)
+
+
+def get_exe_name(game_dir: Path) -> Path | None:
+    """
+    Detects executable and returns it's path if it matches one of known names.
+
+    Returns `None` otherwise.
+    """
+    for exe in POSSIBLE_EXE_NAMES:
+        exe_path = game_dir / exe
+        if exe_path.exists():
+            return exe_path
+
+
+def look_for_gdp_archives(game_dir: Path) -> list[Path]:
+    """
+    Returns list with all `.gdp` files paths.
+    """
+    data_dir = game_dir / "data"
+    gdps = list(data_dir.glob("*.gdp"))
+    return gdps

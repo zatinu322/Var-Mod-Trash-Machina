@@ -1,12 +1,88 @@
 from pathlib import Path
 
 
+class NoGamePathError(Exception):
+    def __init__(self, path: Path | None = None) -> None:
+        self.path = path
+        self.ui_message_key = "no_game_path"
+        self.ui_message_text = ""
+
+    def __str__(self) -> str:
+        return ("Game path is empty.")
+
+
+class NotAbsolutePathError(Exception):
+    def __init__(self, path: Path | None = None) -> None:
+        self.path = path
+        self.ui_message_key = "not_absolute_path"
+        self.ui_message_text = ""
+
+    def __str__(self) -> str:
+        return ("Game path is not absolute.")
+
+
+class RootNotFoundError(Exception):
+    def __init__(self, path: Path | None = None) -> None:
+        self.path = path
+        self.ui_message_key = "game_path_missing"
+        self.ui_message_text = str(path.resolve())
+
+    def __str__(self) -> str:
+        return ("Unable to validate game_path. "
+                f"{self.path.resolve()} does not exists.")
+
+
+class ExecutableNotFoundError(Exception):
+    def __init__(self, path: Path) -> None:
+        self.path = path
+        self.ui_message_key = "exe_not_found"
+        self.ui_message_text = str(path.resolve())
+
+    def __str__(self) -> str:
+        return (f"Executable not found in {self.path.resolve()}")
+
+
+class GameNotFoundError(Exception):
+    def __init__(self, path: Path) -> None:
+        self.path = path
+        self.ui_message_key = "not_game_dir"
+        self.ui_message_text = str(path.resolve())
+
+    def __str__(self) -> str:
+        return ("Unable to validate game path. "
+                f"{self.path.resolve()} is missing.")
+
+
+class GDPFoundError(Exception):
+    def __init__(self, archives: list[Path]) -> None:
+        archives = [gdp.resolve() for gdp in archives]
+        self.ui_message_key = "gdp_found"
+        self.ui_message_text = "\n".join(archives)
+
+    def __str__(self) -> str:
+        return ("Unable to validate game path. "
+                f"GDP archives found: {self.ui_message_text}")
+
+
+class VersionError(Exception):
+    def __init__(self, version: str) -> None:
+        self.version = version
+        self.ui_message_key = "incorrect_version"
+        self.ui_message_text = ""
+
+    def __str__(self) -> str:
+        return ("Executable version does not match given version: "
+                f"{self.version}")
+
+
 class ManifestMissingError(Exception):
     def __init__(self, path: Path) -> None:
         self.path = path
+        self.ui_message_key = "manifest_missing"
+        self.ui_message_text = str(path.resolve())
 
     def __str__(self) -> str:
-        return str(self.path.resolve())
+        return f"Manifest not found: {self.path.resolve()}"
 
 
 class ResourcesMissingError(Exception):
@@ -33,39 +109,6 @@ class LocalisationMissingError(Exception):
 
     def __str__(self) -> str:
         return f"Unable to load {self.lang} localisation from {self.path}"
-
-
-class RootNotFoundError(Exception):
-    def __init__(self, path: Path | None = None) -> None:
-        self.path = path
-
-    def __str__(self) -> str:
-        return self.path
-
-
-class GameNotFoundError(Exception):
-    def __init__(self, path: Path) -> None:
-        self.path = path
-
-    def __str__(self) -> str:
-        return str(self.path.resolve())
-
-
-class GDPFoundError(Exception):
-    def __init__(self, archives: list[Path]) -> None:
-        self.archives = [str(gdp.resolve()) for gdp in archives]
-        self.message = ",\n".join(self.archives)
-
-    def __str__(self) -> str:
-        return self.message
-
-
-class VersionError(Exception):
-    def __init__(self, version: str) -> None:
-        self.version = version
-
-    def __str__(self) -> str:
-        return self.version
 
 
 class ModsFoundError(Exception):

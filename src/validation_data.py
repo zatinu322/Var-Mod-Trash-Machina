@@ -1,7 +1,7 @@
 from pathlib import Path
 
 
-REQUIRED_GAME_FILES = [
+REQUIRED_GAME_PATHS = [
     Path("data"),
     Path("data/gamedata"),
     Path("data/if"),
@@ -26,8 +26,10 @@ POSSIBLE_EXE_NAMES = [
 NO_EXE_ALLOWED = ["steam", "isl1053"]
 FOV_ALLOWED = ["steam", "isl1053"]
 
-VERSIONS_INFO = {
+VERSIONS = {
     "steam": {
+        # lists is used for handling cases, when one version
+        # can handle different game versions
         "exe": [
             {
                 "version": "release build v1.02",
@@ -35,7 +37,8 @@ VERSIONS_INFO = {
                 "length": 19
             }
         ],
-        "manifest": "resources/manifests/manifest_steam.yaml"
+        "manifest": "resources/manifests/manifest_steam.yaml",
+        "fov_allowed": True
     },
     "cp114": {
         "exe": [
@@ -45,7 +48,8 @@ VERSIONS_INFO = {
                 "length": 17
             }
         ],
-        "manifest": "resources/manifests/manifest_cp114.yaml"
+        "manifest": "resources/manifests/manifest_cp114.yaml",
+        "fov_allowed": False
     },
     "cr114": {
         "exe": [
@@ -56,7 +60,8 @@ VERSIONS_INFO = {
             }
         ],
         "manifest": "resources/manifests/manifest_cr114.yaml",
-        "options": "resources/options/options_cr114.yaml"
+        "options": "resources/options/options_cr114.yaml",
+        "fov_allowed": False
     },
     "isl12cp": {
         "exe": [
@@ -66,7 +71,8 @@ VERSIONS_INFO = {
                 "length": 17
             }
         ],
-        "manifest": "resources/manifests/manifest_isl12cp.yaml"
+        "manifest": "resources/manifests/manifest_isl12cp.yaml",
+        "fov_allowed": False
     },
     "isl12cr": {
         "exe": [
@@ -77,7 +83,8 @@ VERSIONS_INFO = {
             }
         ],
         "manifest": "resources/manifests/manifest_isl12cr.yaml",
-        "options": "resources/options/options_isl12cr.yaml"
+        "options": "resources/options/options_isl12cr.yaml",
+        "fov_allowed": False
     },
     "isl1053": {
         "exe": [
@@ -87,6 +94,7 @@ VERSIONS_INFO = {
                 "length": 19
             }
         ],
-        "manifest": "resources/manifests/manifest_isl1053.yaml"
+        "manifest": "resources/manifests/manifest_isl1053.yaml",
+        "fov_allowed": True
     }
 }
