@@ -1,5 +1,5 @@
 # Technical information
-version_validation: "mod_manifest.yaml"
+version_validation: data/mod_manifest.yaml
 resources_validation:
   - data/profiles/1/profile.xml
   - data/scripts/randomizer.lua

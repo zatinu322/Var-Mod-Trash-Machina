@@ -5,11 +5,15 @@ from pathlib import Path
 from validation_data import REQUIRED_GAME_PATHS, POSSIBLE_EXE_NAMES, \
     VERSIONS
 from config import Config
-from errors import ManifestMissingError, RootNotFoundError, VersionError, \
-    GameNotFoundError, GDPFoundError, ExecutableNotFoundError, \
-    NoGamePathError, NotAbsolutePathError
+from enviroment import RESOURCES_PATH
+from errors import ManifestMissingError, RootNotFoundError, \
+    ExecutableVersionError, GameNotFoundError, GDPFoundError, \
+    ExecutableNotFoundError, NoGamePathError, NotAbsolutePathError, \
+    ResourcesMissingError, ModsNotFoundError, ModsFoundError, ModVersionError
+from yaml_schema import validate_manifest_types
+from yaml_utils import serialize_yaml
 
-logger = logging.getLogger("validation")
+logger = logging.getLogger(Path(__file__).name)
 
 
 def serialize_game_path(game_path: str) -> Path:
@@ -24,7 +28,7 @@ def serialize_game_path(game_path: str) -> Path:
     return serialized_path
 
 
-def validate_context(settings: Config) -> tuple[bool, Path]:
+def validate_context(settings: Config) -> tuple[bool, dict]:
     """
     Validates randomization context.
 
@@ -33,48 +37,140 @@ def validate_context(settings: Config) -> tuple[bool, Path]:
     logger.info("Validating randomization settings.")
 
     game_path = serialize_game_path(settings.game_path)
+    version_info = VERSIONS[settings.game_version]
 
     exe_path = validate_game_dir(game_path, silent=False)
 
     logger.info("Game path validated.")
 
     fov_allowed, manifest_path, options_path = validate_game_version(
-        settings.game_version, exe_path
+        version_info, exe_path
     )
 
     logger.info("Game version validated.")
 
-    validate_manifest(manifest_path)
+    serialized_manifest = validate_manifest(
+        manifest_path
+    )
 
-    if options_path:
-        validate_manifest(options_path)
+    mod_manifest = validate_game_installation(
+        serialized_manifest,
+        game_path,
+        version_info
+    )
 
-    return fov_allowed, manifest_path, options_path
+    if "options" not in version_info:
+        return fov_allowed, serialized_manifest
+
+    updated_manifest = update_manifest_with_options(
+        serialized_manifest,
+        mod_manifest,
+        options_path
+    )
+
+    return fov_allowed, updated_manifest
+
+
+def validate_game_installation(manifest: dict,
+                               game_path: Path,
+                               version_info: dict) -> None | dict:
+    files_to_validate = [
+        *[RESOURCES_PATH / file
+          for file in manifest["resources_validation"]],
+        *[game_path / file for file in manifest["server_paths"]],
+        *[game_path / file
+          for file in manifest["triggers_to_change"]],
+    ]
+
+    for file in files_to_validate:
+        if not file.exists():
+            raise ResourcesMissingError(file)
+
+    game_validation = manifest["version_validation"]
+    if not game_validation:
+        logger.info("Additional game validation is not specified.")
+        return
+
+    if isinstance(game_validation, str):
+        mod_manifest_path = game_path / game_validation
+        if not mod_manifest_path.exists():
+            raise ResourcesMissingError(mod_manifest_path)
+
+        mod_manifest = serialize_yaml(mod_manifest_path)
+
+        allowed_mods = version_info["allowed_mods"]
+        allowed_mod_names = {mod for mod in allowed_mods}
+        installed_mod_names = set(mod_manifest)
+
+        missing_mods = allowed_mod_names.difference(installed_mod_names)
+        if missing_mods:
+            raise ModsNotFoundError(missing_mods)
+        extra_mods = installed_mod_names.difference(allowed_mod_names)
+        if extra_mods:
+            raise ModsFoundError(extra_mods)
+
+        for title, info in mod_manifest.items():
+            required_version = allowed_mods[title]["version"]
+            installed_version = info["version"]
+            if installed_version != required_version:
+                raise ModVersionError(title,
+                                      installed_version,
+                                      required_version)
+
+        return mod_manifest
+    else:
+        raise NotImplementedError()
+
+
+def update_manifest_with_options(manifest: dict,
+                                 mod_manifest: dict,
+                                 options_path: Path) -> dict:
+    if not options_path.exists():
+        raise ManifestMissingError(options_path)
+
+    serialized_options = serialize_yaml(options_path)
+    for mod, mod_info in mod_manifest.items():
+        options_to_update = serialized_options.get(mod, {})
+        for option in options_to_update:
+            if mod_info.get(option) == "yes":
+                manifest.update(
+                    options_to_update[option]
+                )
+    return manifest
 
 
 def validate_manifest(manifest_path: Path) -> None:
     """
-    Validates manifest path.
+    Validates manifest structure.
 
-    Raises `ManifestMissingError` if it doesn't exists.
+    Returns serialized_manifest if manifest is valid.
+
+    Raises exceptions otherwise.
     """
+    logger.info("Validating manifest")
+
     if not manifest_path.exists():
         raise ManifestMissingError(manifest_path)
 
+    serialized_manifest = serialize_yaml(manifest_path)
 
-def validate_game_version(game_version: str,
+    validate_manifest_types(serialized_manifest)
+
+    return serialized_manifest
+
+
+def validate_game_version(version_info: dict,
                           exe_path: Path) -> tuple[bool, Path | None]:
     """
     Validates game version.
 
     Returns `fov_allowed`, `manifest_path`, 'option_path'
     """
-    version_info = VERSIONS[game_version]
     exe_info = version_info["exe"]
 
     exe_version = validate_exe_version(exe_path, exe_info)
     if not exe_version:
-        raise VersionError(game_version)
+        raise ExecutableVersionError(version_info["title"])
 
     fov_allowed = version_info["fov_allowed"]
     manifest_path = Path(version_info["manifest"])

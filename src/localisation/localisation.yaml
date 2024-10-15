@@ -121,7 +121,8 @@ rus:
   game_path_missing: "Указанный путь к игре не найден:"
   not_game_dir: "Директория не найдена:"
   exe_not_found: "Исполняемый файл отсутствует в"
-  incorrect_version: "Указанная версия игры не соответствует содержимому папки с игрой."
+  incorrect_version_exe: "Исполняемый файл не соответствует выбранной версии игры."
+  incorrect_version_mod: "Обнаружена некорректная версия модификации"
   is_continued: "Не найден исполяемый файл. Опции, связанные с рандомизацией движка будут принудительно отключены."
   compatch_no_fov: "Опция рандомизации FOV недоступна для Community Patch/Remaster и будет принудительно отключена."
   manifest_missing: "Манифест не найден:"
@@ -130,7 +131,7 @@ rus:
   wrong_key_type: "Неверный тип данных для ключа"
   incorrect_types: "Манифест некорректен. Проверьте randomizer.log для подробностей."
   mods_found: Найдены несовместимые установленные моды
-  mod_not_found: Не найдена требуемая модификация
+  mod_not_found: Не найдены требуемые модификации
   randomization_aborted: "Рандомизация прервана."
 
 eng:
@@ -256,7 +257,8 @@ eng:
   game_path_missing: "Game path not found:"
   not_game_dir: "Directory not found:"
   exe_not_found: "Executable not found in"
-  incorrect_version: "The specified game version does not match the contents in the game folder."
+  incorrect_version_exe: "Executable does not match specified game version."
+  incorrect_version_mod: "Incorrect modification version detected"
   is_continued: "Executable not found. Options related to game engine randomization will be forcibly disabled."
   compatch_no_fov: "The FOV randomization option is not available for Community Patch/Remaster and will be forcibly disabled."
   manifest_missing: "Manifest not found:"
@@ -265,5 +267,5 @@ eng:
   wrong_key_type: "Incorrect key type for"
   incorrect_types: "Manifest is invalid. See randomizer.log for details."
   mods_found: Found incompatible installed mods
-  mod_not_found: Required modification not found
+  mod_not_found: Required modifications not found
   randomization_aborted: "Randomization aborted."

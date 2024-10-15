@@ -13,10 +13,10 @@ from config import Config
 from localisation import Localisation
 from validation import validate_context, validate_game_dir
 from errors import LocalisationMissingError, RootNotFoundError, \
-    GameNotFoundError, VersionError, ManifestMissingError, \
+    GameNotFoundError, ExecutableVersionError, ManifestMissingError, \
     GDPFoundError, ResourcesMissingError, ManifestKeyError, \
-    ModsFoundError, ModNotFoundError, ExecutableNotFoundError, \
-    NoGamePathError, NotAbsolutePathError
+    ModsFoundError, ModsNotFoundError, ExecutableNotFoundError, \
+    NoGamePathError, NotAbsolutePathError, ModVersionError
 
 from enviroment import MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH
 from gui_info import FULL_NAME, SUPPORTED_VERSIONS, PRESETS
@@ -34,7 +34,7 @@ logging.basicConfig(
     encoding="utf-8"
 )
 
-logger = logging.getLogger("randomizer_flet")
+logger = logging.getLogger(Path(__file__).name)
 
 
 class RandomizerWindow(MainGui):
@@ -248,7 +248,7 @@ class RandomizerWindow(MainGui):
 
             return
         except (RootNotFoundError, GameNotFoundError,
-                VersionError, ExecutableNotFoundError):
+                ExecutableVersionError, ExecutableNotFoundError):
             self.game_path_status_t.color = "red"
             self.game_path_status_t.opacity = 100
             self.game_path_status_t.value = self.locale.tr("invalid_path")
@@ -402,7 +402,6 @@ class RandomizerWindow(MainGui):
         self.config.game_version = self.game_version_dd.value
         chkbxs = self.collect_chkbxs_values()
         self.config.chkbxs.update(chkbxs)
-        # self.config.update_config()
 
     def set_custom_preset(self, _: ControlEvent = None) -> None:
         """
@@ -438,13 +437,14 @@ class RandomizerWindow(MainGui):
 
         self.info_cont_write(self.locale.tr("rand_validation"))
         try:
-            fov_allowed, manifest_path, options_path \
-                = validate_context(self.config)
-            self.config.manifest = manifest_path
-            self.config.options = options_path
+            fov_allowed, manifest = validate_context(self.config)
+            # self.config.manifest = manifest_path
+            # self.config.options = options_path
         except (RootNotFoundError, ExecutableNotFoundError, GameNotFoundError,
-                GDPFoundError, VersionError, ManifestMissingError,
-                NoGamePathError, NotAbsolutePathError) as err:
+                GDPFoundError, ExecutableVersionError, ManifestMissingError,
+                NoGamePathError, NotAbsolutePathError, ResourcesMissingError,
+                ModsNotFoundError, ModsFoundError, ModVersionError
+                ) as err:
             logger.error(err)
 
             cont_error_message = self.locale.tr(err.ui_message_key)
@@ -540,7 +540,7 @@ class RandomizerWindow(MainGui):
                 "red"
             )
             self.info_cont_abort()
-        except ModNotFoundError as mod_not_found:
+        except ModsNotFoundError as mod_not_found:
             self.info_cont_write(
                 f"{self.locale.tr('mod_not_found')}:\n{mod_not_found}",
                 "red"

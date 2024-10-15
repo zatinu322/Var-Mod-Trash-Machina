@@ -3,7 +3,7 @@ import copy
 from pathlib import Path
 
 from errors import ManifestMissingError, ResourcesMissingError, \
-    ModsFoundError, ModNotFoundError
+    ModsFoundError, ModsNotFoundError
 from config import Config
 from yaml_parser import YamlConfig
 from yaml_schema import validate_manifest_types
@@ -87,12 +87,12 @@ class Randomizer():
 
                 case "isl12cp" | "isl12cr":
                     if "ImprovedStoryline" not in mod_manifest.yaml:
-                        raise ModNotFoundError("Improved Storyline v1.2")
+                        raise ModsNotFoundError("Improved Storyline v1.2")
 
                     isl_ver = mod_manifest.yaml["ImprovedStoryline"]["version"]
 
                     if isl_ver not in ["1.2", "1.2 HD"]:
-                        raise ModNotFoundError("Improved Storyline v1.2")
+                        raise ModsNotFoundError("Improved Storyline v1.2")
 
                     if self.game_version == "isl12cp":
                         mods_amount = 2

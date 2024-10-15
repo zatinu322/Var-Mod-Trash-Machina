@@ -5,8 +5,8 @@ FULL_NAME = f"{NAME} {VERSION} {BUILD}"
 
 SUPPORTED_VERSIONS = {
     "steam": "Steam v1.02",
-    "cp114": "Community Patch v1.14",
-    "cr114": "Community Remaster v1.14",
+    "cp114": "Community Patch v1.14.1",
+    "cr114": "Community Remaster v1.14.1",
     "isl12cp": "Improved Storyline v1.2 (ComPatch)",
     "isl12cr": "Improved Storyline v1.2 (ComRemaster)",
     "isl1053": "Improved Storyline v1.0.5.3"
