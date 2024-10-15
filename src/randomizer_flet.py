@@ -20,6 +20,7 @@ from errors import LocalisationMissingError, RootNotFoundError, \
 
 from enviroment import MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH
 from gui_info import FULL_NAME, SUPPORTED_VERSIONS, PRESETS
+from yaml_utils import serialize_yaml, save_yaml
 
 # from icecream import ic
 
@@ -40,14 +41,20 @@ class RandomizerWindow(MainGui):
     def __init__(
         self,
         page: Page,
-        config: Config,
-        locale: Localisation,
+        config_path: Path,
+        locale_path: Path,
         working_width: int
     ) -> None:
         super().__init__(page, working_width)
 
-        self.config = config
-        self.locale = locale
+        serialized_config = serialize_yaml(config_path)
+        self.config = Config()
+        self.config.load_app_config(serialized_config)
+
+        serialized_locales = serialize_yaml(locale_path)
+        if not serialized_locales or not isinstance(serialized_locales, dict):
+            raise LocalisationMissingError(locale_path, "any")
+        self.locale = Localisation(locales=serialized_locales)
 
         # different column widths for different languages
         self.opt_column_widths = {
@@ -114,11 +121,11 @@ class RandomizerWindow(MainGui):
         """
         match e.control:
             case self.btn_rus:
-                self.locale.update_lang("rus")
-                self.config.lang = "rus"
+                self.locale.update_language("rus")
+                self.config.language = "rus"
             case self.btn_eng:
-                self.locale.update_lang("eng")
-                self.config.lang = "eng"
+                self.locale.update_language("eng")
+                self.config.language = "eng"
         self.retranslate_ui()
 
     def apply_config(self):
@@ -133,7 +140,7 @@ class RandomizerWindow(MainGui):
             self.page.window_width = self.config.width
             self.page.window_height = self.config.height
 
-        self.locale.update_lang(self.config.lang)
+        self.locale.update_language(self.config.language)
         self.retranslate_ui()
 
         self.dd_preset.value = self.config.preset
@@ -155,8 +162,8 @@ class RandomizerWindow(MainGui):
         """
 
         for (k, k1), v in self.opt_column_widths.items():
-            k.width = v.get(self.locale.lang)
-            k1.width = v.get(self.locale.lang)
+            k.width = v.get(self.locale.language)
+            k1.width = v.get(self.locale.language)
 
         self.update_app()
 
@@ -395,7 +402,7 @@ class RandomizerWindow(MainGui):
         self.config.game_version = self.game_version_dd.value
         chkbxs = self.collect_chkbxs_values()
         self.config.chkbxs.update(chkbxs)
-        self.config.update_config()
+        # self.config.update_config()
 
     def set_custom_preset(self, _: ControlEvent = None) -> None:
         """
@@ -581,7 +588,7 @@ def main(page: Page) -> None:
         if e.data == "close":
             try:
                 main_app.update_config()
-                main_app.config.save_yaml(main_app.config.yaml)
+                save_yaml(SETTINGS_PATH, main_app.config.to_dict())
             except Exception as exc:
                 logger.error(exc)
 
@@ -633,8 +640,8 @@ def main(page: Page) -> None:
     try:
         main_app = RandomizerWindow(
             page=page,
-            config=Config(SETTINGS_PATH),
-            locale=Localisation(LOCALIZATION_PATH),
+            config_path=SETTINGS_PATH,
+            locale_path=LOCALIZATION_PATH,
             working_width=800
         )
     except (LocalisationMissingError, Exception) as error:

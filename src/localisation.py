@@ -1,42 +1,36 @@
+from dataclasses import dataclass
 import logging
+from pathlib import Path
+from typing import Optional
 
-from yaml_parser import YamlConfig
-from errors import LocalisationMissingError
-
-logger = logging.getLogger("localisation")
+logger = logging.getLogger(Path(__file__).name)
 
 
-class Localisation(YamlConfig):
-    def __init__(self, path_to_file, lang="eng") -> None:
-        super().__init__(path_to_file)
+@dataclass
+class Localisation:
+    locales: dict
+    language: str = "eng"
+    current_locale: Optional[dict] = None
 
-        if not self.yaml or not isinstance(self.yaml, dict):
-            raise LocalisationMissingError(self.path, "any")
-
-        self.lang: str = lang
-        self.cur_locale: dict = self.yaml.get(self.lang, {})
-
-    def update_lang(self, lang: str) -> None:
+    def update_language(self, language: str) -> None:
         """
-        Updates current localisation dict.
+        Updates current locale dict.
         """
-        self.lang = lang
-        self.cur_locale = self.yaml.get(self.lang, {})
+        self.language = language
+        self.current_locale = self.locales.get(self.language, {})
 
-        if not self.cur_locale:
-            logger.error(
-                f"\"{self.lang}\" language is missing in {self.path}."
-            )
+        if not self.current_locale:
+            logger.error(f"Locale for {self.language} is missing.")
             return
 
-    def tr(self, message: str) -> str:
+    def tr(self, message_key: str) -> str:
         """
         Returns phrase in current language by requested key.
 
         If key is missing - returns key.
         """
-        if message in self.cur_locale:
-            return self.cur_locale.get(message)
-        else:
-            logger.error(f"{message} key is missing for {self.lang} language.")
-            return message
+        if message_key not in self.current_locale:
+            logger.error(f"{message_key} key is missing "
+                         f"for {self.language} language.")
+            return message_key
+        return self.current_locale[message_key]
