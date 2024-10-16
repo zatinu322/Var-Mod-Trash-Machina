@@ -6,22 +6,22 @@ from flet import Page, Row, FilePicker, dropdown, ContainerTapEvent, Text, \
     FilePickerResultEvent, ControlEvent, Container, alignment, \
     MainAxisAlignment, ThemeMode, padding, app
 
-from randomizer import Randomizer
-from gui import MainGui
-from config import Config
-from localisation import Localisation
-from validation import validate_context, validate_game_dir
-from errors import LocalisationMissingError, RootNotFoundError, \
+from randomizer.randomizer import Randomizer
+from .gui import MainGui
+from config.app_config import Config
+from localisation.localisation import Localisation
+from validation.validation import validate_context, validate_game_dir
+from helpers.errors import LocalisationMissingError, RootNotFoundError, \
     GameNotFoundError, ExecutableVersionError, ManifestMissingError, \
     GDPFoundError, ResourcesMissingError, ModsFoundError, ModsNotFoundError, \
     ExecutableNotFoundError, NoGamePathError, NotAbsolutePathError, \
     ModVersionError
 
-from enviroment import MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, \
+from helpers.paths_utils import MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, \
     RESOURCES_PATH
-from gui_info import FULL_NAME, SUPPORTED_VERSIONS, PRESETS
-from working_set_manager import serialize_manifest
-from yaml_utils import serialize_yaml, save_yaml
+from gui.gui_info import FULL_NAME, SUPPORTED_VERSIONS, PRESETS
+from config.randomization_config import serialize_manifest
+from helpers.yaml_utils import serialize_yaml, save_yaml
 
 # from icecream import ic
 

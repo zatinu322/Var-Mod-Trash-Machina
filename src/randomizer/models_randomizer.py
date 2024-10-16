@@ -3,8 +3,8 @@ from random import shuffle
 from pathlib import Path
 import logging
 
-from text_randomizer import TextRandomizer
-from working_set_manager import RandomizationParams
+from .text_randomizer import TextRandomizer
+from config.randomization_config import RandomizationParams
 
 logger = logging.getLogger(Path(__file__).name)
 

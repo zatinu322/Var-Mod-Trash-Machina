@@ -45,7 +45,7 @@ cb_speech: false
 cb_splashes: false
 cb_tiles: false
 cb_towns: false
-cb_trees: true
+cb_trees: false
 cb_veh_skins: false
 cb_weather: false
 cb_wheels: false

@@ -2,8 +2,8 @@ from random import shuffle
 import logging
 from pathlib import Path
 
-from models_randomizer import ModelsRandomizer
-from working_set_manager import RandomizationParams
+from .models_randomizer import ModelsRandomizer
+from config.randomization_config import RandomizationParams
 
 logger = logging.getLogger(Path(__file__).name)
 

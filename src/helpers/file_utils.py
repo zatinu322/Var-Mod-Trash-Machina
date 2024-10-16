@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 import logging
 
-from working_set_manager import RandomizationParams
+from config.randomization_config import RandomizationParams
 
 logger = logging.getLogger(Path(__file__).name)
 

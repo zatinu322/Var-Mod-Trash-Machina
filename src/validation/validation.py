@@ -2,15 +2,15 @@ from contextlib import contextmanager
 import logging
 from pathlib import Path
 
-from validation_data import REQUIRED_GAME_PATHS, POSSIBLE_EXE_NAMES, \
+from .validation_data import REQUIRED_GAME_PATHS, POSSIBLE_EXE_NAMES, \
     VERSIONS
-from config import Config
-from errors import ManifestMissingError, RootNotFoundError, \
+from config.app_config import Config
+from helpers.errors import ManifestMissingError, RootNotFoundError, \
     ExecutableVersionError, GameNotFoundError, GDPFoundError, \
     ExecutableNotFoundError, NoGamePathError, NotAbsolutePathError, \
     ResourcesMissingError, ModsNotFoundError, ModsFoundError, ModVersionError
-from yaml_schema import validate_manifest_types
-from yaml_utils import serialize_yaml
+from .yaml_schema import validate_manifest_types
+from helpers.yaml_utils import serialize_yaml
 
 logger = logging.getLogger(Path(__file__).name)
 

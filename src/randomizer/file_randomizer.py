@@ -4,7 +4,7 @@ from random import shuffle
 import logging
 from pathlib import Path
 
-from working_set_manager import RandomizationParams
+from config.randomization_config import RandomizationParams
 
 logger = logging.getLogger(Path(__file__).name)
 

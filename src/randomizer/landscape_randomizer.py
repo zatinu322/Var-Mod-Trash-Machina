@@ -3,7 +3,7 @@ from pathlib import Path
 from random import random
 import logging
 
-from working_set_manager import RandomizationParams
+from config.randomization_config import RandomizationParams
 
 logger = logging.getLogger(Path(__file__).name)
 
@@ -32,8 +32,8 @@ class LandscapeRandomizer:
             return True
         else:
             logger.info(
-                f"Multiple landscape distortion is prohibited \
-                in {folder_path}."
+                "Multiple landscape distortion is prohibited "
+                f"in {folder_path}."
             )
             return False
 

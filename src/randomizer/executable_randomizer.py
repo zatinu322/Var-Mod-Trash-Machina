@@ -2,8 +2,8 @@ import struct
 import logging
 from pathlib import Path
 
-from offsets_utils import OFFSETS_EXE, generate_offsets
-from working_set_manager import RandomizationParams
+from helpers.offsets_utils import OFFSETS_EXE, generate_offsets
+from config.randomization_config import RandomizationParams
 
 logger = logging.getLogger(Path(__file__).name)
 

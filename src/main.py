@@ -1,7 +1,7 @@
 import logging
 import sys
 
-import randomizer_flet
+import gui.flet_window as flet_window
 
 
 def main_gui() -> None:
@@ -14,7 +14,7 @@ def main_gui() -> None:
         datefmt="%d/%m/%Y %H:%M:%S",
         encoding="utf-8"
     )
-    randomizer_flet.start()
+    flet_window.start()
 
 
 if __name__ == "__main__":
