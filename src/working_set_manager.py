@@ -1,21 +1,80 @@
-from logging import Logger
+import copy
+from dataclasses import dataclass
+import logging
 from pathlib import Path
 
+logger = logging.getLogger(Path(__file__).name)
 
-class WorkingSetManager():
-    def __init__(self, working_set: dict) -> None:
-        self.logger: Logger = working_set["logger"]
-        self.game_path: Path = Path(working_set["game_path"])
-        self.game_version: str = working_set["game_version"]
-        self.resources: list[str] = working_set["resources"]
-        self.lua_to_edit: Path = Path(working_set["lua_to_edit"])
-        self.server_paths: list[str] = working_set["server_paths"]
-        self.server_items: list[str] = working_set["server_items"]
-        self.triggers_to_change: dict = working_set["triggers_to_change"]
-        self.files: list = working_set["files"]
-        self.text: list = working_set["text"]
-        self.models: list = working_set["models"]
-        self.npc_look: list = working_set["npc_look"]
-        self.landscape: list = working_set["landscape"]
-        self.exe: list = working_set["exe"]
-        self.lua: list = working_set["lua"]
+
+@dataclass
+class RandomizationParams:
+    game_path: Path
+    game_version: str
+    resources_path: Path
+    resources: list[str]
+    lua_to_edit: Path
+    server_paths: list[str]
+    server_items: list[str]
+    triggers_to_change: dict
+    files: list
+    text: list
+    models: list
+    npc_look: list
+    landscape: list
+    exe: list
+    lua: list
+
+
+def serialize_manifest(manifest: dict,
+                       checkboxes: dict,
+                       game_path: str,
+                       game_version: str,
+                       resources_path: Path) -> RandomizationParams:
+    files = []
+    text = []
+    models = []
+    npc_look = []
+    landscape = {}
+    exe = {"content": []}
+    lua = []
+
+    for chkbx, state in checkboxes.items():
+        if not state:
+            continue
+
+        category = manifest[chkbx]
+
+        match category["type"]:
+            case "files":
+                files.extend(category["groups"])
+            case "text":
+                text.extend(category["groups"])
+            case "models":
+                models.append(category)
+            case "npc_look":
+                npc_look.extend(category["groups"])
+            case "landscape":
+                landscape = copy.copy(category)
+            case "exe":
+                exe["content"].append(category["content"])
+                exe["file"] = category["file"]
+            case "lua":
+                lua.append(category)
+
+    return RandomizationParams(
+        game_path=Path(game_path),
+        game_version=game_version,
+        resources_path=resources_path,
+        resources=manifest["resources_validation"],
+        lua_to_edit=manifest["lua_to_edit"],
+        server_paths=manifest["server_paths"],
+        server_items=manifest["server_items"],
+        triggers_to_change=manifest["triggers_to_change"],
+        files=files,
+        text=text,
+        models=models,
+        npc_look=npc_look,
+        landscape=landscape,
+        exe=exe,
+        lua=lua
+    )

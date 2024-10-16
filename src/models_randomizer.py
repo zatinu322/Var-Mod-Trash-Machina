@@ -1,19 +1,23 @@
 import xml.etree.ElementTree as ET
 from random import shuffle
 from pathlib import Path
+import logging
 
 from text_randomizer import TextRandomizer
+from working_set_manager import RandomizationParams
+
+logger = logging.getLogger(Path(__file__).name)
 
 
 class ModelsRandomizer(TextRandomizer):
-    def __init__(self, working_set) -> None:
-        super().__init__(working_set)
+    def __init__(self, params: RandomizationParams) -> None:
+        super().__init__(params)
 
     def clear_animmodels(self) -> None:
         """
         Clears animmodels.xml from duplicates that original game has.
         """
-        animmodels_path = self.game_path / "data/models/animmodels.xml"
+        animmodels_path = self.params.game_path / "data/models/animmodels.xml"
         root = self.parse_xml(animmodels_path)
 
         for tag in root.iter("model"):
@@ -43,7 +47,7 @@ class ModelsRandomizer(TextRandomizer):
 
     def randomize(self, groups: list) -> None:
         for group in groups:
-            xml_path = self.game_path / self.path
+            xml_path = self.params.game_path / self.path
             root = self.parse_xml(xml_path)
 
             for tag in root.iter(self.tag):
@@ -63,15 +67,15 @@ class ModelsRandomizer(TextRandomizer):
             self.write_xml(root, xml_path)
 
     def start_randomization(self) -> None:
-        if not self.models:
-            self.logger.info("Nothing to randomize.")
+        if not self.params.models:
+            logger.info("Nothing to randomize.")
             return
 
-        self.tag = self.models[0]["tag"]
-        self.name = self.models[0]["name"]
-        self.path = self.models[0]["path"]
+        self.tag = self.params.models[0]["tag"]
+        self.name = self.params.models[0]["name"]
+        self.path = self.params.models[0]["path"]
 
-        if self.game_version == "steam":
+        if self.params.game_version == "steam":
             self.clear_animmodels()
-        for groups in self.models:
+        for groups in self.params.models:
             self.randomize(groups["groups"])

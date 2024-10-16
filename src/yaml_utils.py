@@ -2,7 +2,7 @@ import yaml
 import logging
 from pathlib import Path
 
-logger = logging.getLogger("yaml_parser")
+logger = logging.getLogger(Path(__file__).name)
 
 
 def serialize_yaml(yaml_path: Path) -> dict:

@@ -1,20 +1,25 @@
 from random import shuffle
+import logging
+from pathlib import Path
 
 from models_randomizer import ModelsRandomizer
+from working_set_manager import RandomizationParams
+
+logger = logging.getLogger(Path(__file__).name)
 
 
 class BarNpcRandomizer(ModelsRandomizer):
-    def __init__(self, working_set: dict) -> None:
-        super().__init__(working_set)
+    def __init__(self, params: RandomizationParams) -> None:
+        super().__init__(params)
 
     def collect_data_from_xml(self, xml_info: dict) -> list:
         npcs_outfit = []
         for level in xml_info["maps"]:
-            xml_path = self.game_path / level / xml_info["file"]
+            xml_path = self.params.game_path / level / xml_info["file"]
             root = self.parse_xml(xml_path)
 
             for tag in root.iter(xml_info["tag"]):
-                if not xml_info["name"] in tag.attrib:
+                if xml_info["name"] not in tag.attrib:
                     continue
                 if "prototype" in xml_info:
                     if not tag.attrib.get(
@@ -39,11 +44,11 @@ class BarNpcRandomizer(ModelsRandomizer):
     def set_data_to_xml(self, xml_info: dict, content: list[dict]) -> None:
         li = 0
         for level in xml_info["maps"]:
-            xml_path = self.game_path / level / xml_info["file"]
+            xml_path = self.params.game_path / level / xml_info["file"]
             root = self.parse_xml(xml_path)
 
             for tag in root.iter(xml_info["tag"]):
-                if not xml_info["name"] in tag.attrib:
+                if xml_info["name"]not in tag.attrib:
                     continue
                 if "prototype" in xml_info:
                     if not tag.attrib.get(
@@ -81,8 +86,8 @@ class BarNpcRandomizer(ModelsRandomizer):
         self.set_data_to_xml(group, npcs_outfit)
 
     def start_randomization(self) -> None:
-        if not self.npc_look:
-            self.logger.info("Nothing to randomize.")
+        if not self.params.npc_look:
+            logger.info("Nothing to randomize.")
             return
-        for group in self.npc_look:
+        for group in self.params.npc_look:
             self.randomize(group)

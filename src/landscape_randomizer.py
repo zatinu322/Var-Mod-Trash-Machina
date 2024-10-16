@@ -1,13 +1,16 @@
 import struct
 from pathlib import Path
 from random import random
+import logging
 
-from working_set_manager import WorkingSetManager
+from working_set_manager import RandomizationParams
+
+logger = logging.getLogger(Path(__file__).name)
 
 
-class LandscapeRandomizer(WorkingSetManager):
-    def __init__(self, working_set: dict) -> None:
-        super().__init__(working_set)
+class LandscapeRandomizer:
+    def __init__(self, params: RandomizationParams) -> None:
+        self.params = params
 
         # self.options = self.manifest.get("landscape")
 
@@ -21,14 +24,14 @@ class LandscapeRandomizer(WorkingSetManager):
         dot_landscape = bool(list(folder_path.glob(state_file)))
 
         if dot_landscape and restriction:
-            self.logger.info(
+            logger.info(
                 f"Multiple landscape distortion is allowed in {folder_path}."
             )
             return True
         elif not dot_landscape:
             return True
         else:
-            self.logger.info(
+            logger.info(
                 f"Multiple landscape distortion is prohibited \
                 in {folder_path}."
             )
@@ -36,7 +39,7 @@ class LandscapeRandomizer(WorkingSetManager):
 
     def distort_landscape(self, xml_info: dict) -> None:
         for level in xml_info["maps"]:
-            folder_path = self.game_path / level
+            folder_path = self.params.game_path / level
             state_file = xml_info["state"]
 
             multiple_allowed = xml_info["multiple"]
@@ -65,11 +68,11 @@ class LandscapeRandomizer(WorkingSetManager):
                 with open(file_path, "wb") as stream:
                     stream.write(struct.pack(fmt, *data))
 
-                self.logger.info(f"Distorted landscape in {folder_path}")
+                logger.info(f"Distorted landscape in {folder_path}")
 
     def start_randomization(self) -> None:
-        if not self.landscape:
-            self.logger.info("Nothing to randomize.")
+        if not self.params.landscape:
+            logger.info("Nothing to randomize.")
             return
 
-        self.distort_landscape(self.landscape)
+        self.distort_landscape(self.params.landscape)

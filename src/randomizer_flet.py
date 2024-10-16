@@ -6,7 +6,6 @@ from flet import Page, Row, FilePicker, dropdown, ContainerTapEvent, Text, \
     FilePickerResultEvent, ControlEvent, Container, alignment, \
     MainAxisAlignment, ThemeMode, padding, app
 
-import main_randomizer as mr
 from randomizer import Randomizer
 from gui import MainGui
 from config import Config
@@ -14,25 +13,17 @@ from localisation import Localisation
 from validation import validate_context, validate_game_dir
 from errors import LocalisationMissingError, RootNotFoundError, \
     GameNotFoundError, ExecutableVersionError, ManifestMissingError, \
-    GDPFoundError, ResourcesMissingError, ManifestKeyError, \
-    ModsFoundError, ModsNotFoundError, ExecutableNotFoundError, \
-    NoGamePathError, NotAbsolutePathError, ModVersionError
+    GDPFoundError, ResourcesMissingError, ModsFoundError, ModsNotFoundError, \
+    ExecutableNotFoundError, NoGamePathError, NotAbsolutePathError, \
+    ModVersionError
 
-from enviroment import MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH
+from enviroment import MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, \
+    RESOURCES_PATH
 from gui_info import FULL_NAME, SUPPORTED_VERSIONS, PRESETS
+from working_set_manager import serialize_manifest
 from yaml_utils import serialize_yaml, save_yaml
 
 # from icecream import ic
-
-logging.basicConfig(
-    filename="randomizer.log",
-    level=logging.INFO,
-    format="[%(levelname)s][%(asctime)s]: "
-           "%(message)s [%(filename)s, %(funcName)s]",
-    filemode="w",
-    datefmt="%m/%d/%Y %H:%M:%S",
-    encoding="utf-8"
-)
 
 logger = logging.getLogger(Path(__file__).name)
 
@@ -43,12 +34,13 @@ class RandomizerWindow(MainGui):
         page: Page,
         config_path: Path,
         locale_path: Path,
+        resources_path: Path,
         working_width: int
     ) -> None:
         super().__init__(page, working_width)
 
         serialized_config = serialize_yaml(config_path)
-        self.config = Config()
+        self.config = Config(resources_path=resources_path)
         self.config.load_app_config(serialized_config)
 
         serialized_locales = serialize_yaml(locale_path)
@@ -438,8 +430,6 @@ class RandomizerWindow(MainGui):
         self.info_cont_write(self.locale.tr("rand_validation"))
         try:
             fov_allowed, manifest = validate_context(self.config)
-            # self.config.manifest = manifest_path
-            # self.config.options = options_path
         except (RootNotFoundError, ExecutableNotFoundError, GameNotFoundError,
                 GDPFoundError, ExecutableVersionError, ManifestMissingError,
                 NoGamePathError, NotAbsolutePathError, ResourcesMissingError,
@@ -458,6 +448,14 @@ class RandomizerWindow(MainGui):
             )
             self.info_cont_abort()
             return
+        except ValidationError as validation_error:
+            self.info_cont_write(
+                self.locale.tr('incorrect_types'),
+                "red"
+            )
+            self.info_cont_abort()
+            for error in validation_error.errors():
+                logger.error(error)
 
         if not fov_allowed:
             self.info_cont_write(
@@ -469,101 +467,64 @@ class RandomizerWindow(MainGui):
 
         self.progress_bar.value += 0.10
 
-        try:
-            randomizer = Randomizer(self.config)
-            working_set = randomizer.generate_working_set()
+        params = serialize_manifest(
+            manifest,
+            self.config.chkbxs,
+            self.config.game_path,
+            self.config.game_version,
+            self.config.resources_path
+        )
 
-            self.info_cont_write(self.locale.tr("rand_copy"))
-            mr.copy_files(working_set)
-            self.progress_bar.value += 0.10
+        randomizer = Randomizer(params)
 
-            self.info_cont_write(self.locale.tr("rand_prepare"))
-            mr.edit_files(working_set)
-            self.progress_bar.value += 0.10
+        self.info_cont_write(self.locale.tr("rand_copy"))
+        randomizer.copy_files()
+        self.progress_bar.value += 0.10
 
-            self.info_cont_write(self.locale.tr("rand_files"))
-            mr.randomize_files(working_set)
-            # if not status:
-            #     self.info_cont_write(f"{self.locale.tr('rand_nothing')}")
-            # else:
-            #     self.info_cont_write(f"{self.locale.tr('rand_done')}")
-            self.progress_bar.value += 0.10
+        self.info_cont_write(self.locale.tr("rand_prepare"))
+        randomizer.edit_files()
+        self.progress_bar.value += 0.10
 
-            self.info_cont_write(self.locale.tr("rand_text"))
-            mr.randomize_text(working_set)
-            self.progress_bar.value += 0.10
+        self.info_cont_write(self.locale.tr("rand_files"))
+        randomizer.randomize_files()
+        # if not status:
+        #     self.info_cont_write(f"{self.locale.tr('rand_nothing')}")
+        # else:
+        #     self.info_cont_write(f"{self.locale.tr('rand_done')}")
+        self.progress_bar.value += 0.10
 
-            self.info_cont_write(self.locale.tr("rand_models"))
-            mr.randomize_models(working_set)
-            self.progress_bar.value += 0.10
+        self.info_cont_write(self.locale.tr("rand_text"))
+        randomizer.randomize_text()
+        self.progress_bar.value += 0.10
 
-            self.info_cont_write(self.locale.tr("rand_barnpcs"))
-            mr.randomize_barnpcs(working_set)
-            self.progress_bar.value += 0.10
+        self.info_cont_write(self.locale.tr("rand_models"))
+        randomizer.randomize_models()
+        self.progress_bar.value += 0.10
 
-            self.info_cont_write(self.locale.tr("rand_landscape"))
-            mr.randomize_landscape(working_set)
-            self.progress_bar.value += 0.10
+        self.info_cont_write(self.locale.tr("rand_barnpcs"))
+        randomizer.randomize_barnpcs()
+        self.progress_bar.value += 0.10
 
-            self.info_cont_write(self.locale.tr("rand_executable"))
-            new_exe = mr.randomize_executable(working_set)
-            self.progress_bar.value += 0.10
-            if new_exe:
-                for option, value in new_exe.items():
-                    self.info_cont_write(
-                        f"{'\t'*10}{self.locale.tr(option)}: {value}",
-                        "yellow"
-                    )
+        self.info_cont_write(self.locale.tr("rand_landscape"))
+        randomizer.randomize_landscape()
+        self.progress_bar.value += 0.10
 
-            self.info_cont_write(self.locale.tr("rand_lua"))
-            mr.randomize_lua(working_set)
-            self.progress_bar.value += 0.10
+        self.info_cont_write(self.locale.tr("rand_executable"))
+        new_exe = randomizer.randomize_executable()
+        self.progress_bar.value += 0.10
+        if new_exe:
+            for option, value in new_exe.items():
+                self.info_cont_write(
+                    f"{'\t'*10}{self.locale.tr(option)}: {value}",
+                    "yellow"
+                )
 
-            self.info_cont_success()
-        except ValidationError as validation_error:
-            self.info_cont_write(
-                self.locale.tr('incorrect_types'),
-                "red"
-            )
-            self.info_cont_abort()
-            for error in validation_error.errors():
-                logger.error(error)
-        except ManifestMissingError as bad_manifest:
-            self.info_cont_write(
-                f"{self.locale.tr('bad_manifest')}\n{bad_manifest}",
-                "red"
-            )
-            self.info_cont_abort()
-        except ModsFoundError as mods_found:
-            self.info_cont_write(
-                f"{self.locale.tr('mods_found')}:\n{mods_found}",
-                "red"
-            )
-            self.info_cont_abort()
-        except ModsNotFoundError as mod_not_found:
-            self.info_cont_write(
-                f"{self.locale.tr('mod_not_found')}:\n{mod_not_found}",
-                "red"
-            )
-            self.info_cont_abort()
-        except ResourcesMissingError as res_missing:
-            self.info_cont_write(
-                f"{self.locale.tr('file_missing')}\n{res_missing}",
-                "red"
-            )
-            self.info_cont_abort()
-        except ManifestKeyError as wrong_key_type:
-            self.info_cont_write(
-                f"{self.locale.tr('wrong_key_type')} {wrong_key_type}",
-                "red"
-            )
-            self.info_cont_abort()
+        self.info_cont_write(self.locale.tr("rand_lua"))
+        randomizer.randomize_lua()
+        self.progress_bar.value += 0.10
 
-        # except Exception as exc:
-        #     self.info_cont_write(exc, "red")
-        #     self.info_cont_abort()
-        finally:
-            self.info_cont_btn.disabled = False
+        self.info_cont_success()
+        self.info_cont_btn.disabled = False
 
 
 def main(page: Page) -> None:
@@ -642,6 +603,7 @@ def main(page: Page) -> None:
             page=page,
             config_path=SETTINGS_PATH,
             locale_path=LOCALIZATION_PATH,
+            resources_path=RESOURCES_PATH,
             working_width=800
         )
     except (LocalisationMissingError, Exception) as error:

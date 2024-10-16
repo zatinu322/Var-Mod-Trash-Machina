@@ -16,6 +16,7 @@ class Config:
     language: str = "eng"
     game_path: str = ""
     game_version: str = ""
+    resources_path: str = ""
     preset: str = ""
     manifest: str = field(default="", repr=False)
     options: str = field(default="", repr=False)

@@ -1,28 +1,31 @@
 import xml.etree.ElementTree as ET
 from random import shuffle
 from pathlib import Path
+import logging
 
-from working_set_manager import WorkingSetManager
+from working_set_manager import RandomizationParams
+
+logger = logging.getLogger(Path(__file__).name)
 
 
-class TextRandomizer(WorkingSetManager):
-    def __init__(self, working_set: dict) -> None:
-        super().__init__(working_set)
+class TextRandomizer:
+    def __init__(self, params: RandomizationParams) -> None:
+        self.params = params
 
     def parse_xml(self, xml_path: Path) -> ET.ElementTree | None:
         try:
             tree = ET.parse(xml_path)
             return tree
         except FileNotFoundError:
-            self.logger.error(f"File {xml_path} not found.")
+            logger.error(f"File {xml_path} not found.")
             # self.report_error(f"File {xml_path} not found.")
         except ET.ParseError:
-            self.logger.error(f"Unable to parse {xml_path}. Probably bad xml.")
+            logger.error(f"Unable to parse {xml_path}. Probably bad xml.")
             # self.report_error(
             #     f"Unable to parse {xml_path}. Probably bad xml."
             # )
         except PermissionError:
-            self.logger.error(f"Permission error: {xml_path}")
+            logger.error(f"Permission error: {xml_path}")
             # self.report_error(f"Permission error: {xml_path}")
 
     def write_xml(self, text: list, groups: list) -> None:
@@ -30,7 +33,7 @@ class TextRandomizer(WorkingSetManager):
 
         for xml_info in groups:
             for path, info in xml_info.items():
-                xml_path = self.game_path / path
+                xml_path = self.params.game_path / path
                 root = self.parse_xml(xml_path)
 
                 for tag in root.iter(info["tag"]):
@@ -46,7 +49,7 @@ class TextRandomizer(WorkingSetManager):
         text = []
         for xml_info in groups:
             for path, info in xml_info.items():
-                xml_path = self.game_path / path
+                xml_path = self.params.game_path / path
                 root = self.parse_xml(xml_path)
                 if not root:
                     continue
@@ -110,8 +113,8 @@ class TextRandomizer(WorkingSetManager):
         self.write_xml(text, groups)
 
     def start_randomization(self) -> None:
-        if not self.text:
-            self.logger.info("Nothing to randomize.")
+        if not self.params.text:
+            logger.info("Nothing to randomize.")
             return
-        for groups in self.text:
+        for groups in self.params.text:
             self.randomize(groups)

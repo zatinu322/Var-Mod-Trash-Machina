@@ -1,200 +1,75 @@
 import logging
-import copy
 from pathlib import Path
 
-from errors import ManifestMissingError, ResourcesMissingError, \
-    ModsFoundError, ModsNotFoundError
-from config import Config
-from yaml_parser import YamlConfig
-from yaml_schema import validate_manifest_types
-from enviroment import RESOURCES_PATH
+from file_utils import FileCopier, FileEditor
+from file_randomizer import FileRandomizer
+from text_randomizer import TextRandomizer
+from models_randomizer import ModelsRandomizer
+from barnpc_randomizer import BarNpcRandomizer
+from landscape_randomizer import LandscapeRandomizer
+from executable_randomizer import ExecutableRandomizer
+from lua_randomizer import LuaRandomizer
+from working_set_manager import RandomizationParams
+
+logger = logging.getLogger(Path(__file__).name)
 
 
-class Randomizer():
-    def __init__(self, config: Config) -> None:
-        self.game_path = Path(config.game_path)
-        self.game_version = config.game_version
-        self.params = config.chkbxs
-        manifest = YamlConfig(config.manifest)
-        self.errors = 0
-        self.logger = logging.getLogger("pavlik")
-        if manifest.yaml:
-            self.manifest = manifest.yaml
-        else:
-            self.logger.error(f"Unable to load {config.manifest}")
-            raise ManifestMissingError(config.manifest)
+class Randomizer:
+    def __init__(self, params: RandomizationParams) -> None:
+        self.params = params
 
-        if "options" in dir(config):
-            options = YamlConfig(config.options)
-            if options.yaml:
-                self.options = options.yaml
-            else:
-                self.logger.error(f"Unable to load {config.options}")
-                raise ManifestMissingError(config.options)
+    def copy_files(self) -> None:
+        logger.info("Copying necessary files.")
 
-        self.validate_manifest()
+        file_copier = FileCopier(self.params)
+        file_copier.copy_files()
 
-    def validate_manifest(self) -> bool | None:
-        self.logger.info("Validating manifest.")
+    def edit_files(self) -> None:
+        logger.info("Editing necessary files.")
 
-        validate_manifest_types(self.manifest)
+        file_editor = FileEditor(self.params)
+        file_editor.edit_files()
 
-        res_validation = self.manifest["resources_validation"]
-        for file_path in res_validation:
-            full_path: Path = RESOURCES_PATH / file_path
-            if not full_path.exists():
-                self.logger.error(f"File is missing: {full_path.resolve()}")
-                raise ResourcesMissingError(full_path)
+    def randomize_files(self):
+        logger.info("Randomizing files.")
 
-        xml_validation = [path for path in self.manifest["server_paths"]]
-        triggers_info = self.manifest["triggers_to_change"]
-        for k in triggers_info:
-            xml_validation.append(k)
-        xml_validation.append(self.manifest["lua_to_edit"])
+        file_randomizer = FileRandomizer(self.params)
+        file_randomizer.start_randomization()
 
-        for file_path in xml_validation:
-            full_path = self.game_path / file_path
-            if not full_path.exists():
-                self.logger.error(f"File is missing: {full_path.resolve()}")
-                raise ResourcesMissingError(full_path)
+    def randomize_text(self):
+        logger.info("Randomizing text.")
 
-        game_validation = self.manifest["version_validation"]
-        if not game_validation:
-            self.logger.info(
-                "Additional game validation is not specified. Skipping."
-            )
-            return True
-        elif isinstance(game_validation, str):
-            mod_manifest_path = self.game_path / "data" / game_validation
-            if not mod_manifest_path.exists():
-                raise ResourcesMissingError(mod_manifest_path)
+        text_randomizer = TextRandomizer(self.params)
+        text_randomizer.start_randomization()
 
-            mod_manifest = YamlConfig(mod_manifest_path)
+    def randomize_models(self):
+        logger.info("Randomizing models.")
 
-            match self.game_version:
-                case "cp114" | "cr114":
-                    if self.game_version == "cp114":
-                        mods_amount = 1
-                    elif self.game_version == "cr114":
-                        mods_amount = 2
+        models_randomizer = ModelsRandomizer(self.params)
+        models_randomizer.start_randomization()
 
-                    if len(mod_manifest.yaml) > mods_amount:
-                        keys = list(mod_manifest.yaml.keys())
-                        raise ModsFoundError(keys[:-mods_amount])
+    def randomize_barnpcs(self):
+        logger.info("Randomizing NPC in bars.")
 
-                    if self.game_version == "cp114":
-                        return True
+        barnpc_randomizer = BarNpcRandomizer(self.params)
+        barnpc_randomizer.start_randomization()
 
-                case "isl12cp" | "isl12cr":
-                    if "ImprovedStoryline" not in mod_manifest.yaml:
-                        raise ModsNotFoundError("Improved Storyline v1.2")
+    def randomize_landscape(self):
+        logger.info("Randomizing landscape.")
 
-                    isl_ver = mod_manifest.yaml["ImprovedStoryline"]["version"]
+        landscape_randomizer = LandscapeRandomizer(self.params)
+        landscape_randomizer.start_randomization()
 
-                    if isl_ver not in ["1.2", "1.2 HD"]:
-                        raise ModsNotFoundError("Improved Storyline v1.2")
+    def randomize_executable(self) -> dict:
+        logger.info("Randomizing executable.")
 
-                    if self.game_version == "isl12cp":
-                        mods_amount = 2
-                    elif self.game_version == "isl12cr":
-                        mods_amount = 3
+        executable_randomizer = ExecutableRandomizer(self.params)
+        exe_options = executable_randomizer.start_randomization()
 
-                    if len(mod_manifest.yaml) > mods_amount:
-                        keys = list(mod_manifest.yaml.keys())
-                        raise ModsFoundError(keys[:-mods_amount])
+        return exe_options
 
-                    if self.game_version == "isl12cp":
-                        return True
+    def randomize_lua(self):
+        logger.info("Activating randomizing via lua.")
 
-            # update manifest based on installed options
-            match self.game_version:
-                case "cr114" | "isl12cr":
-                    for mod, opt in mod_manifest.yaml.items():
-                        if mod == "community_remaster":
-                            if opt["hd_vehicle_models"] == "yes" \
-                            and opt["ost_remaster"] == "yes":
-                                installed = "ost_and_models"
-                            elif not opt["hd_vehicle_models"] == "yes" \
-                            and opt["ost_remaster"] == "yes":
-                                installed = "only_ost"
-                            elif opt["hd_vehicle_models"] == "yes" \
-                            and not opt["ost_remaster"] == "yes":
-                                installed = "only_models"
-
-            self.manifest.update(
-                self.options[installed]
-            )
-            return True
-        else:
-            raise NotImplementedError()
-
-        # TODO: Add validating to str and list
-
-        # if isinstance(game_validation, list):
-        #     for file_path in game_validation:
-        #         full_path = self.game_path / file_path
-        #         if not full_path.exists():
-        #             self.logger.error(
-        #                 f"File is missing: {full_path.resolve()}"
-        #             )
-        #             raise ResourcesMissingError(full_path)
-        # elif isinstance(game_validation, str):
-        #     mod_manifest = YamlConfig(game_validation)
-        #     ic(mod_manifest.yaml)
-        #     raise NotImplementedError(
-        #         "Validation via mod_manifest is not yet implemented."
-        #     )
-
-    def generate_working_set(self) -> dict:
-        files = []
-        text = []
-        models = []
-        npc_look = []
-        landscape = {}
-        exe = {"content": []}
-        lua = []
-
-        for chkbx, state in self.params.items():
-            if not state:
-                continue
-
-            category = self.manifest[chkbx]
-
-            match category["type"]:
-                case "files":
-                    files.extend(category["groups"])
-                case "text":
-                    text.extend(category["groups"])
-                case "models":
-                    models.append(category)
-                case "npc_look":
-                    npc_look.extend(category["groups"])
-                case "landscape":
-                    landscape = copy.copy(category)
-                case "exe":
-                    exe["content"].append(category["content"])
-                    exe["file"] = category["file"]
-                case "lua":
-                    lua.append(category)
-
-        return {
-            "logger": self.logger,
-            "game_path": self.game_path,
-            "game_version": self.game_version,
-            "resources": self.manifest["resources_validation"],
-            "lua_to_edit": self.manifest["lua_to_edit"],
-            "server_paths": self.manifest["server_paths"],
-            "server_items": self.manifest["server_items"],
-            "triggers_to_change": self.manifest["triggers_to_change"],
-            "files": files,
-            "text": text,
-            "models": models,
-            "npc_look": npc_look,
-            "landscape": landscape,
-            "exe": exe,
-            "lua": lua
-        }
-
-    def report_error(self, msg: str) -> None:
-        self.logger.error(msg)
-        self.errors += 1
+        lua_randomizer = LuaRandomizer(self.params)
+        lua_randomizer.start_randomization()

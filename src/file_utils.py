@@ -1,33 +1,35 @@
 import shutil
 import xml.etree.ElementTree as ET
 from pathlib import Path
+import logging
 
-from working_set_manager import WorkingSetManager
-from enviroment import RESOURCES_PATH
+from working_set_manager import RandomizationParams
+
+logger = logging.getLogger(Path(__file__).name)
 
 
-class FileCopier(WorkingSetManager):
-    def __init__(self, working_set: dict) -> None:
-        super().__init__(working_set)
+class FileCopier:
+    def __init__(self, params: RandomizationParams) -> None:
+        self.params = params
 
     def copy_files(self) -> None:
-        for file in self.resources:
-            file_path = RESOURCES_PATH / file
-            file_game_path = self.game_path / file
+        for file in self.params.resources:
+            file_path = self.params.resources_path / file
+            file_game_path = self.params.game_path / file
 
-            self.logger.debug(
+            logger.debug(
                 f"Copying {file_path} to {file_game_path}."
             )
 
             shutil.copy(file_path, file_game_path)
 
 
-class FileEditor(WorkingSetManager):
-    def __init__(self, working_set: dict) -> None:
-        super().__init__(working_set)
+class FileEditor:
+    def __init__(self, params: RandomizationParams) -> None:
+        self.params = params
 
     def edit_lua(self, lua_path: str):
-        lua_game_path = self.game_path / lua_path
+        lua_game_path = self.params.game_path / lua_path
         line_to_add = 'EXECUTE_SCRIPT "data/scripts/randomizer_vars.lua"\n'
 
         with open(lua_game_path, "a+", encoding="windows-1251") as lua:
@@ -90,17 +92,17 @@ class FileEditor(WorkingSetManager):
         tree.write(file_path, encoding="windows-1251")
 
     def edit_files(self):
-        self.edit_lua(self.lua_to_edit)
+        self.edit_lua(self.params.lua_to_edit)
 
-        for path, trigger_data in self.triggers_to_change.items():
+        for path, trigger_data in self.params.triggers_to_change.items():
             self.edit_xml_triggers(
-                self.game_path / path,
+                self.params.game_path / path,
                 trigger_data["name"],
                 trigger_data["script"]
             )
 
-        for server_path in self.server_paths:
+        for server_path in self.params.server_paths:
             self.edit_xml_servers(
-                self.game_path / server_path,
-                self.server_items
+                self.params.game_path / server_path,
+                self.params.server_items
             )

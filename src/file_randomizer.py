@@ -1,15 +1,18 @@
 import shutil
 import os
 from random import shuffle
+import logging
+from pathlib import Path
 
-from working_set_manager import WorkingSetManager
+from working_set_manager import RandomizationParams
+
+logger = logging.getLogger(Path(__file__).name)
 
 
-class FileRandomizer(WorkingSetManager):
-    def __init__(self, working_set: dict) -> None:
-        super().__init__(working_set)
-
-        self.temp_dir = self.game_path / "temp_random"
+class FileRandomizer:
+    def __init__(self, params: RandomizationParams) -> None:
+        self.params = params
+        self.temp_dir = params.game_path / "temp_random"
 
     def copy_files(self,
                    groups: list[dict],
@@ -22,7 +25,7 @@ class FileRandomizer(WorkingSetManager):
         for group in groups:
             for file_path, files_list in group.items():
                 for file in files_list:
-                    data_path = self.game_path / file_path / file
+                    data_path = self.params.game_path / file_path / file
                     temp_path = self.temp_dir / file
                     try:
                         if dest == "temp":
@@ -46,7 +49,7 @@ class FileRandomizer(WorkingSetManager):
                                         shutil.copyfile(temp_path, data_path)
                                         os.remove(temp_path)
                     except FileNotFoundError as e:
-                        self.logger.error(e)
+                        logger.error(e)
                         # self.report_error(e)
         return [True, repeated_files]
 
@@ -61,10 +64,10 @@ class FileRandomizer(WorkingSetManager):
                 elif bckw:
                     os.rename(new_file_path, old_file_path)
             except FileNotFoundError as exc:
-                self.logger.error(exc)
+                logger.error(exc)
                 # self.report_error(exc)
             except FileExistsError as exc:
-                self.logger.error(exc)
+                logger.error(exc)
                 # self.report_error(exc)
 
             filename += 1
@@ -74,7 +77,7 @@ class FileRandomizer(WorkingSetManager):
     def randomize(self, groups: list) -> bool:
         if not self.temp_dir.exists():
             os.mkdir(self.temp_dir)
-        status, repeatitions = self.copy_files(groups, dest="temp")
+        _, repeatitions = self.copy_files(groups, dest="temp")
 
         files_list = os.listdir(self.temp_dir)
 
@@ -94,10 +97,10 @@ class FileRandomizer(WorkingSetManager):
         return True
 
     def start_randomization(self) -> bool:
-        if not self.files:
-            self.logger.info("Nothing to randomize.")
+        if not self.params.files:
+            logger.info("Nothing to randomize.")
             return False
-        for groups in self.files:
+        for groups in self.params.files:
             self.randomize(groups)
 
         return True

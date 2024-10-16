@@ -1,12 +1,18 @@
-from working_set_manager import WorkingSetManager
+import logging
+from pathlib import Path
+
+from working_set_manager import RandomizationParams
+
+logger = logging.getLogger(Path(__file__).name)
 
 
-class LuaRandomizer(WorkingSetManager):
-    def __init__(self, working_set: dict) -> None:
-        super().__init__(working_set)
+class LuaRandomizer:
+    def __init__(self, params: RandomizationParams) -> None:
+        self.params = params
 
         # self.options: dict = self.manifest.get("lua")
-        self.vars_path = self.game_path / "data/scripts/randomizer_vars.lua"
+        self.vars_path = \
+            self.params.game_path / "data/scripts/randomizer_vars.lua"
 
     def create_var_file(self) -> None:
         with open(self.vars_path, "w", encoding="windows-1251") as stream:
@@ -41,13 +47,13 @@ class LuaRandomizer(WorkingSetManager):
             )
 
     def start_randomization(self) -> None:
-        if not self.lua:
-            self.logger.info("Nothing to randomize.")
+        if not self.params.lua:
+            logger.info("Nothing to randomize.")
             return
 
         self.create_var_file()
 
-        for group in self.lua:
+        for group in self.params.lua:
             self.enable_var(group)
 
         self.set_ending_to_file()

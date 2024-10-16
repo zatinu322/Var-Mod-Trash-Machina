@@ -5,7 +5,6 @@ from pathlib import Path
 from validation_data import REQUIRED_GAME_PATHS, POSSIBLE_EXE_NAMES, \
     VERSIONS
 from config import Config
-from enviroment import RESOURCES_PATH
 from errors import ManifestMissingError, RootNotFoundError, \
     ExecutableVersionError, GameNotFoundError, GDPFoundError, \
     ExecutableNotFoundError, NoGamePathError, NotAbsolutePathError, \
@@ -56,6 +55,7 @@ def validate_context(settings: Config) -> tuple[bool, dict]:
     mod_manifest = validate_game_installation(
         serialized_manifest,
         game_path,
+        settings.resources_path,
         version_info
     )
 
@@ -73,9 +73,10 @@ def validate_context(settings: Config) -> tuple[bool, dict]:
 
 def validate_game_installation(manifest: dict,
                                game_path: Path,
+                               resources_path: Path,
                                version_info: dict) -> None | dict:
     files_to_validate = [
-        *[RESOURCES_PATH / file
+        *[resources_path / file
           for file in manifest["resources_validation"]],
         *[game_path / file for file in manifest["server_paths"]],
         *[game_path / file
