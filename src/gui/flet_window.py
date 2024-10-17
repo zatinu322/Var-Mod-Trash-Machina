@@ -18,7 +18,7 @@ from helpers.errors import LocalisationMissingError, RootNotFoundError, \
     ModVersionError
 
 from helpers.paths_utils import MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, \
-    RESOURCES_PATH
+    RESOURCES_PATH, SRC_PATH
 from gui.gui_info import FULL_NAME, SUPPORTED_VERSIONS, PRESETS
 from config.randomization_config import serialize_manifest
 from helpers.yaml_utils import serialize_yaml, save_yaml
@@ -232,7 +232,7 @@ class RandomizerWindow(MainGui):
             validate_game_dir(game_path)
 
             self.game_path_status_t.value = self.locale.tr("valid_path")
-            self.game_path_status_t.opacity = 100
+            self.game_path_status_t.opacity = 1
             self.game_path_status_t.color = "green"
 
             self.adjust_cb_state()
@@ -242,11 +242,11 @@ class RandomizerWindow(MainGui):
         except (RootNotFoundError, GameNotFoundError,
                 ExecutableVersionError, ExecutableNotFoundError):
             self.game_path_status_t.color = "red"
-            self.game_path_status_t.opacity = 100
+            self.game_path_status_t.opacity = 1
             self.game_path_status_t.value = self.locale.tr("invalid_path")
         except GDPFoundError:
             self.game_path_status_t.color = "red"
-            self.game_path_status_t.opacity = 100
+            self.game_path_status_t.opacity = 1
             self.game_path_status_t.value = self.locale.tr("gdp_found")
 
         self.update_app()
@@ -590,13 +590,17 @@ def main(page: Page) -> None:
     page.window_height = 706
     page.bgcolor = "#3d5a68"
 
+    logo_path = Path(__file__).parent.parent / 'assets' / 'rpg_logo.ico'
+    page.window.icon = logo_path.resolve()
+
     # page.window_resizable = False
     # page.window_maximizable = False
 
     page.theme_mode = ThemeMode.DARK
     page.padding = padding.all(0)
 
-    logger.info(f"Running {FULL_NAME} in {MAIN_PATH}")
+    logger.info(f"Running {FULL_NAME} in {MAIN_PATH.resolve()}")
+    logger.info(f"Source code at {SRC_PATH.resolve()}")
 
     try:
         main_app = RandomizerWindow(
@@ -606,14 +610,14 @@ def main(page: Page) -> None:
             resources_path=RESOURCES_PATH,
             working_width=800
         )
-    except (LocalisationMissingError, Exception) as error:
+    except (LocalisationMissingError) as error:
         logger.critical(error)
         page.add(create_error_container(error))
         page.update()
         return
 
     page.window_prevent_close = True
-    page.on_window_event = save_config
+    page.window.on_event = save_config
     page.on_resize = window_resized
 
     page.add(main_app)

@@ -164,3 +164,4 @@ randomizer.log
 src/example.py
 gui_old.py
 TODO.md
+*.exe

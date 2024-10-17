@@ -1,10 +1,10 @@
-from pathlib import Path
-
 from flet import UserControl, Page, ButtonStyle, RoundedRectangleBorder, \
     Container, Dropdown, ElevatedButton, FontWeight, Text, Row, \
     Column, MainAxisAlignment, border, Checkbox, TextField, \
     padding, alignment, ProgressBar, Image, CrossAxisAlignment, \
     ControlEvent, Icon, icons, animation, IconButton, colors
+
+from helpers.paths_utils import ASSETS_PATH
 
 
 class MainGui(UserControl):
@@ -40,14 +40,14 @@ class MainGui(UserControl):
                 width=80,
                 height=40,
                 ink=True,
-                image_src=Path("src\\assets\\rus.png").resolve(),
+                image_src=(ASSETS_PATH / "rus.png").resolve(),
                 image_fit="fill"
             ),
             Container(
                 width=80,
                 height=40,
                 ink=True,
-                image_src=Path("src\\assets\\eng.png").resolve(),
+                image_src=(ASSETS_PATH / "eng.png").resolve(),
                 image_fit="fill"
             )
         )
@@ -62,10 +62,10 @@ class MainGui(UserControl):
 
         self.dd_preset = Dropdown()
         self.btn_select_all = ElevatedButton(
-            style=self.button_style, width=150, height=58
+            style=self.button_style, width=150, height=58, text='select_all'
         )
         self.btn_deselect_all = ElevatedButton(
-            style=self.button_style, width=150, height=58
+            style=self.button_style, width=150, height=58, text='deselect_all'
         )
 
         self.t_icons = Text(value="t_icons", size=20, weight=FontWeight.BOLD)
@@ -461,7 +461,8 @@ class MainGui(UserControl):
         self.game_path_tf = TextField(width=600)
         self.browse_btn = ElevatedButton(
             bgcolor="white10",
-            style=self.button_style)
+            style=self.button_style,
+            text='browse')
         self.game_path_status_t = Text()
 
         return Column(
@@ -487,7 +488,8 @@ class MainGui(UserControl):
         return ElevatedButton(
             width=300,
             height=70,
-            style=self.button_style
+            style=self.button_style,
+            text='randomize'
         )
 
     def create_info_container(self) -> Row:
@@ -544,7 +546,7 @@ class MainGui(UserControl):
                     ),
                     alignment=alignment.top_center,
                     bgcolor="#3d5a68",
-                    opacity=80,
+                    opacity=0.8,
                     border_radius=20,
                     width=700,
                     height=470
@@ -608,7 +610,7 @@ class MainGui(UserControl):
                 Row(
                     [
                         Container(
-                            Image(src=Path("src\\assets\\logo.png").resolve()),
+                            Image(src=(ASSETS_PATH / "logo.png").resolve()),
                             width=self.main_width
                         ),
                     ],
