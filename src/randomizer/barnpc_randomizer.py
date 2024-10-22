@@ -12,11 +12,13 @@ class BarNpcRandomizer(ModelsRandomizer):
     def __init__(self, params: RandomizationParams) -> None:
         super().__init__(params)
 
-    def collect_data_from_xml(self, xml_info: dict) -> list:
+    def collect_data_from_dynamicscene(self, xml_info: dict) -> list:
         npcs_outfit = []
         for level in xml_info["maps"]:
             xml_path = self.params.game_path / level / xml_info["file"]
             root = self.parse_xml(xml_path)
+            if not root:
+                return []
 
             for tag in root.iter(xml_info["tag"]):
                 if xml_info["name"] not in tag.attrib:
@@ -46,6 +48,8 @@ class BarNpcRandomizer(ModelsRandomizer):
         for level in xml_info["maps"]:
             xml_path = self.params.game_path / level / xml_info["file"]
             root = self.parse_xml(xml_path)
+            if not root:
+                return
 
             for tag in root.iter(xml_info["tag"]):
                 if xml_info["name"]not in tag.attrib:
@@ -72,14 +76,14 @@ class BarNpcRandomizer(ModelsRandomizer):
                         if option not in content[li]:
                             continue
 
-                        tag.set(option, content[li].get(option))
+                        tag.set(option, content[li][option])
 
                     li += 1
 
-            self.write_xml(root, xml_path)
+            root.write(xml_path, encoding='windows-1251')
 
-    def randomize(self, group: dict) -> None:
-        npcs_outfit = self.collect_data_from_xml(group)
+    def randomize_bar_npc(self, group: dict) -> None:
+        npcs_outfit = self.collect_data_from_dynamicscene(group)
 
         shuffle(npcs_outfit)
 
@@ -90,4 +94,4 @@ class BarNpcRandomizer(ModelsRandomizer):
             logger.info("Nothing to randomize.")
             return
         for group in self.params.npc_look:
-            self.randomize(group)
+            self.randomize_bar_npc(group)

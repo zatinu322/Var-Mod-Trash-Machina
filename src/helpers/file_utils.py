@@ -4,6 +4,7 @@ from pathlib import Path
 import logging
 
 from config.randomization_config import RandomizationParams
+from helpers.errors import ElementNotFoundError
 
 logger = logging.getLogger(Path(__file__).name)
 
@@ -28,7 +29,7 @@ class FileEditor:
     def __init__(self, params: RandomizationParams) -> None:
         self.params = params
 
-    def edit_lua(self, lua_path: str):
+    def edit_lua(self, lua_path: Path) -> None:
         lua_game_path = self.params.game_path / lua_path
         line_to_add = 'EXECUTE_SCRIPT "data/scripts/randomizer_vars.lua"\n'
 
@@ -40,11 +41,13 @@ class FileEditor:
                 lua.write("\n")
                 lua.write(line_to_add)
 
-    def edit_xml_servers(self, file_path: Path, items_list: list):
+    def edit_xml_servers(self, file_path: Path, items_list: list) -> None:
         tree = ET.parse(file_path)
         root = tree.getroot()
 
         models_server = root.find("AnimatedModelsServer")
+        if models_server is None:
+            raise ElementNotFoundError("AnimatedModelsServer", file_path)
         existing_tags = {tag.attrib["id"] for tag in models_server}
 
         for item in items_list:
@@ -87,11 +90,13 @@ class FileEditor:
         for tag in root.iter("trigger"):
             if tag.attrib.get("Name") == trigger_name:
                 script = tag.find("script")
+                if script is None:
+                    raise ElementNotFoundError("Trigger.script", file_path)
                 script.text = trigger_text
 
         tree.write(file_path, encoding="windows-1251")
 
-    def edit_files(self):
+    def edit_files(self) -> None:
         self.edit_lua(self.params.lua_to_edit)
 
         for path, trigger_data in self.params.triggers_to_change.items():

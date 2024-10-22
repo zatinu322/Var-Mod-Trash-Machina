@@ -1,5 +1,4 @@
 import logging
-import sys
 
 import gui.flet_window as flet_window
 
@@ -18,4 +17,4 @@ def main_gui() -> None:
 
 
 if __name__ == "__main__":
-    sys.exit(main_gui())
+    main_gui()

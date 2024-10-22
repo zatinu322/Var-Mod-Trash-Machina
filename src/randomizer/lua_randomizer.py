@@ -22,7 +22,7 @@ class LuaRandomizer:
         content = ""
 
         var: str = lua_info["variable"]
-        prototypes: dict = lua_info.get("prototypes")
+        prototypes: dict = lua_info["prototypes"]
 
         # setting variable status
         # .lower because of lua syntax
@@ -39,7 +39,7 @@ class LuaRandomizer:
         with open(self.vars_path, "a", encoding="windows-1251") as stream:
             stream.write(content)
 
-    def set_ending_to_file(self):
+    def set_ending_to_file(self) -> None:
         with open(self.vars_path, "a", encoding="windows-1251") as stream:
             stream.write(
                 "LOG(\"Randomizer globals set.\")\n\n\

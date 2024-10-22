@@ -8,6 +8,7 @@ logger = logging.getLogger(Path(__file__).name)
 
 @dataclass
 class Config:
+    resources_path: Path
     pos_x: int = 0
     pos_y: int = 0
     width: Optional[float] = None
@@ -16,7 +17,6 @@ class Config:
     language: str = "eng"
     game_path: str = ""
     game_version: str = ""
-    resources_path: str = ""
     preset: str = ""
     manifest: str = field(default="", repr=False)
     options: str = field(default="", repr=False)

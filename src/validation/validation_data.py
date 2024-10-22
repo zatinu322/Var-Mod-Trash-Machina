@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from gui.gui_info import SUPPORTED_VERSIONS
+
 
 REQUIRED_GAME_PATHS = [
     Path("data"),
@@ -28,7 +30,7 @@ FOV_ALLOWED = ["steam", "isl1053"]
 
 VERSIONS = {
     "steam": {
-        "title": "Steam v1.02",
+        "title": SUPPORTED_VERSIONS["steam"],
         # lists is used for handling cases, when one version
         # can handle different game versions
         "exe": [
@@ -43,7 +45,7 @@ VERSIONS = {
         "allowed_mods": []
     },
     "cp114": {
-        "title": "Community Patch v1.14.1",
+        "title": SUPPORTED_VERSIONS["cp114"],
         "exe": [
             {
                 "version": "Patch fixes v1.14",
@@ -58,7 +60,7 @@ VERSIONS = {
         }
     },
     "cr114": {
-        "title": "CommunityRemaster v1.14.1",
+        "title": SUPPORTED_VERSIONS["cr114"],
         "exe": [
             {
                 "version": "Remaster fixes v1.14",
@@ -74,7 +76,7 @@ VERSIONS = {
         }
     },
     "isl12cp": {
-        "title": "Improved Storyline v1.2 (ComPatch)",
+        "title": SUPPORTED_VERSIONS["isl12cp"],
         "exe": [
             {
                 "version": "Patch fixes v1.14",
@@ -90,7 +92,7 @@ VERSIONS = {
         }
     },
     "isl12cr": {
-        "title": "Improved Storyline v1.2 (ComRemaster)",
+        "title": SUPPORTED_VERSIONS["isl12cr"],
         "exe": [
             {
                 "version": "Remaster fixes v1.14",
@@ -107,7 +109,7 @@ VERSIONS = {
         }
     },
     "isl1053": {
-        "title": "Improved Storyline v1.0.5.3",
+        "title": SUPPORTED_VERSIONS["isl1053"],
         "exe": [
             {
                 "version": "release build v1.02",

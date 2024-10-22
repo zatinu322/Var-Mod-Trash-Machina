@@ -4,7 +4,7 @@ from pathlib import Path
 from pydantic import ValidationError
 from flet import Page, Row, FilePicker, dropdown, ContainerTapEvent, Text, \
     FilePickerResultEvent, ControlEvent, Container, alignment, \
-    MainAxisAlignment, ThemeMode, padding, app
+    MainAxisAlignment, ThemeMode, padding, app, Checkbox
 
 from randomizer.randomizer import Randomizer
 from .gui import MainGui
@@ -16,7 +16,6 @@ from helpers.errors import LocalisationMissingError, RootNotFoundError, \
     GDPFoundError, ResourcesMissingError, ModsFoundError, ModsNotFoundError, \
     ExecutableNotFoundError, NoGamePathError, NotAbsolutePathError, \
     ModVersionError
-
 from helpers.paths_utils import MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, \
     RESOURCES_PATH, SRC_PATH
 from gui.gui_info import FULL_NAME, SUPPORTED_VERSIONS, PRESETS
@@ -120,7 +119,7 @@ class RandomizerWindow(MainGui):
                 self.config.language = "eng"
         self.retranslate_ui()
 
-    def apply_config(self):
+    def apply_config(self) -> None:
         """
         Applies data from `self.config` to GUI.
         """
@@ -217,7 +216,7 @@ class RandomizerWindow(MainGui):
         """
         self.update_path_status(e.data)
 
-    def update_path_status(self, cur_value: str = None) -> None:
+    def update_path_status(self, cur_value: str | None = None) -> None:
         """Updates path validation status in GUI."""
         if cur_value is None:
             cur_value = self.game_path_tf.value
@@ -403,7 +402,7 @@ class RandomizerWindow(MainGui):
 
         self.update_app()
 
-    def uncheck_chkbxs(self, *chkbxs):
+    def uncheck_chkbxs(self, *chkbxs: Checkbox) -> None:
         """
         Unchecks provided checkboxes.
         """
@@ -412,7 +411,9 @@ class RandomizerWindow(MainGui):
         self.update_config()
         self.update_app()
 
-    def change_chkbxs_state(self, is_disabled: bool, *chkbxs) -> None:
+    def change_chkbxs_state(self,
+                            is_disabled: bool,
+                            *chkbxs: Checkbox) -> None:
         """
         Enables or disables provided checkboxes.
         When disables it also sets checkbox value to False.
@@ -555,7 +556,7 @@ def main(page: Page) -> None:
 
             page.window_destroy()
 
-    def create_error_container(message: str) -> None:
+    def create_error_container(message: str) -> Row:
         """
         Creates error container instead of main GUI
         if something went wrong on startup.
@@ -612,7 +613,7 @@ def main(page: Page) -> None:
         )
     except (LocalisationMissingError) as error:
         logger.critical(error)
-        page.add(create_error_container(error))
+        page.add(create_error_container(str(error)))
         page.update()
         return
 
@@ -629,5 +630,5 @@ def main(page: Page) -> None:
     main_app.apply_config()
 
 
-def start():
+def start() -> None:
     app(target=main)

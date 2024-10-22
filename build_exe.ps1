@@ -1,3 +1,5 @@
+Copy-Item .\main.exe .\main.exe.bak -Verbose -Force
+
 nuitka `
 --standalone `
 --onefile `
@@ -13,3 +15,5 @@ src/main.py `
 --windows-file-description="Randomizer for Ex Machina" `
 --windows-console-mode=disable `
 --windows-icon-from-ico=".\src\assets\rpg_logo.ico" 
+
+Move-Item .\dist\main.exe .\main.exe -Verbose -Force

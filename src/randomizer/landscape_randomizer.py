@@ -12,8 +12,6 @@ class LandscapeRandomizer:
     def __init__(self, params: RandomizationParams) -> None:
         self.params = params
 
-        # self.options = self.manifest.get("landscape")
-
     def check_distortion(
         self,
         folder_path: Path,
@@ -63,10 +61,11 @@ class LandscapeRandomizer:
                 count = int(len(raw) / 4)
                 fmt = "<" + "f" * count
                 data = list(struct.unpack(fmt, raw))
-                data = map(lambda v: v + ((random() - 0.5) * 3), data)
+                randomized_data = map(lambda v: v + ((random() - 0.5) * 3),
+                                      data)
 
                 with open(file_path, "wb") as stream:
-                    stream.write(struct.pack(fmt, *data))
+                    stream.write(struct.pack(fmt, *randomized_data))
 
                 logger.info(f"Distorted landscape in {folder_path}")
 

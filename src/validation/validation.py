@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 import logging
 from pathlib import Path
+from typing import Any, Generator
 
 from .validation_data import REQUIRED_GAME_PATHS, POSSIBLE_EXE_NAMES, \
     VERSIONS
@@ -17,7 +18,7 @@ logger = logging.getLogger(Path(__file__).name)
 
 def serialize_game_path(game_path: str) -> Path:
     if not game_path:
-        raise NoGamePathError(game_path)
+        raise NoGamePathError()
 
     serialized_path = Path(game_path.strip())
 
@@ -59,7 +60,9 @@ def validate_context(settings: Config) -> tuple[bool, dict]:
         version_info
     )
 
-    if "options" not in version_info:
+    if "options" not in version_info \
+            or mod_manifest is None \
+            or options_path is None:
         return fov_allowed, serialized_manifest
 
     updated_manifest = update_manifest_with_options(
@@ -74,7 +77,7 @@ def validate_context(settings: Config) -> tuple[bool, dict]:
 def validate_game_installation(manifest: dict,
                                game_path: Path,
                                resources_path: Path,
-                               version_info: dict) -> None | dict:
+                               version_info: dict) -> dict | None:
     files_to_validate = [
         *[resources_path / file
           for file in manifest["resources_validation"]],
@@ -90,7 +93,7 @@ def validate_game_installation(manifest: dict,
     game_validation = manifest["version_validation"]
     if not game_validation:
         logger.info("Additional game validation is not specified.")
-        return
+        return None
 
     if isinstance(game_validation, str):
         mod_manifest_path = game_path / game_validation
@@ -140,7 +143,7 @@ def update_manifest_with_options(manifest: dict,
     return manifest
 
 
-def validate_manifest(manifest_path: Path) -> None:
+def validate_manifest(manifest_path: Path) -> dict:
     """
     Validates manifest structure.
 
@@ -161,11 +164,11 @@ def validate_manifest(manifest_path: Path) -> None:
 
 
 def validate_game_version(version_info: dict,
-                          exe_path: Path) -> tuple[bool, Path | None]:
+                          exe_path: Path) -> tuple[bool, Path, Path | None]:
     """
     Validates game version.
 
-    Returns `fov_allowed`, `manifest_path`, 'option_path'
+    Returns `fov_allowed`, `manifest_path`, `option_path`
     """
     exe_info = version_info["exe"]
 
@@ -196,6 +199,7 @@ def validate_exe_version(exe_path: Path, exe_info: dict) -> str | None:
 
         if detected_version == version["version"]:
             return detected_version
+    return None
 
 
 def get_exe_version(
@@ -214,6 +218,7 @@ def get_exe_version(
         return version
     except PermissionError as e:
         logger.error(e)
+    return None
 
 
 def validate_game_dir(dir_path: Path, silent: bool = True) -> Path:
@@ -245,19 +250,16 @@ def validate_game_dir(dir_path: Path, silent: bool = True) -> Path:
                 gdp_archives = look_for_gdp_archives(dir_path)
                 if not gdp_archives:
                     raise GameNotFoundError(full_path)
-                gdp_paths = ", ".join(
-                    [str(gdp.resolve()) for gdp in gdp_archives]
-                )
 
-                logger.info(f"GDP archives found: {gdp_paths}")
+                logger.info(f"GDP archives found: {gdp_archives}")
 
-                raise GDPFoundError
+                raise GDPFoundError(gdp_archives)
 
         return exe_path
 
 
 @contextmanager
-def change_logging_level(silent: bool):
+def change_logging_level(silent: bool) -> Generator[Any, None, None]:
     """
     Completely disables logging if silent is True.
     """
@@ -280,6 +282,7 @@ def get_exe_name(game_dir: Path) -> Path | None:
         exe_path = game_dir / exe
         if exe_path.exists():
             return exe_path
+    return None
 
 
 def look_for_gdp_archives(game_dir: Path) -> list[Path]:

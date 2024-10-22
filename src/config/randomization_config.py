@@ -20,8 +20,8 @@ class RandomizationParams:
     text: list
     models: list
     npc_look: list
-    landscape: list
-    exe: list
+    landscape: dict
+    exe: dict
     lua: list
 
 
@@ -35,7 +35,7 @@ def serialize_manifest(manifest: dict,
     models = []
     npc_look = []
     landscape = {}
-    exe = {"content": []}
+    exe: dict = {"content": []}
     lua = []
 
     for chkbx, state in checkboxes.items():

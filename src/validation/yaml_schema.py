@@ -1,3 +1,5 @@
+from typing import Type
+
 from pydantic import BaseModel
 
 
@@ -105,8 +107,8 @@ class TextInfoTypes(BaseModel):
     tag: str
     name: str
     text: str
-    include: list[str] = None
-    exclude: list[str] = None
+    include: list[str] | None = None
+    exclude: list[str] | None = None
 
 
 class ModelsTypes(BaseModel):
@@ -126,7 +128,7 @@ class BarNpcModelsInfoTypes(BaseModel):
     file: str
     tag: str
     name: str
-    prototype: str = None
+    prototype: str | None = None
     maps: list[str]
     config: list[str]
 
@@ -148,10 +150,10 @@ class ExecutableTypes(BaseModel):
 class LuaTypes(BaseModel):
     type: str
     variable: str
-    prototypes: list[list[str]] = None
+    prototypes: list[list[str]] | None = None
 
 
-def validate_types(validator: object, manifest: dict) -> None:
+def validate_types(validator: Type[BaseModel], manifest: dict) -> None:
     validator.model_validate(validator(**manifest), strict=True)
 
 

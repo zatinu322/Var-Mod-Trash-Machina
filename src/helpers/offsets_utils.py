@@ -1,5 +1,6 @@
-import random
 import math
+from typing import Any
+import random
 
 OFFSETS_EXE = {
     # low_fuel_threshold
@@ -7,7 +8,7 @@ OFFSETS_EXE = {
     }
 
 
-def generate_offsets():
+def generate_offsets() -> dict[str, Any]:
     offsets = {
         "render": generate_render_quality(),
         "gravity": generate_gravity(),
@@ -18,7 +19,7 @@ def generate_offsets():
     return offsets
 
 
-def generate_render_quality():
+def generate_render_quality() -> dict[int, int]:
     res = [16, 32, 64, 128, 256]
     rand_512 = res[random.randint(1, 4)]
 
@@ -30,7 +31,7 @@ def generate_render_quality():
     return models_render
 
 
-def generate_gravity():
+def generate_gravity() -> dict[int, float]:
     rand_300 = float(random.randint(40, 300))
     rand_grav = float(random.randint(-20, -2))
 
@@ -42,7 +43,7 @@ def generate_gravity():
     return gravity
 
 
-def generate_fov():
+def generate_fov() -> dict[int, Any]:
     rand_aspect = random.uniform(0.2, 0.95)
     aspect_ratio = 16 / 9
     target_fov_x_deg = 90.0
@@ -66,7 +67,7 @@ def generate_fov():
     return fov
 
 
-def generate_armor():
+def generate_armor() -> dict:
     colors = [
         "fc93e5", "d126ac", "e180db", "c664b1", "c664c3", "df45bd",
         "f7df47", "fac04e", "6ab8b3", "94aba1", "ff6a46", "84bd9b",
@@ -94,7 +95,7 @@ def generate_armor():
     return sexy_armor_color
 
 
-def generate_color(colors_list):
+def generate_color(colors_list: list[str]) -> str:
     hex_number = colors_list[random.randint(0, len(colors_list) - 1)]
     hex_number = "ff" + hex_number
 

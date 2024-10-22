@@ -16,8 +16,8 @@ class FileRandomizer:
 
     def copy_files(self,
                    groups: list[dict],
-                   repeated_files: list = None,
-                   dest="temp") -> list[bool]:
+                   repeated_files: list | None = None,
+                   dest: str = "temp") -> list:
         repeatitions = 0
         if not repeated_files:
             repeated_files = []
@@ -51,9 +51,9 @@ class FileRandomizer:
                     except FileNotFoundError as e:
                         logger.error(e)
                         # self.report_error(e)
-        return [True, repeated_files]
+        return repeated_files
 
-    def rename_files(self, files_list: list, bckw=False) -> bool:
+    def rename_files(self, files_list: list, bckw: bool = False) -> bool:
         filename = 0
         for file in files_list:
             old_file_path = self.temp_dir / file
@@ -77,7 +77,7 @@ class FileRandomizer:
     def randomize(self, groups: list) -> bool:
         if not self.temp_dir.exists():
             os.mkdir(self.temp_dir)
-        _, repeatitions = self.copy_files(groups, dest="temp")
+        repeatitions = self.copy_files(groups, dest="temp")
 
         files_list = os.listdir(self.temp_dir)
 

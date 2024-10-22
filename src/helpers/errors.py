@@ -2,8 +2,7 @@ from pathlib import Path
 
 
 class NoGamePathError(Exception):
-    def __init__(self, path: Path | None = None) -> None:
-        self.path = path
+    def __init__(self) -> None:
         self.ui_message_key = "no_game_path"
         self.ui_message_text = ""
 
@@ -22,14 +21,16 @@ class NotAbsolutePathError(Exception):
 
 
 class RootNotFoundError(Exception):
-    def __init__(self, path: Path | None = None) -> None:
+    def __init__(self, path: Path) -> None:
         self.path = path
         self.ui_message_key = "game_path_missing"
         self.ui_message_text = str(path.resolve())
 
     def __str__(self) -> str:
-        return ("Unable to validate game_path. "
-                f"{self.path.resolve()} does not exists.")
+        return " ".join([
+            "Unable to validate game_path.",
+            f"{self.path.resolve()} does not exists."
+        ])
 
 
 class ExecutableNotFoundError(Exception):
@@ -49,19 +50,23 @@ class GameNotFoundError(Exception):
         self.ui_message_text = str(path.resolve())
 
     def __str__(self) -> str:
-        return ("Unable to validate game path. "
-                f"{self.path.resolve()} is missing.")
+        return " ".join([
+            "Unable to validate game path.",
+            f"{self.path.resolve()} is missing."
+        ])
 
 
 class GDPFoundError(Exception):
     def __init__(self, archives: list[Path]) -> None:
-        archives = [gdp.resolve() for gdp in archives]
+        archives_str = [str(gdp.resolve()) for gdp in archives]
         self.ui_message_key = "gdp_found"
-        self.ui_message_text = "\n".join(archives)
+        self.ui_message_text = "\n".join(archives_str)
 
     def __str__(self) -> str:
-        return ("Unable to validate game path. "
-                f"GDP archives found: {self.ui_message_text}")
+        return " ".join([
+            "Unable to validate game path.",
+            f"GDP archives found: {self.ui_message_text}"
+        ])
 
 
 class ExecutableVersionError(Exception):
@@ -71,8 +76,10 @@ class ExecutableVersionError(Exception):
         self.ui_message_text = ""
 
     def __str__(self) -> str:
-        return ("Executable version does not match given version: "
-                f"{self.version}")
+        return " ".join([
+            "Executable version does not match given version:",
+            f"{self.version}"
+        ])
 
 
 class ManifestMissingError(Exception):
@@ -123,8 +130,10 @@ class ModVersionError(Exception):
                                 f"(required {required_version})")
 
     def __str__(self) -> str:
-        return (f"Incorrect modification version detected: "
-                f"{self.ui_message_text}")
+        return " ".join([
+            "Incorrect modification version detected:",
+            self.ui_message_text
+        ])
 
 
 class ManifestKeyError(Exception):
@@ -137,9 +146,27 @@ class ManifestKeyError(Exception):
 
 
 class LocalisationMissingError(Exception):
-    def __init__(self, path: str, lang: str) -> None:
+    def __init__(self, path: Path, lang: str) -> None:
         self.path = path
         self.lang = lang
 
     def __str__(self) -> str:
-        return f"Unable to load {self.lang} localisation from {self.path}"
+        return " ".join([
+            f"Unable to load {self.lang} localisation",
+            f"from {self.path.resolve()}"
+        ])
+
+
+class ElementNotFoundError(Exception):
+    def __init__(self, element: str, file_path: Path) -> None:
+        self.element = element
+        self.file_path = file_path
+        self.ui_message_key = ""
+        self.ui_message_text = ""
+
+    def __str__(self) -> str:
+        return " ".join([
+            f"Required element \"{self.element}\"",
+            f"not found in {self.file_path.resolve()}.",
+            "Probably wrong or corrupted file."
+        ])

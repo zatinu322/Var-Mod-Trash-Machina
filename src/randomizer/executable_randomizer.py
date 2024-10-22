@@ -27,14 +27,14 @@ class ExecutableRandomizer:
 
         return offsets_exe
 
-    def collect_info(self, config: dict):
+    def collect_info(self, config: dict) -> dict:
         info = {}
         if "Render" in self.params.exe["content"]:
             info.update({"new_models_render": config.get(0x30808B)})
         if "Gravity" in self.params.exe["content"]:
             info.update({"new_gravity": config.get(0x202D25)})
         if "FOV" in self.params.exe["content"]:
-            info.update({"new_fov": round(config.get(0x5E5A74), 3)})
+            info.update({"new_fov": round(config[0x5E5A74], 3)})
 
         return info
 
@@ -57,10 +57,10 @@ class ExecutableRandomizer:
 
         return offsets_exe
 
-    def start_randomization(self) -> None:
+    def start_randomization(self) -> dict | None:
         if not self.params.exe["content"]:
             logger.info("Nothing to randomize.")
-            return
+            return None
 
         offsets_exe = self.randomize()
 

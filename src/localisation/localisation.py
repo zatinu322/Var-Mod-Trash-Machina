@@ -1,7 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import logging
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(Path(__file__).name)
 
@@ -10,7 +9,7 @@ logger = logging.getLogger(Path(__file__).name)
 class Localisation:
     locales: dict
     language: str = "eng"
-    current_locale: Optional[dict] = None
+    current_locale: dict = field(default_factory=dict)
 
     def update_language(self, language: str) -> None:
         """

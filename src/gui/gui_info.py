@@ -1,6 +1,6 @@
 NAME = "Ex Machina Randomizer"
-VERSION = "v1.2 beta"
-BUILD = "build 240220a"
+VERSION = "v3 beta"
+BUILD = "build 241017a"
 FULL_NAME = f"{NAME} {VERSION} {BUILD}"
 
 SUPPORTED_VERSIONS = {

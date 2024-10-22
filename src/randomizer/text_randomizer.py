@@ -27,6 +27,7 @@ class TextRandomizer:
         except PermissionError:
             logger.error(f"Permission error: {xml_path}")
             # self.report_error(f"Permission error: {xml_path}")
+        return None
 
     def write_xml(self, text: list, groups: list) -> None:
         li = 0
@@ -35,6 +36,8 @@ class TextRandomizer:
             for path, info in xml_info.items():
                 xml_path = self.params.game_path / path
                 root = self.parse_xml(xml_path)
+                if root is None:
+                    return
 
                 for tag in root.iter(info["tag"]):
                     if not self.validate_tag(info, tag.attrib):

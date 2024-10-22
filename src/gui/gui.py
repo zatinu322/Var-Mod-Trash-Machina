@@ -15,7 +15,8 @@ class MainGui(UserControl):
         self.main_width = width
         self.button_style = ButtonStyle(
             shape=RoundedRectangleBorder(radius=10),
-            color="#202429"
+            bgcolor="#8BA6B3",
+            color="#000000"
         )
 
         self.btn_rus, self.btn_eng = self.create_lang_buttons()
@@ -31,7 +32,7 @@ class MainGui(UserControl):
 
         self.bg_cont = self.create_bg_cont()
 
-    def create_lang_buttons(self) -> None:
+    def create_lang_buttons(self) -> tuple[Container, Container]:
         """
         Creates buttons with flag icons for changing language.
         """
@@ -546,7 +547,7 @@ class MainGui(UserControl):
                     ),
                     alignment=alignment.top_center,
                     bgcolor="#3d5a68",
-                    opacity=0.8,
+                    opacity=1,
                     border_radius=20,
                     width=700,
                     height=470

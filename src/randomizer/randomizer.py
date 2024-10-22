@@ -30,37 +30,37 @@ class Randomizer:
         file_editor = FileEditor(self.params)
         file_editor.edit_files()
 
-    def randomize_files(self):
+    def randomize_files(self) -> None:
         logger.info("Randomizing files.")
 
         file_randomizer = FileRandomizer(self.params)
         file_randomizer.start_randomization()
 
-    def randomize_text(self):
+    def randomize_text(self) -> None:
         logger.info("Randomizing text.")
 
         text_randomizer = TextRandomizer(self.params)
         text_randomizer.start_randomization()
 
-    def randomize_models(self):
+    def randomize_models(self) -> None:
         logger.info("Randomizing models.")
 
         models_randomizer = ModelsRandomizer(self.params)
         models_randomizer.start_randomization()
 
-    def randomize_barnpcs(self):
+    def randomize_barnpcs(self) -> None:
         logger.info("Randomizing NPC in bars.")
 
         barnpc_randomizer = BarNpcRandomizer(self.params)
         barnpc_randomizer.start_randomization()
 
-    def randomize_landscape(self):
+    def randomize_landscape(self) -> None:
         logger.info("Randomizing landscape.")
 
         landscape_randomizer = LandscapeRandomizer(self.params)
         landscape_randomizer.start_randomization()
 
-    def randomize_executable(self) -> dict:
+    def randomize_executable(self) -> dict | None:
         logger.info("Randomizing executable.")
 
         executable_randomizer = ExecutableRandomizer(self.params)
@@ -68,7 +68,7 @@ class Randomizer:
 
         return exe_options
 
-    def randomize_lua(self):
+    def randomize_lua(self) -> None:
         logger.info("Activating randomizing via lua.")
 
         lua_randomizer = LuaRandomizer(self.params)

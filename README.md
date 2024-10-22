@@ -11,7 +11,7 @@
         <img src="https://github.com/zatinu322/Var-Mod-Trash-Machina/assets/68562524/3d63e8f9-653c-4b4d-8ad2-6aa2d079fd2e", width="50", height="50", alt="Community Discord">
     </a><br/><br/>
     <a href="https://github.com/zatinu322/Var-Mod-Trash-Machina/releases/tag/v1.2-beta">
-        <img src="https://img.shields.io/badge/Ex_Machina_Randomizer-v.1.2_beta-0c7307" alt="Latest release"/>
+        <img src="https://img.shields.io/badge/Ex_Machina_Randomizer-v.1.3_beta-0c7307" alt="Latest release"/>
     </a><br/>
     <img src="https://img.shields.io/badge/Status-in_development-blue" alt="Development status"/><br/>
     <img src="https://img.shields.io/badge/Release_date-TBA-red" alt="Release date"/>
