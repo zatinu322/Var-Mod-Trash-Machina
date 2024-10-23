@@ -290,12 +290,18 @@ class RandomizerWindow(MainGui):
         """
         Adds provided message to randomization log container.
         """
-        self.log_container.controls.append(
+        log_controls = self.log_container.controls
+        log_controls.append(
             Text(
                 value=message,
                 color=color
             )
         )
+        if len(log_controls) > 1:
+            self.log_container.scroll_to(
+                offset=-1
+            )
+            self.log_container.update()
         self.update_app()
 
     def info_cont_abort(self) -> None:

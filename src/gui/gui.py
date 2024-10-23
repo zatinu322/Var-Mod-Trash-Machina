@@ -570,7 +570,7 @@ class MainGui(UserControl):
             controls=[],
             spacing=1,
             width=600,
-            scroll=True
+            scroll="always",
         )
 
     def create_bg_cont(self) -> Container:
