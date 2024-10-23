@@ -1,5 +1,5 @@
 NAME = "Ex Machina Randomizer"
-VERSION = "v3 beta"
+VERSION = "v1.3-beta"
 BUILD = "build 241017a"
 FULL_NAME = f"{NAME} {VERSION} {BUILD}"
 
