@@ -14,6 +14,9 @@ class FileCopier:
         self.params = params
 
     def copy_files(self) -> None:
+        (self.params.game_path / "data" / "profiles" / "1")\
+            .mkdir(exist_ok=True, parents=True)
+
         for file in self.params.resources:
             file_path = self.params.resources_path / file
             file_game_path = self.params.game_path / file
