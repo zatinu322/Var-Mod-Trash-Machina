@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "ex-machina-randomizer"
+version = "1.3.0"
+description = "Resources randomizer for Ex Machina (Hard Truck Apocalypse) game."
+authors = ["pavlikrpg"]
+license = "MIT License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flet = "^0.24.1"
+pydantic = "^2.9.2"
+PyYAML = "^6.0.2"
+
+[tool.poetry.group.dev.dependencies]
+icecream = "^2.1.3"
+mypy = "^1.13.0"
+Nuitka = "^2.4.10"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
