@@ -22,7 +22,7 @@ class LuaRandomizer:
         content = ""
 
         var: str = lua_info["variable"]
-        prototypes: dict = lua_info["prototypes"]
+        prototypes: dict | None = lua_info.get("prototypes")
 
         # setting variable status
         # .lower because of lua syntax
