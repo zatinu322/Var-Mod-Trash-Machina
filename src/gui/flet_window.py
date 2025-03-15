@@ -1,16 +1,15 @@
 import logging
 from pathlib import Path
 
-from pydantic import ValidationError
 from flet import Page, Row, FilePicker, dropdown, ContainerTapEvent, Text, \
     FilePickerResultEvent, ControlEvent, Container, alignment, \
-    MainAxisAlignment, ThemeMode, padding, app, Checkbox
+    MainAxisAlignment, ThemeMode, padding, app, Checkbox, FontWeight
+from pydantic import ValidationError
 
-from randomizer.randomizer import Randomizer
-from .gui import MainGui
 from config.app_config import Config
-from localisation.localisation import Localisation
-from validation.validation import validate_context, validate_game_dir
+from config.randomization_config import serialize_manifest
+from gui.gui import MainGui
+from gui.gui_info import FULL_NAME, SUPPORTED_VERSIONS, PRESETS, DEFAULT_PRESET
 from helpers.errors import LocalisationMissingError, RootNotFoundError, \
     GameNotFoundError, ExecutableVersionError, ManifestMissingError, \
     GDPFoundError, ResourcesMissingError, ModsFoundError, ModsNotFoundError, \
@@ -18,11 +17,11 @@ from helpers.errors import LocalisationMissingError, RootNotFoundError, \
     ModVersionError
 from helpers.paths_utils import MAIN_PATH, SETTINGS_PATH, LOCALIZATION_PATH, \
     RESOURCES_PATH, SRC_PATH
-from gui.gui_info import FULL_NAME, SUPPORTED_VERSIONS, PRESETS
-from config.randomization_config import serialize_manifest
 from helpers.yaml_utils import serialize_yaml, save_yaml
-
-# from icecream import ic
+from localisation.localisation import Localisation
+from randomizer.randomizer import Randomizer
+from validation.validation import validate_context, validate_game_dir
+from validation.validation_data import NO_FOV_VERSIONS
 
 logger = logging.getLogger(Path(__file__).name)
 
@@ -121,7 +120,7 @@ class RandomizerWindow(MainGui):
 
     def apply_config(self) -> None:
         """
-        Applies data from `self.config` to GUI.
+        Applies data from loaded config to GUI.
         """
         self.page.window_left = self.config.pos_x
         self.page.window_top = self.config.pos_y
@@ -160,7 +159,7 @@ class RandomizerWindow(MainGui):
 
     def retranslate_ui(self) -> None:
         """
-        Retranslates whole GUI according to language in `self.locale`
+        Retranslates whole GUI according to current language.
         """
         self.expandable_options.name.value = self.locale.tr("options_title")
         self.dd_preset.label = self.locale.tr("t_presets")
@@ -239,7 +238,7 @@ class RandomizerWindow(MainGui):
 
             return
         except (RootNotFoundError, GameNotFoundError,
-                ExecutableVersionError, ExecutableNotFoundError):
+                ExecutableNotFoundError):
             self.game_path_status_t.color = "red"
             self.game_path_status_t.opacity = 1
             self.game_path_status_t.value = self.locale.tr("invalid_path")
@@ -253,7 +252,7 @@ class RandomizerWindow(MainGui):
     def change_chkbxs_status(self, e: ControlEvent) -> None:
         """
         Checks or unchecks all checkboxes in settings category,
-        based on what bool value is provided in ControlEvent.
+        based on what button was clicked.
         """
         match e.control:
             case self.btn_select_all:
@@ -285,7 +284,8 @@ class RandomizerWindow(MainGui):
     def info_cont_write(
         self,
         message: str,
-        color: str | int = "white"
+        color: str | int = "white",
+        weight: FontWeight = FontWeight.NORMAL
     ) -> None:
         """
         Adds provided message to randomization log container.
@@ -294,14 +294,17 @@ class RandomizerWindow(MainGui):
         log_controls.append(
             Text(
                 value=message,
-                color=color
+                color=color,
+                weight=weight,
             )
         )
-        if len(log_controls) > 1:
+
+        # scroll to the end
+        if len(log_controls) > 1:  # at least one control required
             self.log_container.scroll_to(
                 offset=-1
             )
-            self.log_container.update()
+
         self.update_app()
 
     def info_cont_abort(self) -> None:
@@ -310,7 +313,11 @@ class RandomizerWindow(MainGui):
 
         Sets Container widgets to default.
         """
-        self.info_cont_write(self.locale.tr("randomization_aborted"), "red")
+        self.info_cont_write(
+            self.locale.tr("randomization_aborted"),
+            color="red",
+            weight=FontWeight.BOLD,
+        )
         self.info_cont_write(self.locale.tr("rand_OK"))
 
         self.info_cont_btn.disabled = False
@@ -363,18 +370,11 @@ class RandomizerWindow(MainGui):
         Updates checkboxes state (not values) according
         to chosen game_version in versions Dropdown.
         """
-        match self.game_version_dd.value:
-            case "cp114" | "cr114" | "isl12cp" | "isl12cr":
-                self.uncheck_chkbxs(self.cb_fov)
-                self.change_chkbxs_state(True, self.cb_fov)
-            case "steam":
-                self.change_chkbxs_state(
-                    False,
-                    self.cb_render,
-                    self.cb_gravity,
-                    self.cb_fov,
-                    self.cb_armor
-                )
+        if self.game_version_dd.value in NO_FOV_VERSIONS:
+            self.uncheck_chkbxs(self.cb_fov)
+            self.change_chkbxs_state(True, self.cb_fov)
+        else:
+            self.change_chkbxs_state(False, self.cb_fov)
 
     def collect_chkbxs_values(self) -> dict:
         """
@@ -404,7 +404,7 @@ class RandomizerWindow(MainGui):
         """
         Sets custom preset if any chechbox's value was changed.
         """
-        self.dd_preset.value = "p_custom"
+        self.dd_preset.value = DEFAULT_PRESET
 
         self.update_app()
 
@@ -430,6 +430,10 @@ class RandomizerWindow(MainGui):
         self.update_app()
 
     def start_randomization(self, _: ControlEvent = None) -> None:
+        """
+        Validates data provided by user and starts randomization.
+        Raises errors if data is wrong.
+        """
         self.update_config()
         self.show_info_cont()
         self.info_cont_write(self.locale.tr("rand_start"))
@@ -536,6 +540,10 @@ class RandomizerWindow(MainGui):
 
 def main(page: Page) -> None:
     def window_resized(_: ControlEvent) -> None:
+        """
+        Adjusts main column and info container width and height
+        when window resizes.
+        """
         main_app.main_column.width = page.width
         main_app.main_column.height = page.height-3
         try:
@@ -599,9 +607,6 @@ def main(page: Page) -> None:
 
     logo_path = Path(__file__).parent.parent / 'assets' / 'rpg_logo.ico'
     page.window.icon = logo_path.resolve()
-
-    # page.window_resizable = False
-    # page.window_maximizable = False
 
     page.theme_mode = ThemeMode.DARK
     page.padding = padding.all(0)

@@ -80,7 +80,6 @@ class Config:
         Provides data from serialized yaml
         to instance variables.
         """
-
         if not isinstance(serialized_yaml, dict):
             logger.error('Provided config is not dict.')
             return
@@ -97,6 +96,8 @@ class Config:
 
         for chkbx in self.chkbxs:
             self.chkbxs[chkbx] = serialized_yaml.get(chkbx, False)
+
+        logger.info("Successfully loaded config from yaml.")
 
     def to_dict(self) -> dict:
         """

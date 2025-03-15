@@ -61,6 +61,8 @@ def serialize_manifest(manifest: dict,
             case "lua":
                 lua.append(category)
 
+    logger.info("Randomization manifest successfully serialized.")
+
     return RandomizationParams(
         game_path=Path(game_path),
         game_version=game_version,

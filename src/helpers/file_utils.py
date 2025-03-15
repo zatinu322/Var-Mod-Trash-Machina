@@ -17,14 +17,15 @@ class FileCopier:
         (self.params.game_path / "data" / "profiles" / "1")\
             .mkdir(exist_ok=True, parents=True)
 
+        logger.debug("Created directory for profile \"1\"")
+
         for file in self.params.resources:
             file_path = self.params.resources_path / file
             file_game_path = self.params.game_path / file
 
             logger.debug(
-                f"Copying {file_path} to {file_game_path}."
+                f"Copy {file_path} to {file_game_path}."
             )
-
             shutil.copy(file_path, file_game_path)
 
 

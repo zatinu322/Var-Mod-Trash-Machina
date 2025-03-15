@@ -25,9 +25,6 @@ POSSIBLE_EXE_NAMES = [
     "ExMachina.exe",
 ]
 
-NO_EXE_ALLOWED = ["steam", "isl1053"]
-FOV_ALLOWED = ["steam", "isl1053"]
-
 VERSIONS = {
     "steam": {
         "title": SUPPORTED_VERSIONS["steam"],
@@ -42,7 +39,7 @@ VERSIONS = {
         ],
         "manifest": "resources/manifests/manifest_steam.yaml",
         "fov_allowed": True,
-        "allowed_mods": []
+        "allowed_mods": {}
     },
     "cp114": {
         "title": SUPPORTED_VERSIONS["cp114"],
@@ -119,6 +116,9 @@ VERSIONS = {
         ],
         "manifest": "resources/manifests/manifest_isl1053.yaml",
         "fov_allowed": True,
-        "allowed_mods": []
+        "allowed_mods": {}
     }
 }
+
+NO_FOV_VERSIONS = [version for version, info in VERSIONS.items()
+                   if not info["fov_allowed"]]

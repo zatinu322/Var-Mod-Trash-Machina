@@ -13,6 +13,7 @@ SUPPORTED_VERSIONS = {
 }
 
 PRESETS = {
+    "p_custom": {},
     "p_recommended": {
         "cb_ai_vehs": True,
         "cb_aim": True,
@@ -66,5 +67,6 @@ PRESETS = {
         "cb_weather": True,
         "cb_wheels": True
     },
-    "p_custom": {}
 }
+
+DEFAULT_PRESET = "p_custom"

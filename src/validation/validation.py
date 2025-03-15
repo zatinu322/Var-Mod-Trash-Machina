@@ -10,7 +10,7 @@ from helpers.errors import ManifestMissingError, RootNotFoundError, \
     ExecutableVersionError, GameNotFoundError, GDPFoundError, \
     ExecutableNotFoundError, NoGamePathError, NotAbsolutePathError, \
     ResourcesMissingError, ModsNotFoundError, ModsFoundError, ModVersionError
-from .yaml_schema import validate_manifest_types
+from .manifest_schema import validate_manifest_types
 from helpers.yaml_utils import serialize_yaml
 
 logger = logging.getLogger(Path(__file__).name)
