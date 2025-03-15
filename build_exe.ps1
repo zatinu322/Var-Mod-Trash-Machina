@@ -1,6 +1,6 @@
 Copy-Item .\main.exe .\main.exe.bak -Verbose -Force
 
-nuitka `
+poetry run nuitka `
 --standalone `
 --onefile `
 --follow-imports `

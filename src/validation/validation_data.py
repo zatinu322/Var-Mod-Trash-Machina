@@ -85,7 +85,7 @@ VERSIONS = {
         "fov_allowed": False,
         "allowed_mods": {
             "community_patch": {"version": "1.14.1"},
-            "improved_storyline_sd": {"version": "1.2.0"}
+            "improved_storyline_sd": {"version": "1.2.1"}
         }
     },
     "isl12cr": {
@@ -102,7 +102,7 @@ VERSIONS = {
         "fov_allowed": False,
         "allowed_mods": {
             "community_remaster": {"version": "1.14.1"},
-            "improved_storyline_hd": {"version": "1.2.0"}
+            "improved_storyline_hd": {"version": "1.2.1"}
         }
     },
     "isl1053": {

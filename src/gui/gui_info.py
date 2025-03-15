@@ -1,15 +1,15 @@
 NAME = "Ex Machina Randomizer"
 VERSION = "v1.3-beta"
-BUILD = "build 241017a"
+BUILD = "build 250315a"
 FULL_NAME = f"{NAME} {VERSION} {BUILD}"
 
 SUPPORTED_VERSIONS = {
     "steam": "Steam v1.02",
     "cp114": "Community Patch v1.14.1",
     "cr114": "Community Remaster v1.14.1",
-    "isl12cp": "Improved Storyline v1.2 (ComPatch)",
-    "isl12cr": "Improved Storyline v1.2 (ComRemaster)",
-    "isl1053": "Improved Storyline v1.0.5.3"
+    "isl12cp": "Improved Storyline v1.2.1 (ComPatch)",
+    "isl12cr": "Improved Storyline v1.2.1 (ComRemaster)",
+    "isl1053": "Improved Storyline v1.0.5.3 (Пока не работает)",  # FIXME
 }
 
 PRESETS = {
