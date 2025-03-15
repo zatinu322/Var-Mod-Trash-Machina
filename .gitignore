@@ -166,3 +166,4 @@ gui_old.py
 TODO.md
 *.exe
 *.exe.bak
+!randomizer-v*.exe
