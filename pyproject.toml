@@ -1,17 +1,25 @@
-[tool.poetry]
-package-mode = false
+[project]
+name = "var-mod-trash-machina"
+version = "1.3.0-beta"
+description = "Various modification for Ex Machina game."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flet==0.24.1",
+    "pydantic>=2.12.5",
+    "pyyaml>=6.0.3",
+]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-flet = "^0.24.1"
-pydantic = "^2.9.2"
-PyYAML = "^6.0.2"
+[dependency-groups]
+dev = [
+    "icecream>=2.1.8",
+    "pytest>=9.0.2",
+]
 
-[tool.poetry.group.dev.dependencies]
-icecream = "^2.1.3"
-mypy = "^1.13.0"
-Nuitka = "^2.4.10"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.mypy]
+ignore_missing_imports = true  # Workaround to avoid installation of all django project dependencies in a linter docker image
+disallow_untyped_defs = true  # Disallows defining functions without type annotations or with incomplete type annotations
+python_version = 3.12
+plugins = [
+  "pydantic.mypy",
+]

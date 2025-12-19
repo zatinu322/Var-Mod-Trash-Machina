@@ -1,0 +1,41 @@
+fail_fast: true
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    rev: 2.7.3
+    hooks:
+      - id: editorconfig-checker
+        name: editorconfig-checker
+        args:
+          - -exclude
+          - '(\.git|\.ruff_cache|\.mypy_cache|__pycache__|\.venv|venv)'
+        stages: [pre-commit]
+
+  - repo: local
+    hooks:
+      - id: linters-ruff
+        name: ruff
+        entry: uvx ruff check ./src
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+
+      - id: linters-mypy
+        name: mypy
+        entry: uvx --with pydantic mypy ./src
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+
+      # TODO: Enable tests
+      # - id: test
+      #   name: pytest
+      #   entry: pytest -v src/
+      #   language: system
+      #   pass_filenames: false
