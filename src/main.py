@@ -1,45 +1,42 @@
-from argparse import ArgumentParser, Namespace
 import logging
+from argparse import ArgumentParser, Namespace
 
-import gui.flet_window as flet_window
+from flet import Page, run
+
+from gui.layout import RandomizerGUI
 
 
-def parse_args() -> Namespace:
-    parser = ArgumentParser(description='')
-    parser.add_argument('--debug',
-                        '--dev',
-                        help='Режим отладки',
-                        action='store_true')
+def parse_arguments() -> Namespace:
+    parser = ArgumentParser(description="Ex Machina Randomizer.")
+    parser.add_argument(
+        "--debug",
+        "--dev",
+        help="Debug mode.",
+        action="store_true",
+    )
     return parser.parse_args()
 
 
-def main_gui() -> None:
-    args = parse_args()
-
-    if args.debug:
-        log_level = logging.DEBUG
-    else:
-        log_level = logging.INFO
-
+def set_log_config(debug: bool = False) -> None:
     logging.basicConfig(
+        level=logging.DEBUG if debug else logging.INFO,
+        format="[%(levelname)s] %(asctime)s %(name)s: %(message)s",
         filename="randomizer.log",
-        level=log_level,
-        format=" ".join([
-            "[%(levelname)s]",
-            "%(asctime)s",
-            "%(name)s:",
-            "%(message)s",
-        ]),
         filemode="w",
-        datefmt="%d/%m %H:%M:%S",
-        encoding="utf-8"
+        encoding="utf-8",
     )
-    logging.getLogger("flet_core").setLevel(logging.ERROR)
-    logging.getLogger("flet_runtime").setLevel(logging.ERROR)
-    logging.getLogger("asyncio").setLevel(logging.ERROR)
+    logging.getLogger("flet").setLevel(logging.ERROR)
 
-    flet_window.start()
+
+def start(page: Page) -> None:
+    arguments = parse_arguments()
+    set_log_config(arguments.debug)
+
+    randomizer_app = RandomizerGUI(
+        width=800,
+    )
+    page.add(randomizer_app)
 
 
 if __name__ == "__main__":
-    main_gui()
+    run(start)
