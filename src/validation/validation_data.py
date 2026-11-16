@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from gui.gui_info import SUPPORTED_VERSIONS
+from gui.constants import SUPPORTED_VERSIONS
 
 
 REQUIRED_GAME_PATHS = [

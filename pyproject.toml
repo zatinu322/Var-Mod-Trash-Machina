@@ -1,6 +1,6 @@
 [project]
-name = "var-mod-trash-machina"
-version = "1.3.0-beta"
+name = "ex-machina-randomizer"
+version = "2.0.0"
 description = "Various modification for Ex Machina game."
 readme = "README.md"
 requires-python = ">=3.13"

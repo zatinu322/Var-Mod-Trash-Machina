@@ -8,6 +8,7 @@ from flet import (
     Colors,
     Column,
     Container,
+    Icons,
     Padding,
     Row,
     Text,
@@ -33,6 +34,7 @@ class GamePathBrowser(Column):
             bgcolor=Colors.WHITE_10,
             style=RandomizerButtonStyle(),
             content="browse",
+            icon=Icons.FOLDER_OPEN,
         )
         self.status = Text()
 

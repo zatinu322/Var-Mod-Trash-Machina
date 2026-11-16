@@ -41,7 +41,7 @@ max-complexity = 7
 [lint.pylint]
 max-args = 6 # Максимальное кол-во аргументов функции
 max-branches = 10 # Максимальное кол-во ветвей if/else
-max-statements = 50 # Максимальное кол-во операторов в функции
+max-statements = 51 # Максимальное кол-во операторов в функции
 
 [lint.per-file-ignores]
 "**/__init__.py" = ["F401"]

@@ -10,6 +10,7 @@ from flet import (
     control,
 )
 
+from gui.constants import ASSETS_PATH
 from gui.controls import (
     GamePathBrowser,
     LangButton,
@@ -18,14 +19,19 @@ from gui.controls import (
 from gui.options import ExpandableOptions
 from gui.overlay import InactiveOverlay, RandomizationOverlay
 from gui.values import LangDecorationImage
-from helpers.paths_utils import ASSETS_PATH
 
 
 @control
 class RandomizerGUI(Container):
     def init(self) -> None:
-        self.rus_button = LangButton(image=LangDecorationImage(src=str((ASSETS_PATH / "rus.png").resolve())))
-        self.eng_button = LangButton(image=LangDecorationImage(src=str((ASSETS_PATH / "eng.png").resolve())))
+        self.rus_button = LangButton(
+            image=LangDecorationImage(src=str((ASSETS_PATH / "rus.png").resolve())),
+            data="rus",
+        )
+        self.eng_button = LangButton(
+            image=LangDecorationImage(src=str((ASSETS_PATH / "eng.png").resolve())),
+            data="en",
+        )
         self.options = ExpandableOptions(width=self.width)
         self.path_browser = GamePathBrowser()
         self.version = Dropdown(width=600)

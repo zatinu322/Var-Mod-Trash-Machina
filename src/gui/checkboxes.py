@@ -4,113 +4,113 @@ from gui.shared import FletControl
 
 
 class Checkboxes:
-    ai_vehs = Checkbox(label="ai_vehs")
-    aim = Checkbox(label="aim")
-    armor = Checkbox(label="armor")
-    bkgd = Checkbox(label="bkgd")
-    books_history = Checkbox(label="books_history")
-    cab_cargo = Checkbox(label="cab_cargo")
-    clans = Checkbox(label="clans")
-    controls = Checkbox(label="controls")
-    crashes = Checkbox(label="crashes")
-    descriptions = Checkbox(label="descriptions")
-    dialogues = Checkbox(label="dialogues")
-    digits = Checkbox(label="digits")
-    dwellers = Checkbox(label="dwellers")
-    engines = Checkbox(label="engines")
-    env_models = Checkbox(label="env_models")
-    env_textures = Checkbox(label="env_textures")
-    explosions = Checkbox(label="explosions")
-    fadingmsgs = Checkbox(label="fadingmsgs")
-    fov = Checkbox(label="fov")
-    goods_guns = Checkbox(label="goods_guns")
-    gravity = Checkbox(label="gravity")
-    gui_icons = Checkbox(label="gui_icons")
-    gui_text = Checkbox(label="gui_text")
-    guns = Checkbox(label="guns")
-    guns_lua = Checkbox(label="guns_lua")
-    hits = Checkbox(label="hits")
-    horns = Checkbox(label="horns")
-    humans = Checkbox(label="humans")
-    landscape = Checkbox(label="landscape")
-    lightmaps = Checkbox(label="lightmaps")
-    maps = Checkbox(label="maps")
-    masks = Checkbox(label="masks")
-    music = Checkbox(label="music")
-    names = Checkbox(label="names")
-    npc_look = Checkbox(label="npc_look")
-    other_sounds = Checkbox(label="other_sounds")
-    pl_veh = Checkbox(label="pl_veh")
-    quests = Checkbox(label="quests")
-    radar = Checkbox(label="radar")
-    radio = Checkbox(label="radio")
-    render = Checkbox(label="render")
-    shooting = Checkbox(label="shooting")
-    skybox = Checkbox(label="skybox")
-    speech = Checkbox(label="speech")
-    splashes = Checkbox(label="splashes")
-    tiles = Checkbox(label="tiles")
-    towns = Checkbox(label="towns")
-    trees = Checkbox(label="trees")
-    veh_skins = Checkbox(label="veh_skins")
-    weather = Checkbox(label="weather")
-    wheels = Checkbox(label="wheels")
+    ai_vehs = Checkbox(label="ai_vehs", data="ai_vehs")
+    aim = Checkbox(label="aim", data="aim")
+    armor = Checkbox(label="armor", data="armor")
+    bkgd = Checkbox(label="bkgd", data="bkgd")
+    books_history = Checkbox(label="books_history", data="books_history")
+    cab_cargo = Checkbox(label="cab_cargo", data="cab_cargo")
+    clans = Checkbox(label="clans", data="clans")
+    controls = Checkbox(label="controls", data="controls")
+    crashes = Checkbox(label="crashes", data="crashes")
+    descriptions = Checkbox(label="descriptions", data="descriptions")
+    dialogues = Checkbox(label="dialogues", data="dialogues")
+    digits = Checkbox(label="digits", data="digits")
+    dwellers = Checkbox(label="dwellers", data="dwellers")
+    engines = Checkbox(label="engines", data="engines")
+    env_models = Checkbox(label="env_models", data="env_models")
+    env_textures = Checkbox(label="env_textures", data="env_textures")
+    explosions = Checkbox(label="explosions", data="explosions")
+    fadingmsgs = Checkbox(label="fadingmsgs", data="fadingmsgs")
+    fov = Checkbox(label="fov", data="fov")
+    goods_guns = Checkbox(label="goods_guns", data="goods_guns")
+    gravity = Checkbox(label="gravity", data="gravity")
+    gui_icons = Checkbox(label="gui_icons", data="gui_icons")
+    gui_text = Checkbox(label="gui_text", data="gui_text")
+    guns = Checkbox(label="guns", data="guns")
+    guns_lua = Checkbox(label="guns_lua", data="guns_lua")
+    hits = Checkbox(label="hits", data="hits")
+    horns = Checkbox(label="horns", data="horns")
+    humans = Checkbox(label="humans", data="humans")
+    landscape = Checkbox(label="landscape", data="landscape")
+    lightmaps = Checkbox(label="lightmaps", data="lightmaps")
+    maps = Checkbox(label="maps", data="maps")
+    masks = Checkbox(label="masks", data="masks")
+    music = Checkbox(label="music", data="music")
+    names = Checkbox(label="names", data="names")
+    npc_look = Checkbox(label="npc_look", data="npc_look")
+    other_sounds = Checkbox(label="other_sounds", data="other_sounds")
+    pl_veh = Checkbox(label="pl_veh", data="pl_veh")
+    quests = Checkbox(label="quests", data="quests")
+    radar = Checkbox(label="radar", data="radar")
+    radio = Checkbox(label="radio", data="radio")
+    render = Checkbox(label="render", data="render")
+    shooting = Checkbox(label="shooting", data="shooting")
+    skybox = Checkbox(label="skybox", data="skybox")
+    speech = Checkbox(label="speech", data="speech")
+    splashes = Checkbox(label="splashes", data="splashes")
+    tiles = Checkbox(label="tiles", data="tiles")
+    towns = Checkbox(label="towns", data="towns")
+    trees = Checkbox(label="trees", data="trees")
+    veh_skins = Checkbox(label="veh_skins", data="veh_skins")
+    weather = Checkbox(label="weather", data="weather")
+    wheels = Checkbox(label="wheels", data="wheels")
 
     @property
-    def all(cls) -> list[FletControl]:
-        return [
-            cls.ai_vehs,
-            cls.aim,
-            cls.armor,
-            cls.bkgd,
-            cls.books_history,
-            cls.cab_cargo,
-            cls.clans,
-            cls.controls,
-            cls.crashes,
-            cls.descriptions,
-            cls.dialogues,
-            cls.digits,
-            cls.dwellers,
-            cls.engines,
-            cls.env_models,
-            cls.env_textures,
-            cls.explosions,
-            cls.fadingmsgs,
-            cls.fov,
-            cls.goods_guns,
-            cls.gravity,
-            cls.gui_icons,
-            cls.gui_text,
-            cls.guns,
-            cls.guns_lua,
-            cls.hits,
-            cls.horns,
-            cls.humans,
-            cls.landscape,
-            cls.lightmaps,
-            cls.maps,
-            cls.masks,
-            cls.music,
-            cls.names,
-            cls.npc_look,
-            cls.other_sounds,
-            cls.pl_veh,
-            cls.quests,
-            cls.radar,
-            cls.radio,
-            cls.render,
-            cls.shooting,
-            cls.skybox,
-            cls.speech,
-            cls.splashes,
-            cls.tiles,
-            cls.towns,
-            cls.trees,
-            cls.veh_skins,
-            cls.weather,
-            cls.wheels,
-        ]
+    def all(cls) -> dict[str, Checkbox]:
+        return {
+            "ai_vehs": cls.ai_vehs,
+            "aim": cls.aim,
+            "armor": cls.armor,
+            "bkgd": cls.bkgd,
+            "books_history": cls.books_history,
+            "cab_cargo": cls.cab_cargo,
+            "clans": cls.clans,
+            "controls": cls.controls,
+            "crashes": cls.crashes,
+            "descriptions": cls.descriptions,
+            "dialogues": cls.dialogues,
+            "digits": cls.digits,
+            "dwellers": cls.dwellers,
+            "engines": cls.engines,
+            "env_models": cls.env_models,
+            "env_textures": cls.env_textures,
+            "explosions": cls.explosions,
+            "fadingmsgs": cls.fadingmsgs,
+            "fov": cls.fov,
+            "goods_guns": cls.goods_guns,
+            "gravity": cls.gravity,
+            "gui_icons": cls.gui_icons,
+            "gui_text": cls.gui_text,
+            "guns": cls.guns,
+            "guns_lua": cls.guns_lua,
+            "hits": cls.hits,
+            "horns": cls.horns,
+            "humans": cls.humans,
+            "landscape": cls.landscape,
+            "lightmaps": cls.lightmaps,
+            "maps": cls.maps,
+            "masks": cls.masks,
+            "music": cls.music,
+            "names": cls.names,
+            "npc_look": cls.npc_look,
+            "other_sounds": cls.other_sounds,
+            "pl_veh": cls.pl_veh,
+            "quests": cls.quests,
+            "radar": cls.radar,
+            "radio": cls.radio,
+            "render": cls.render,
+            "shooting": cls.shooting,
+            "skybox": cls.skybox,
+            "speech": cls.speech,
+            "splashes": cls.splashes,
+            "tiles": cls.tiles,
+            "towns": cls.towns,
+            "trees": cls.trees,
+            "veh_skins": cls.veh_skins,
+            "weather": cls.weather,
+            "wheels": cls.wheels,
+        }
 
     @property
     def icons_group(cls) -> list[FletControl]:

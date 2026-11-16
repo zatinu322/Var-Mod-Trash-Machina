@@ -1,9 +1,9 @@
 import logging
 from argparse import ArgumentParser, Namespace
 
-from flet import Page, run
+from flet import run
 
-from gui.layout import RandomizerGUI
+from gui.app import start_app
 
 
 def parse_arguments() -> Namespace:
@@ -21,22 +21,20 @@ def set_log_config(debug: bool = False) -> None:
     logging.basicConfig(
         level=logging.DEBUG if debug else logging.INFO,
         format="[%(levelname)s] %(asctime)s %(name)s: %(message)s",
-        filename="randomizer.log",
-        filemode="w",
-        encoding="utf-8",
+        # filename="randomizer.log",
+        # filemode="w",
+        # encoding="utf-8",
     )
     logging.getLogger("flet").setLevel(logging.ERROR)
+    logging.getLogger("flet_desktop").setLevel(logging.ERROR)
 
 
-def start(page: Page) -> None:
+def main() -> None:
     arguments = parse_arguments()
     set_log_config(arguments.debug)
 
-    randomizer_app = RandomizerGUI(
-        width=800,
-    )
-    page.add(randomizer_app)
+    run(start_app)
 
 
 if __name__ == "__main__":
-    run(start)
+    main()

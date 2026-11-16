@@ -59,10 +59,10 @@ class ExpandableOptions(Container):
 
         self.bgcolor = "white10"
         self.border_radius = 11
-        self.animate = Animation(400, AnimationCurve.DECELERATE)
+        self.animate_size = Animation(400, AnimationCurve.DECELERATE)
         self.padding = Padding.only(left=10, right=10, top=10)
 
-        self.name = Text(scale=16, weight=FontWeight.BOLD)
+        self.name = Text(size=16, weight=FontWeight.BOLD)
 
         self.expand_icon = IconButton(
             icon=Icons.KEYBOARD_ARROW_DOWN,
@@ -71,44 +71,50 @@ class ExpandableOptions(Container):
         )
 
         self.preset = Dropdown()
-        self.select_all_button = SelectionButton(content="select_all")
-        self.deselect_all_button = SelectionButton(content="deselect_all")
+        self.select_all_button = SelectionButton(
+            content="select_all",
+            data=True,
+        )
+        self.deselect_all_button = SelectionButton(
+            content="deselect_all",
+            data=False,
+        )
         self.checkboxes = Checkboxes()
 
         self.icon_options = OptionCategory(
             text="t_icons",
-            text_width=160,
-            block_width=160,
+            text_width=190,
+            block_width=190,
             checkboxes=self.checkboxes.icons_group,
         )
         self.text_options = OptionCategory(
             text="t_text",
             text_width=210,
-            block_width=160,
+            block_width=210,
             checkboxes=self.checkboxes.text_group,
         )
         self.sound_options = OptionCategory(
             text="t_sounds",
             text_width=135,
-            block_width=110,
+            block_width=135,
             checkboxes=self.checkboxes.sound_group,
         )
         self.models_options = OptionCategory(
             text="t_models",
             text_width=210,
-            block_width=190,
+            block_width=210,
             checkboxes=self.checkboxes.models_group,
         )
         self.textures_options = OptionCategory(
             text="t_textures",
             text_width=135,
-            block_width=125,
+            block_width=135,
             checkboxes=self.checkboxes.textures_group,
         )
         self.other_options = OptionCategory(
             text="t_other",
             text_width=150,
-            block_width=135,
+            block_width=150,
             checkboxes=self.checkboxes.other_group,
         )
         self.executable_options = OptionCategory(
