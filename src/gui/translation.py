@@ -5,10 +5,10 @@ if TYPE_CHECKING:
     from gui.checkboxes import Checkboxes
     from gui.controls import GamePathBrowser
     from gui.options import ExpandableOptions
-    from localisation.schemas import GamePathLocale, OptionCheckboxes, OptionsLocale
+    from schemas.localisation import GamePathLocale, OptionCheckboxes, OptionsLocale
 
 
-def _retranslate_checkboxes(checkboxes: "Checkboxes", locale: "OptionCheckboxes") -> None:
+def retranslate_checkboxes(checkboxes: "Checkboxes", locale: "OptionCheckboxes") -> None:
     checkboxes.ai_vehs.label = locale.ai_vehs
     checkboxes.aim.label = locale.aim
     checkboxes.armor.label = locale.armor
@@ -62,7 +62,7 @@ def _retranslate_checkboxes(checkboxes: "Checkboxes", locale: "OptionCheckboxes"
     checkboxes.wheels.label = locale.wheels
 
 
-def _retranslate_app_options(options: "ExpandableOptions", locale: "OptionsLocale") -> None:
+def retranslate_app_options(options: "ExpandableOptions", locale: "OptionsLocale") -> None:
     options.name.value = locale.heading
     options.select_all_button.content = locale.select_all_button
     options.deselect_all_button.content = locale.deselect_all_button
@@ -78,27 +78,18 @@ def _retranslate_app_options(options: "ExpandableOptions", locale: "OptionsLocal
     options.other_options.text.value = locale.other
     options.executable_options.text.value = locale.executable
 
-    _retranslate_checkboxes(options.checkboxes, locale.checkboxes)
 
-
-def _retranslate_path_browser(path_browser: "GamePathBrowser", locale: "GamePathLocale") -> None:
+def retranslate_path_browser(path_browser: "GamePathBrowser", locale: "GamePathLocale") -> None:
     path_browser.path_field.label = locale.label
     path_browser.path_field.hint_text = locale.hint
     path_browser.browse_button.content = locale.browse_button
     path_browser.status.value = ""  # TODO: update path status
 
 
-def retranslate_ui(app: "RandomizerApp") -> None:
-    """Translates app GUI to its current locale"""
+def retranslate_main_widgets(app: "RandomizerApp") -> None:
     locale = app.locale
-
-    _retranslate_app_options(app.options, locale.options)
-
-    _retranslate_path_browser(app.path_browser, locale.game_path)
 
     app.version.label = locale.game_version.label
     app.version.hint_text = locale.game_version.hint
 
     app.randomization_button.content = locale.randomization_button
-
-    app.update()

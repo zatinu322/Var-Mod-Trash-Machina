@@ -1,5 +1,8 @@
 presets:
   - name: recommended
+    title:
+      rus: Рекомендованный
+      en: Recommended
     checkboxes:
       ai_vehs: true
       aim: true

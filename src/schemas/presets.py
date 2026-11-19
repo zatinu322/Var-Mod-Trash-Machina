@@ -55,8 +55,14 @@ class PresetCheckboxes(BaseModel):
     armor: bool = False
 
 
+class PresetTitle(BaseModel):
+    rus: str
+    en: str
+
+
 class Preset(BaseModel):
     name: str
+    title: PresetTitle
     checkboxes: PresetCheckboxes = PresetCheckboxes()
 
 

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class AppErrors(BaseModel):
@@ -101,7 +101,11 @@ class OptionCheckboxes(BaseModel):
 
 class RandomizationPresets(BaseModel):
     label: str
-    names: dict[str, str]
+    names: dict[str, str] = Field(default_factory=dict)
+
+    model_config = ConfigDict(
+        validate_assignment=True,
+    )
 
     def get_preset(self, preset: str | None) -> str:
         if preset is None:

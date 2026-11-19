@@ -14,10 +14,8 @@ from flet import (
     ThemeMode,
 )
 
-from config.schemas import AppConfig
 from gui.constants import (
     FULL_NAME,
-    LOCALISATION_OVERRIDE_PATH,
     LOCALISATION_PATH,
     MAIN_PATH,
     PRESETS_PATH,
@@ -26,10 +24,16 @@ from gui.constants import (
     VERSIONS_PATH,
 )
 from gui.layout import RandomizerGUI
-from gui.translation import retranslate_ui
+from gui.translation import (
+    retranslate_app_options,
+    retranslate_checkboxes,
+    retranslate_main_widgets,
+    retranslate_path_browser,
+)
 from helpers.yaml_utils import serialize_yaml
-from localisation.schemas import AppLocalisation
-from schemas.presets import Preset, Presets
+from schemas.app_config import AppConfig
+from schemas.localisation import AppLocalisation
+from schemas.presets import Preset, Presets, PresetTitle
 from schemas.versions import Versions
 
 logger = logging.getLogger(__name__)
@@ -40,19 +44,21 @@ class RandomizerApp(RandomizerGUI):
         super().init()
 
         self.app_config = AppConfig.model_validate(serialize_yaml(yaml_path=SETTINGS_PATH))
-        self.localisations = AppLocalisation.model_validate(serialize_yaml(
-            LOCALISATION_PATH,
-            LOCALISATION_OVERRIDE_PATH,
-        ))
-        self.locale = self.localisations.get_locale(self.app_config.language)
         self.presets = {
             preset.name: preset
             for preset in Presets.model_validate(
                 serialize_yaml(yaml_path=PRESETS_PATH),
             ).presets
         }
-        self.presets["custom"] = Preset(name="custom")
+        self.presets["custom"] = Preset(name="custom", title=PresetTitle(rus="Пользовательский", en="Custom"))
         self.versions = Versions.model_validate(serialize_yaml(yaml_path=VERSIONS_PATH))
+
+        self.localisations = AppLocalisation.model_validate(serialize_yaml(LOCALISATION_PATH))
+        # adjust localisation with existing presets
+        self.localisations.rus.options.presets.names = {name: preset.title.rus for name, preset in self.presets.items()}
+        self.localisations.en.options.presets.names = {name: preset.title.en for name, preset in self.presets.items()}
+
+        self.locale = self.localisations.get_locale(self.app_config.language)
 
         self.rus_button.on_click = self.switch_locale
         self.eng_button.on_click = self.switch_locale
@@ -68,6 +74,7 @@ class RandomizerApp(RandomizerGUI):
 
         # TODO: base validation of manifests and options
         # TODO: apply_config
+        # TODO: update path status on translation
         # TODO: update checkboxes on version pick
         # TODO: update checkboxes on config apply
         # TODO: update status on path change
@@ -75,9 +82,17 @@ class RandomizerApp(RandomizerGUI):
         # TODO: save config on app close
         # TODO: show/close randomization log
 
+    def retranslate_ui(self) -> None:
+        retranslate_main_widgets(self)
+        retranslate_path_browser(self.path_browser, self.locale.game_path)
+        retranslate_app_options(self.options, self.locale.options)
+        retranslate_checkboxes(self.options.checkboxes, self.locale.options.checkboxes)
+
+        self.update()
+
     def switch_locale(self, e: Event) -> None:
         self.locale = self.localisations.get_locale(e.control.data)
-        retranslate_ui(self)
+        self.retranslate_ui()
 
     def set_checkboxes_status(self, e: Event) -> None:
         """Select or deselect all checkboxes."""
@@ -184,5 +199,5 @@ def start_app(page: Page) -> None:
     # we need to do this only after control is added on page
     randomizer_app.update_presets()
     randomizer_app.update_versions()
-    retranslate_ui(randomizer_app)
+    randomizer_app.retranslate_ui()
     randomizer_app.apply_preset()

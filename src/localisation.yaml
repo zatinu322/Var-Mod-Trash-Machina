@@ -18,8 +18,6 @@ rus:
     heading: Параметры рандомизации
     presets:
       label: Пресет
-      names:
-        custom: Пользовательский
     select_all_button: Выделить всё
     deselect_all_button: Снять всё
     icons: Иконки
@@ -138,8 +136,6 @@ en:
     heading: Options
     presets:
       label: Preset
-      names:
-        custom: Custom
     select_all_button: Select all
     deselect_all_button: Deselect all
     icons: Icons
