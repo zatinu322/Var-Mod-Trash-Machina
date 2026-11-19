@@ -1,0 +1,10 @@
+rus:
+  options:
+    presets:
+      names:
+        recommended: Рекомендуемый
+en:
+  options:
+    presets:
+      names:
+        recommended: Recommended

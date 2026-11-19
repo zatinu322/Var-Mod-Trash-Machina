@@ -1,0 +1,69 @@
+versions:
+  - name: steam
+    title: Steam v1.02
+    allowed_executables:
+      - version: release build v1.02
+        offset: 0x0059069C
+        length: 19
+    manifest: steam.yaml
+  - name: cp1-14-1
+    title: Community Patch v1.14.1
+    allowed_executables:
+      - version: Patch fixes v1.14
+        offset: 0x00590696
+        length: 17
+    manifest: community_patch_1_14_1.yaml
+    required_mods:
+      - name: community_patch
+        version: 1.14.1
+    forbid_extra_mods: true
+  - name: cr1-14-1
+    title: Community Remaster v1.14.1
+    allowed_executables:
+      - version: Remaster fixes v1.14
+        offset: 0x00590696
+        length: 20
+    restricted_options:
+      - fov
+    manifest: community_remaster_1_14_1.yaml
+    options: community_remaster_1_14_1.yaml
+    required_mods:
+      - name: community_remaster
+        version: 1.14.1
+    forbid_extra_mods: true
+  - name: isl12cp
+    title: Improved Storyline v1.2.1 (ComPatch)
+    allowed_executables:
+      - version: Patch fixes v1.14
+        offset: 0x00590696
+        length: 17
+    manifest: improved_storyline_cp_1_2_1.yaml
+    required_mods:
+      - name: community_patch
+        version: 1.14.1
+      - name: improved_storyline_sd
+        version: 1.2.1
+    forbid_extra_mods: true
+  - name: isl12cr
+    title: Improved Storyline v1.2.1 (ComRemaster)
+    allowed_executables:
+      - version: Remaster fixes v1.14
+        offset: 0x00590696
+        length: 20
+    restricted_options:
+      - fov
+    manifest: improved_storyline_cr_1_2_1.yaml
+    options: improved_storyline_cr_1_2_1.yaml
+    required_mods:
+      - name: community_remaster
+        version: 1.14.1
+      - name: improved_storyline_hd
+        version: 1.2.1
+    forbid_extra_mods: true
+  - name: isl106
+    title: Improved Storyline v1.0.6 (Пока не работает)  # FIXME
+    allowed_executables:
+      - version: release build v1.02
+        offset: 0x0059069C
+        length: 19
+    manifest: improved_storyline_1_0_6.yaml

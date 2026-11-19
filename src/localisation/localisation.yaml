@@ -18,8 +18,8 @@ rus:
     heading: Параметры рандомизации
     presets:
       label: Пресет
-      recommended: Рекомендуемый
-      custom: Пользовательский
+      names:
+        custom: Пользовательский
     select_all_button: Выделить всё
     deselect_all_button: Снять всё
     icons: Иконки
@@ -138,8 +138,8 @@ en:
     heading: Options
     presets:
       label: Preset
-      recommended: Recommended
-      custom: Custom
+      names:
+        custom: Custom
     select_all_button: Select all
     deselect_all_button: Deselect all
     icons: Icons

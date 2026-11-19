@@ -101,14 +101,13 @@ class OptionCheckboxes(BaseModel):
 
 class RandomizationPresets(BaseModel):
     label: str
-    recommended: str
-    custom: str
+    names: dict[str, str]
 
     def get_preset(self, preset: str | None) -> str:
         if preset is None:
             raise ValueError("No key preset provided.")
 
-        preset_text: str | None = getattr(self, preset, None)
+        preset_text = self.names.get(preset, None)
         if preset_text is not None:
             return preset_text
 

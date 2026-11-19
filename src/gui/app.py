@@ -15,12 +15,22 @@ from flet import (
 )
 
 from config.schemas import AppConfig
-from gui.constants import FULL_NAME, LOCALIZATION_PATH, MAIN_PATH, PRESETS_PATH, SETTINGS_PATH, SRC_PATH
+from gui.constants import (
+    FULL_NAME,
+    LOCALISATION_OVERRIDE_PATH,
+    LOCALISATION_PATH,
+    MAIN_PATH,
+    PRESETS_PATH,
+    SETTINGS_PATH,
+    SRC_PATH,
+    VERSIONS_PATH,
+)
 from gui.layout import RandomizerGUI
 from gui.translation import retranslate_ui
 from helpers.yaml_utils import serialize_yaml
 from localisation.schemas import AppLocalisation
 from schemas.presets import Preset, Presets
+from schemas.versions import Versions
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +40,10 @@ class RandomizerApp(RandomizerGUI):
         super().init()
 
         self.app_config = AppConfig.model_validate(serialize_yaml(yaml_path=SETTINGS_PATH))
-        self.localisations = AppLocalisation.model_validate(serialize_yaml(yaml_path=LOCALIZATION_PATH))
+        self.localisations = AppLocalisation.model_validate(serialize_yaml(
+            LOCALISATION_PATH,
+            LOCALISATION_OVERRIDE_PATH,
+        ))
         self.locale = self.localisations.get_locale(self.app_config.language)
         self.presets = {
             preset.name: preset
@@ -39,6 +52,7 @@ class RandomizerApp(RandomizerGUI):
             ).presets
         }
         self.presets["custom"] = Preset(name="custom")
+        self.versions = Versions.model_validate(serialize_yaml(yaml_path=VERSIONS_PATH))
 
         self.rus_button.on_click = self.switch_locale
         self.eng_button.on_click = self.switch_locale
@@ -52,12 +66,14 @@ class RandomizerApp(RandomizerGUI):
         for checkbox in self.options.checkboxes.all.values():
             checkbox.on_change = self.switch_preset_to_custom
 
-        # TODO: switch preset when on checkbox change
-        # TODO: update status on path change
-        # TODO: fill versions
-        # TODO: update checkboxes on version pick
+        # TODO: base validation of manifests and options
         # TODO: apply_config
+        # TODO: update checkboxes on version pick
+        # TODO: update checkboxes on config apply
+        # TODO: update status on path change
+        # TODO: update status on config apply
         # TODO: save config on app close
+        # TODO: show/close randomization log
 
     def switch_locale(self, e: Event) -> None:
         self.locale = self.localisations.get_locale(e.control.data)
@@ -81,10 +97,16 @@ class RandomizerApp(RandomizerGUI):
             self.update()
 
     def update_presets(self) -> None:
-
         self.options.preset.options = [
             DropdownOption(key=preset.name, text=preset.name)
             for preset in self.presets.values()
+        ]
+        self.update()
+
+    def update_versions(self) -> None:
+        self.version.options = [
+            DropdownOption(key=version.name, text=version.title)
+            for version in self.versions.versions
         ]
         self.update()
 
@@ -161,5 +183,6 @@ def start_app(page: Page) -> None:
 
     # we need to do this only after control is added on page
     randomizer_app.update_presets()
+    randomizer_app.update_versions()
     retranslate_ui(randomizer_app)
     randomizer_app.apply_preset()
