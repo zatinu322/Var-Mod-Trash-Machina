@@ -4058,19 +4058,19 @@ cb_landscape:
     - data/maps/r4m1
     - data/maps/r4m2
   multiple: False
-cb_render: 
+cb_render:
   type: exe
   file: hta.exe
   content: Render
-cb_gravity: 
+cb_gravity:
   type: exe
   file: hta.exe
   content: Gravity
-cb_fov: 
+cb_fov:
   type: exe
   file: hta.exe
   content: FOV
-cb_armor: 
+cb_armor:
   type: exe
   file: hta.exe
   content: Armor

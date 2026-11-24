@@ -17,7 +17,7 @@ from gui.controls import (
     RandomizationButton,
 )
 from gui.options import ExpandableOptions
-from gui.overlay import InactiveOverlay, RandomizationOverlay
+from gui.overlay import RandomizationOverlay
 from gui.values import LangDecorationImage
 
 
@@ -37,7 +37,6 @@ class RandomizerGUI(Container):
         self.version = Dropdown(width=600)
         self.randomization_button = RandomizationButton()
 
-        self.inactive_overlay = InactiveOverlay()
         self.randomization_overlay = RandomizationOverlay()
 
         self.content = Column(

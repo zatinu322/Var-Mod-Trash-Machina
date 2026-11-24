@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from ._shared import model_config
+
 
 class PresetCheckboxes(BaseModel):
     maps: bool = False
@@ -54,10 +56,14 @@ class PresetCheckboxes(BaseModel):
     fov: bool = False
     armor: bool = False
 
+    model_config = model_config
+
 
 class PresetTitle(BaseModel):
     rus: str
     en: str
+
+    model_config = model_config
 
 
 class Preset(BaseModel):
@@ -65,6 +71,10 @@ class Preset(BaseModel):
     title: PresetTitle
     checkboxes: PresetCheckboxes = PresetCheckboxes()
 
+    model_config = model_config
+
 
 class Presets(BaseModel):
     presets: list[Preset]
+
+    model_config = model_config

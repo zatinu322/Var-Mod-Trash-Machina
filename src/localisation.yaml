@@ -1,4 +1,5 @@
 rus:
+  name: rus
   randomization_button: Начать рандомизацию
   powered_by: При содействии PavlikRPG © 2026
   rights_reserved: Все права защищены
@@ -7,6 +8,7 @@ rus:
     hint: Введите путь к папке с установленной игрой
     browse_button: Обзор
     status:
+      in_progress: Валидация пути к игре...
       valid: Путь к игре корректен.
       not_found: Не найдена установленная игра.
       gdp_found: Найдены GDP архивы. Возможно, требуется распаковка.
@@ -117,6 +119,7 @@ rus:
     mod_not_found: Не найдены требуемые модификации
     randomization_aborted: Рандомизация прервана.
 en:
+  name: en
   randomization_button: Start randomization
   powered_by: Powered by PavlikRPG © 2026
   rights_reserved: All rights reserved
@@ -125,6 +128,7 @@ en:
     hint: Enter the path to game directory
     browse_button: Browse
     status:
+      in_progress: Game path validation...
       valid: Game path is correct.
       not_found: Installed game not found.
       gdp_found: Found GDP archives. Unpacking may be required.

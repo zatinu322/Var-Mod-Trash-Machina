@@ -83,7 +83,6 @@ def retranslate_path_browser(path_browser: "GamePathBrowser", locale: "GamePathL
     path_browser.path_field.label = locale.label
     path_browser.path_field.hint_text = locale.hint
     path_browser.browse_button.content = locale.browse_button
-    path_browser.status.value = ""  # TODO: update path status
 
 
 def retranslate_main_widgets(app: "RandomizerApp") -> None:
@@ -93,3 +92,6 @@ def retranslate_main_widgets(app: "RandomizerApp") -> None:
     app.version.hint_text = locale.game_version.hint
 
     app.randomization_button.content = locale.randomization_button
+
+    app.randomization_overlay.heading.value = locale.log.heading
+    # app.randomization_overlay.status.value = locale.log.progress.

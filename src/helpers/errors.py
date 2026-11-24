@@ -20,55 +20,6 @@ class NotAbsolutePathError(Exception):
         return ("Game path is not absolute.")
 
 
-class RootNotFoundError(Exception):
-    def __init__(self, path: Path) -> None:
-        self.path = path
-        self.ui_message_key = "game_path_missing"
-        self.ui_message_text = str(path.resolve())
-
-    def __str__(self) -> str:
-        return " ".join([
-            "Unable to validate game_path.",
-            f"{self.path.resolve()} does not exists."
-        ])
-
-
-class ExecutableNotFoundError(Exception):
-    def __init__(self, path: Path) -> None:
-        self.path = path
-        self.ui_message_key = "exe_not_found"
-        self.ui_message_text = str(path.resolve())
-
-    def __str__(self) -> str:
-        return (f"Executable not found in {self.path.resolve()}")
-
-
-class GameNotFoundError(Exception):
-    def __init__(self, path: Path) -> None:
-        self.path = path
-        self.ui_message_key = "not_game_dir"
-        self.ui_message_text = str(path.resolve())
-
-    def __str__(self) -> str:
-        return " ".join([
-            "Unable to validate game path.",
-            f"{self.path.resolve()} is missing."
-        ])
-
-
-class GDPFoundError(Exception):
-    def __init__(self, archives: list[Path]) -> None:
-        archives_str = [str(gdp.resolve()) for gdp in archives]
-        self.ui_message_key = "gdp_found"
-        self.ui_message_text = "\n".join(archives_str)
-
-    def __str__(self) -> str:
-        return " ".join([
-            "Unable to validate game path.",
-            f"GDP archives found: {self.ui_message_text}"
-        ])
-
-
 class ExecutableVersionError(Exception):
     def __init__(self, version: str) -> None:
         self.version = version

@@ -1,4 +1,6 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
+
+from ._shared import model_config
 
 
 class AppErrors(BaseModel):
@@ -16,6 +18,8 @@ class AppErrors(BaseModel):
     mods_found: str
     mod_not_found: str
     randomization_aborted: str
+
+    model_config = model_config
 
 
 class RandomizationProgress(BaseModel):
@@ -36,6 +40,8 @@ class RandomizationProgress(BaseModel):
     done: str
     nothing: str
 
+    model_config = model_config
+
 
 class RandomizationLog(BaseModel):
     heading: str
@@ -43,6 +49,8 @@ class RandomizationLog(BaseModel):
     models_render: str
     gravity: str
     fov: str
+
+    model_config = model_config
 
 
 class OptionCheckboxes(BaseModel):
@@ -98,14 +106,14 @@ class OptionCheckboxes(BaseModel):
     fov: str
     armor: str
 
+    model_config = model_config
+
 
 class RandomizationPresets(BaseModel):
     label: str
     names: dict[str, str] = Field(default_factory=dict)
 
-    model_config = ConfigDict(
-        validate_assignment=True,
-    )
+    model_config = model_config
 
     def get_preset(self, preset: str | None) -> str:
         if preset is None:
@@ -134,12 +142,17 @@ class OptionsLocale(BaseModel):
 
     checkboxes: OptionCheckboxes
 
+    model_config = model_config
+
 
 class GamePathStatus(BaseModel):
+    in_progress: str
     not_found: str
     valid: str
     gdp_found: str
     exe_not_found: str
+
+    model_config = model_config
 
 
 class GamePathLocale(BaseModel):
@@ -148,14 +161,19 @@ class GamePathLocale(BaseModel):
     browse_button: str
     status: GamePathStatus
 
+    model_config = model_config
+
 
 class GameVersionLocale(BaseModel):
     label: str
     hint: str
 
+    model_config = model_config
+
 
 class AppLocale(BaseModel):
     """Single language locale."""
+    name: str
     randomization_button: str
     powered_by: str  # TODO: Add to GUI
     rights_reserved: str  # TODO: Add to GUI
@@ -165,14 +183,18 @@ class AppLocale(BaseModel):
     log: RandomizationLog
     errors: AppErrors
 
+    model_config = model_config
+
 
 class AppLocalisation(BaseModel):
     rus: AppLocale
     en: AppLocale
 
-    def get_locale(self, language: str) -> AppLocale:
-        if language == "rus":
-            return self.rus
-        if language == "en":
-            return self.en
-        raise ValueError(f"{language} language is not supported.")
+    model_config = model_config
+
+    @property
+    def all(cls) -> dict[str, AppLocale]:
+        return {
+            cls.rus.name: cls.rus,
+            cls.en.name: cls.en,
+        }

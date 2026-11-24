@@ -1,62 +1,62 @@
-window:
-  pos_x: 0
-  pos_y: 0
-  width: 880.0
-  height: 706.0
-  is_maximized: false
-language: en
-preset: p_recommended
 checkboxes:
-  ai_vehs: true
-  aim: true
-  armor: true
-  bkgd: true
-  books_history: true
-  cab_cargo: true
-  clans: true
+  ai_vehs: false
+  aim: false
+  armor: false
+  bkgd: false
+  books_history: false
+  cab_cargo: false
+  clans: false
   controls: false
-  crashes: true
-  descriptions: true
-  dialogues: true
-  digits: true
-  dwellers: true
-  engines: true
-  env_models: true
+  crashes: false
+  descriptions: false
+  dialogues: false
+  digits: false
+  dwellers: false
+  engines: false
+  env_models: false
   env_textures: false
-  explosions: true
-  fadingmsgs: true
+  explosions: false
+  fadingmsgs: false
   fov: false
-  goods_guns: true
+  goods_guns: false
   gravity: false
-  gui_icons: true
-  gui_text: true
+  gui_icons: false
+  gui_text: false
   guns: false
-  guns_lua: true
-  hits: true
-  horns: true
-  humans: true
+  guns_lua: false
+  hits: false
+  horns: false
+  humans: false
   landscape: false
-  lightmaps: true
-  maps: true
-  masks: true
-  music: true
-  names: true
-  npc_look: true
-  other_sounds: true
+  lightmaps: false
+  maps: false
+  masks: false
+  music: false
+  names: false
+  npc_look: false
+  other_sounds: false
   pl_veh: false
-  quests: true
-  radar: true
-  radio: true
+  quests: false
+  radar: false
+  radio: false
   render: false
-  shooting: true
-  skybox: true
-  speech: true
-  splashes: true
-  tiles: true
+  shooting: false
+  skybox: false
+  speech: false
+  splashes: false
+  tiles: false
   towns: false
-  trees: true
-  veh_skins: true
-  weather: true
-  wheels: true
-game_path: ''
-game_version: ''
+  trees: false
+  veh_skins: false
+  weather: false
+  wheels: false
+game_path: K:\CUM\
+game_version: steam
+language: rus
+preset: custom
+window:
+  height: 1099.0
+  is_maximized: false
+  pos_x: 338.0
+  pos_y: 122.0
+  width: 1240.0

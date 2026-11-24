@@ -5,14 +5,14 @@ versions:
       - version: release build v1.02
         offset: 0x0059069C
         length: 19
-    manifest: steam.yaml
+    manifest: versions/steam/manifest.yaml
   - name: cp1-14-1
     title: Community Patch v1.14.1
     allowed_executables:
       - version: Patch fixes v1.14
         offset: 0x00590696
         length: 17
-    manifest: community_patch_1_14_1.yaml
+    manifest: versions/community_patch_1_14_1/manifest.yaml
     required_mods:
       - name: community_patch
         version: 1.14.1
@@ -25,8 +25,8 @@ versions:
         length: 20
     restricted_options:
       - fov
-    manifest: community_remaster_1_14_1.yaml
-    options: community_remaster_1_14_1.yaml
+    manifest: versions/community_remaster_1_14_1/manifest.yaml
+    options: versions/community_remaster_1_14_1/options.yaml
     required_mods:
       - name: community_remaster
         version: 1.14.1
@@ -37,7 +37,7 @@ versions:
       - version: Patch fixes v1.14
         offset: 0x00590696
         length: 17
-    manifest: improved_storyline_cp_1_2_1.yaml
+    manifest: versions/improved_storyline_1_2_1_sd/manifest.yaml
     required_mods:
       - name: community_patch
         version: 1.14.1
@@ -52,8 +52,8 @@ versions:
         length: 20
     restricted_options:
       - fov
-    manifest: improved_storyline_cr_1_2_1.yaml
-    options: improved_storyline_cr_1_2_1.yaml
+    manifest: versions/improved_storyline_1_2_1_hd/manifest.yaml
+    options: versions/improved_storyline_1_2_1_hd/options.yaml
     required_mods:
       - name: community_remaster
         version: 1.14.1
@@ -66,4 +66,4 @@ versions:
       - version: release build v1.02
         offset: 0x0059069C
         length: 19
-    manifest: improved_storyline_1_0_6.yaml
+    manifest: versions/improved_storyline_1_0_6/manifest.yaml

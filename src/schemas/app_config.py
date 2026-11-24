@@ -1,14 +1,20 @@
 from pydantic import BaseModel
 
+from gui.constants import DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_POS_X, DEFAULT_WINDOW_POS_Y, DEFAULT_WINDOW_WIDTH
+
+from ._shared import model_config
+
 
 class AppWindow(BaseModel):
-    pos_x: int = 0
-    pox_y: int = 0
+    pos_x: float = DEFAULT_WINDOW_POS_X
+    pos_y: float = DEFAULT_WINDOW_POS_Y
 
-    width: float | None = None
-    height: float | None = None
+    width: float = DEFAULT_WINDOW_WIDTH
+    height: float = DEFAULT_WINDOW_HEIGHT
 
     is_maximized: bool = False
+
+    model_config = model_config
 
 
 class AppCheckboxes(BaseModel):
@@ -64,6 +70,8 @@ class AppCheckboxes(BaseModel):
     weather: bool = False
     wheels: bool = False
 
+    model_config = model_config
+
 
 class AppConfig(BaseModel):
     window: AppWindow = AppWindow()
@@ -72,3 +80,5 @@ class AppConfig(BaseModel):
     checkboxes: AppCheckboxes = AppCheckboxes()
     game_path: str = ""
     game_version: str = ""
+
+    model_config = model_config

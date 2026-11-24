@@ -10,6 +10,7 @@ from flet import (
     Container,
     Icons,
     Padding,
+    ProgressRing,
     Row,
     Text,
     TextField,
@@ -37,10 +38,11 @@ class GamePathBrowser(Column):
             icon=Icons.FOLDER_OPEN,
         )
         self.status = Text()
+        self.progress_ring = ProgressRing(width=16, height=16, stroke_width=2, visible=False)
 
         self.controls = [
             Row(controls=[self.path_field]),
-            Row(controls=[self.browse_button, self.status]),
+            Row(controls=[self.browse_button, self.progress_ring, self.status]),
         ]
 
 

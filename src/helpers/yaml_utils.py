@@ -1,27 +1,21 @@
 import logging
 from pathlib import Path
-from typing import Any
 
 import yaml
+from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 
 
-def serialize_yaml(yaml_path: Path) -> dict[str, Any]:
-    """Serialize provided yaml to dict."""
-    try:
-        raw_yaml = yaml_path.read_text(encoding="utf-8")
-        return yaml.safe_load(raw_yaml)
-    except Exception as err:
-        logger.exception(err)
-
-    return {}
+def serialize_yaml[DataModel: BaseModel](
+    yaml_path: Path,
+    validation_model: type[DataModel],
+) -> DataModel:
+    """Serialize provided yaml to pydantic model."""
+    raw_yaml = yaml_path.read_text(encoding="utf-8")
+    return validation_model.model_validate(yaml.safe_load(raw_yaml))
 
 
-def save_yaml(yaml_path: Path, yaml_data: dict) -> None:
+def save_yaml(yaml_path: Path, yaml_data: BaseModel) -> None:
     """Save provided data to yaml file."""
-    with open(yaml_path, "w", encoding='utf-8') as stream:
-        try:
-            yaml.dump(yaml_data, stream)
-        except Exception as err:
-            logger.exception(err)
+    yaml_path.write_text(yaml.safe_dump(yaml_data.model_dump()), encoding="utf-8")
