@@ -11,20 +11,19 @@ dependencies = [
 ]
 
 [dependency-groups]
+biba = []
 dev = [
     "editorconfig-checker>=3.11.1",
-    "icecream>=2.1.8",
     "mypy>=2.4.1",
     "nuitka>=4.3.5",
     "pre-commit>=4.7.0",
-    "pytest>=9.0.2",
+    "pytest>=9.2.0",
     "ruff>=0.17.6",
 ]
 
 [tool.mypy]
-ignore_missing_imports = true  # Workaround to avoid installation of all django project dependencies in a linter docker image
 disallow_untyped_defs = true  # Disallows defining functions without type annotations or with incomplete type annotations
-python_version = 3.12
+python_version = 3.13
 plugins = [
   "pydantic.mypy",
 ]

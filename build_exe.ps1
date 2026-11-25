@@ -1,19 +1,24 @@
+$CompanyName = "PAVLIKRPG"
+$ProductName = "Ex Machina Randomizer"
+$FileVersion = "2.0.0"
+$FileDescription = "Randomizer for Ex Machina / Hard Truck Apocalypse."
+
 Copy-Item .\main.exe .\main.exe.bak -Verbose -Force
 
-poetry run nuitka `
+uv run nuitka `
 --standalone `
 --onefile `
 --follow-imports `
 --plugin-enable=pylint-warnings `
 src/main.py `
 --output-dir=dist `
---include-data-dir=src/localisation=localisation `
+--include-data-files=src/localisation.yaml=localisation.yaml `
 --include-data-dir=src/assets=assets `
---windows-company-name="PAVLIKRPG" `
---windows-product-name="Ex Machina Randomizer" `
---windows-file-version=1.3.0 `
---windows-file-description="Randomizer for Ex Machina" `
+--windows-company-name="$CompanyName" `
+--windows-product-name="$ProductName" `
+--windows-file-version="$FileVersion" `
+--windows-file-description="$FileDescription" `
 --windows-console-mode=disable `
---windows-icon-from-ico=".\src\assets\rpg_logo.ico" 
+--windows-icon-from-ico=".\src\assets\rpg_logo.ico"
 
 Move-Item .\dist\main.exe .\main.exe -Verbose -Force
